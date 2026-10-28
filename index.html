@@ -52,6 +52,8 @@
   #modal .caja { background:#fff; border-radius:18px; width:min(720px,100%); padding:14px; }
   #mapa { height:420px; border-radius:12px; }
   .oculto { display:none !important; }
+  .en-label { display:block; margin:10px 0 6px; font-size:13px; font-weight:700; color:var(--azul2); }
+  input.en, textarea.en { background:#EEF4FF; border-color:#C9DAF8; }
 </style>
 </head>
 <body>
@@ -129,6 +131,62 @@ function campo(etiqueta, obj, clave, opts = {}) {
   return el('div', {}, el('label', { for: id, text: etiqueta }), input, opts.ayuda ? el('p', { class: 'ayuda', text: opts.ayuda, style: 'margin:6px 0 0' }) : null);
 }
 
+// Inglés: la app se ve en inglés en los celulares que no están en español.
+// Cada texto se traduce solo y se puede corregir a mano; se guarda en datos.en.
+async function traducir(t) {
+  const r = await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=es&tl=en&dt=t&q=' + encodeURIComponent(t));
+  if (!r.ok) throw new Error('traductor');
+  return (await r.json())[0].map((p) => p[0]).join('');
+}
+
+function textosATraducir() {
+  const xs = [];
+  const add = (t) => { if (t && String(t).trim()) xs.push(String(t)); };
+  datos.noticias.forEach((n) => { add(n.titulo); add(n.texto); });
+  ['proximo_titulo', 'proximo_fecha', 'proximo_lugar'].forEach((k) => add(datos.config[k]));
+  datos.iglesias.forEach((c) => { add(c.nombre); add(c.reuniones); });
+  datos.misioneros.forEach((m) => { add(m.frase); add(m.obra); (m.motivos || []).forEach(add); });
+  return [...new Set(xs)];
+}
+
+async function completarIngles() {
+  datos.en = datos.en || {};
+  const usados = textosATraducir();
+  for (const t of usados) if (!datos.en[t]) { try { datos.en[t] = await traducir(t); } catch (e) {} }
+  const limpio = {};
+  usados.forEach((t) => { if (datos.en[t]) limpio[t] = datos.en[t]; });
+  datos.en = limpio;
+}
+
+// Campo en español + su vista previa en inglés debajo.
+function campoEn(etiqueta, obj, clave, opts = {}) {
+  datos.en = datos.en || {};
+  const lineas = () => String(obj[clave] ?? '').split('\n').map((x) => x.trim()).filter(Boolean);
+  const valorEn = () => opts.lineas ? lineas().map((l) => datos.en[l] || '').join('\n') : (datos.en[obj[clave]] || '');
+  const id = 'e' + Math.random().toString(36).slice(2);
+  const en = opts.multilinea ? el('textarea', { id, class: 'en' }) : el('input', { id, class: 'en' });
+  en.value = valorEn();
+  en.placeholder = 'Se traduce solo cuando escribís en español';
+  en.addEventListener('input', () => {
+    if (opts.lineas) { const es = lineas(), xs = en.value.split('\n'); es.forEach((l, i) => { if (xs[i] != null) datos.en[l] = xs[i].trim(); }); }
+    else if (obj[clave]) datos.en[obj[clave]] = en.value;
+    cambio();
+  });
+  let timer = null;
+  const programar = () => {
+    clearTimeout(timer);
+    timer = setTimeout(async () => {
+      const faltan = (opts.lineas ? lineas() : [String(obj[clave] ?? '')]).filter((t) => t.trim() && !datos.en[t]);
+      if (faltan.length) en.placeholder = 'Traduciendo...';
+      try { for (const t of faltan) datos.en[t] = await traducir(t); } catch (e) { en.placeholder = 'No se pudo traducir: escribilo a mano'; }
+      en.value = valorEn();
+    }, 700);
+  };
+  const caja = campo(etiqueta, obj, clave, { ...opts, alCambiar: () => { if (opts.alCambiar) opts.alCambiar(); programar(); } });
+  caja.append(el('label', { for: id, class: 'en-label', text: 'En inglés (vista previa, la podés corregir)' }), en);
+  return caja;
+}
+
 function telefonos(texto) {
   return texto.split(/[,;/]|\s-\s/).map((p) => p.replace(/\D/g, '')).filter(Boolean).map((d) => {
     if (d.length === 9 && d.startsWith('09')) return { num: `${d.slice(0, 3)} ${d.slice(3, 6)} ${d.slice(6)}`, wa: '598' + d.slice(1), tel: '+598' + d.slice(1) };
@@ -170,7 +228,7 @@ function pintar() {
         videoBox.querySelector('input').addEventListener('input', (e) => { n.video = idVideo(e.target.value); });
         sel.addEventListener('change', () => { delete n.accion; delete n.video; if (sel.value === 'predicas' || sel.value === 'encuentros') n.accion = sel.value; videoBox.classList.toggle('oculto', sel.value !== 'video'); cambio(); });
         return el('div', { class: 'card' },
-          campo('Título', n, 'titulo'), campo('Texto', n, 'texto', { multilinea: true }),
+          campoEn('Título', n, 'titulo'), campoEn('Texto', n, 'texto', { multilinea: true }),
           el('div', { class: 'fila' }, campo('Fecha', n, 'fecha', { tipo: 'date' }), el('div', {}, el('label', { text: 'Al tocarla' }), sel)),
           videoBox,
           el('div', { class: 'acciones' },
@@ -185,8 +243,8 @@ function pintar() {
       el('h2', { text: 'Próximo encuentro' }),
       el('p', { class: 'ayuda', text: 'Si dejás el título vacío, el cuadro no aparece en la app.' }),
       el('div', { class: 'card' },
-        campo('Título', cfg, 'proximo_titulo', { placeholder: 'Carpa Paysandú 2026' }),
-        el('div', { class: 'fila' }, campo('Fechas', cfg, 'proximo_fecha', { placeholder: '1 al 5 de diciembre' }), campo('Lugar', cfg, 'proximo_lugar', { placeholder: 'Paysandú' }))));
+        campoEn('Título', cfg, 'proximo_titulo', { placeholder: 'Carpa Paysandú 2026' }),
+        el('div', { class: 'fila' }, campoEn('Fechas', cfg, 'proximo_fecha', { placeholder: '1 al 5 de diciembre' }), campoEn('Lugar', cfg, 'proximo_lugar', { placeholder: 'Paysandú' }))));
   } else if (tab === 'brou') {
     v.replaceChildren(
       el('h2', { text: 'Cuenta BROU de la Carpa' }),
@@ -228,10 +286,10 @@ function pintarIglesias(v) {
       const fotoObj = { f: (c.fotos || []).find((f) => /^https?:/.test(f)) || '' };
       const coord = el('p', { class: 'ayuda', text: `Coordenadas: ${(+c.lat).toFixed(5)}, ${(+c.lng).toFixed(5)}` });
       return el('div', { class: 'card' }, cab, el('div', { class: 'detalle' },
-        el('div', { class: 'fila' }, campo('Ciudad o barrio', c, 'ciudad'), campo('Nombre de la iglesia', c, 'nombre')),
+        el('div', { class: 'fila' }, campo('Ciudad o barrio', c, 'ciudad'), campoEn('Nombre de la iglesia', c, 'nombre')),
         campo('Dirección', c, 'direccion'),
         campo('Teléfonos (separados por coma)', tels, 't', { alCambiar: () => { c.telefonos = telefonos(tels.t); }, ayuda: 'Los celulares que empiezan con 09 tienen botón de WhatsApp.' }),
-        campo('Reuniones', c, 'reuniones', { multilinea: true }),
+        campoEn('Reuniones', c, 'reuniones', { multilinea: true }),
         campo('Foto nueva (link, opcional)', fotoObj, 'f', { alCambiar: () => { const u = fotoObj.f.trim(); c.fotos = (u ? [u] : []).concat((c.fotos || []).filter((f) => !/^https?:/.test(f))); }, ayuda: 'Pegá el link de una foto para reemplazar la actual.' }),
         coord,
         el('div', { class: 'acciones' },
@@ -263,10 +321,10 @@ function pintarMisioneros(v) {
       const mot = { t: (m.motivos || []).join('\n') };
       return el('div', { class: 'card' }, cab, el('div', { class: 'detalle' },
         campo('Nombres', m, 'nombres', { placeholder: 'Nombre; Nombre' }),
-        el('div', { class: 'fila' }, campo('Dónde sirven', m, 'obra'), campo('Enviados por', m, 'enviados')),
+        el('div', { class: 'fila' }, campoEn('Dónde sirven', m, 'obra'), campo('Enviados por', m, 'enviados')),
         el('div', { class: 'fila' }, campo('Versículo', m, 'versiculo'), campo('Foto (link, solo para misioneros nuevos)', m, 'foto')),
-        campo('Frase', m, 'frase', { multilinea: true }),
-        campo('Motivos de oración (uno por renglón)', mot, 't', { multilinea: true, alCambiar: () => { m.motivos = mot.t.split('\n').map((x) => x.trim()).filter(Boolean); } }),
+        campoEn('Frase', m, 'frase', { multilinea: true }),
+        campoEn('Motivos de oración (uno por renglón)', mot, 't', { multilinea: true, lineas: true, alCambiar: () => { m.motivos = mot.t.split('\n').map((x) => x.trim()).filter(Boolean); } }),
         el('div', { class: 'fila' }, campo('Titular de la cuenta BROU', m, 'brou_titular'), campo('Número de cuenta BROU', m, 'brou_cuenta')),
         el('div', { class: 'acciones' }, el('button', { class: 'btn peligro', type: 'button', text: 'Borrar misionero', on: { click: () => { if (confirm(`¿Borrar a ${m.nombres}?`)) { datos.misioneros.splice(i, 1); abiertas.clear(); cambio(); pintar(); } } } }))));
     }));
@@ -304,13 +362,16 @@ async function cargar() {
   const j = await r.json();
   sha = j.sha;
   datos = JSON.parse(de64(j.content));
-  datos.config = datos.config || {}; datos.noticias = datos.noticias || []; datos.iglesias = datos.iglesias || []; datos.misioneros = datos.misioneros || [];
+  datos.config = datos.config || {}; datos.en = datos.en || {}; datos.noticias = datos.noticias || []; datos.iglesias = datos.iglesias || []; datos.misioneros = datos.misioneros || [];
 }
 
 async function guardar() {
   $('#guardar').disabled = true;
   $('#estado').textContent = 'Guardando...'; $('#estado').className = 'estado';
   try {
+    $('#estado').textContent = 'Traduciendo al inglés...';
+    await completarIngles();
+    $('#estado').textContent = 'Guardando...';
     datos.actualizado = new Date().toISOString().slice(0, 10);
     const r = await api(`contents/${ARCHIVO}`, {
       method: 'PUT',
