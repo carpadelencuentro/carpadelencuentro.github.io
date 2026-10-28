@@ -3,489 +3,191 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Panel · Carpa del Encuentro</title>
-<link rel="icon" href="logo.jpg">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta name="referrer" content="no-referrer">
+<title>Carpa del Encuentro · App</title>
+<meta name="description" content="App de la Carpa del Encuentro: prédicas de cada noche, pedidos de oración, iglesias cerca y un versículo cada día. Gratis.">
+<meta property="og:title" content="Carpa del Encuentro">
+<meta property="og:description" content="Prédicas, oración, iglesias cerca y la Biblia, en una app gratis.">
+<meta property="og:image" content="https://carpadelencuentro.github.io/img/icono.png">
+<link rel="icon" href="img/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400..800&display=swap">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Playfair+Display:wght@800&display=swap" rel="stylesheet">
 <style>
-  :root { --azul:#0251B8; --azul2:#1F3FA8; --tinta:#141A33; --gris:#5A5F75; --linea:#E3E6EC; --suave:#F4F5F8; --rojo:#B3221A; --verde:#1B6E45; }
+  :root {
+    --fondo: #04122e;
+    --fondo2: #071d47;
+    --azul: #0251B8;
+    --azul-claro: #3d8bff;
+    --amarillo: #f5d90a;
+    --texto: #f4f7ff;
+    --suave: #a9b8d6;
+    --borde: rgba(160, 190, 255, 0.18);
+    --tarjeta: rgba(255, 255, 255, 0.04);
+    --crema: #eef4ff;
+  }
   * { box-sizing: border-box; }
-  body { margin:0; font-family:'Figtree',system-ui,sans-serif; color:var(--tinta); background:#fff; }
-  header { background:var(--azul); color:#fff; display:flex; align-items:center; gap:12px; padding:12px 16px; position:sticky; top:0; z-index:500; }
-  header img { width:44px; height:44px; border-radius:10px; }
-  header h1 { font-size:19px; margin:0; font-weight:800; }
-  header small { display:block; font-weight:600; opacity:.85; font-size:13px; }
-  header button { margin-left:auto; background:transparent; border:1px solid rgba(255,255,255,.6); color:#fff; border-radius:999px; padding:8px 14px; font:inherit; font-weight:700; cursor:pointer; }
-  main { max-width:860px; margin:0 auto; padding:16px 16px 120px; }
-  .tabs { display:flex; gap:8px; overflow-x:auto; padding-bottom:6px; margin-bottom:14px; }
-  .tabs button { flex:none; height:40px; padding:0 16px; border-radius:999px; border:1px solid var(--linea); background:#fff; font:inherit; font-weight:700; color:#3F4560; cursor:pointer; }
-  .tabs button.on { background:var(--tinta); color:#fff; border-color:var(--tinta); }
-  .card { border:1px solid var(--linea); border-radius:16px; padding:16px; margin-bottom:12px; background:#fff; }
-  .card.suave { background:var(--suave); border-color:transparent; }
-  h2 { font-size:22px; margin:6px 0 4px; }
-  p.ayuda { color:var(--gris); margin:0 0 14px; line-height:1.45; }
-  label { display:block; font-weight:700; font-size:14px; margin:10px 0 6px; }
-  input, textarea, select { width:100%; font:inherit; font-size:16px; padding:11px 12px; border:1.5px solid #D5D9E2; border-radius:12px; background:#fff; color:var(--tinta); }
-  textarea { min-height:80px; resize:vertical; }
-  input:focus, textarea:focus, select:focus { outline:none; border-color:var(--azul2); }
-  .fila { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
-  @media (max-width:560px) { .fila { grid-template-columns:1fr; } }
-  .btn { height:44px; padding:0 16px; border-radius:12px; border:0; background:var(--azul2); color:#fff; font:inherit; font-weight:800; cursor:pointer; }
-  .btn.sec { background:#fff; color:var(--azul2); border:1px solid #C8D3F5; }
-  .btn.peligro { background:#fff; color:var(--rojo); border:1px solid #F3C4C0; }
-  .btn:disabled { background:#E3E6EC; color:#4A4E60; cursor:not-allowed; }
-  .acciones { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
-  .item-cab { display:flex; align-items:center; gap:10px; cursor:pointer; }
-  .item-cab img { width:52px; height:52px; border-radius:10px; object-fit:cover; background:var(--suave); }
-  .item-cab b { display:block; font-size:16px; }
-  .item-cab span { color:var(--gris); font-size:14px; }
-  .item-cab .chev { margin-left:auto; color:#8A90A6; font-size:20px; }
-  .detalle { margin-top:10px; border-top:1px solid var(--linea); padding-top:6px; }
-  .barra { position:fixed; left:0; right:0; bottom:0; background:#fff; border-top:1px solid var(--linea); padding:12px 16px; display:flex; align-items:center; gap:12px; z-index:600; }
-  .barra .estado { color:var(--gris); font-weight:600; font-size:14px; flex:1; }
-  .barra .btn { min-width:180px; height:50px; font-size:17px; }
-  .ok { color:var(--verde) !important; } .error { color:var(--rojo) !important; }
-  .chip { display:inline-block; padding:3px 10px; border-radius:999px; background:#E9EEFB; color:var(--azul2); font-weight:700; font-size:12px; }
-  .chip.aprox { background:#FFF4CF; color:#7A5B00; }
-  #modal { position:fixed; inset:0; background:rgba(11,22,56,.55); display:none; align-items:center; justify-content:center; z-index:1000; padding:16px; }
-  #modal .caja { background:#fff; border-radius:18px; width:min(720px,100%); padding:14px; }
-  #mapa { height:420px; border-radius:12px; }
-  .oculto { display:none !important; }
-  .en-label { display:block; margin:10px 0 6px; font-size:13px; font-weight:700; color:var(--azul2); }
-  input.en, textarea.en { background:#EEF4FF; border-color:#C9DAF8; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--fondo);
+    background-image: radial-gradient(1100px 620px at 50% -120px, rgba(2, 81, 184, 0.55), transparent 70%), linear-gradient(180deg, var(--fondo2), var(--fondo) 900px);
+    color: var(--texto);
+    font: 17px/1.6 Figtree, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  .ancho { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+
+  header { position: sticky; top: 0; z-index: 10; background: rgba(4, 18, 46, 0.82); backdrop-filter: blur(10px); border-bottom: 1px solid var(--borde); }
+  header .ancho { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+  .marca { display: flex; align-items: center; gap: 12px; text-decoration: none; font-weight: 800; font-size: 19px; }
+  .marca img { width: 40px; height: 40px; border-radius: 10px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; font-weight: 800; border-radius: 12px; padding: 11px 20px; background: var(--azul); color: #fff; border: 1px solid rgba(255,255,255,.15); box-shadow: 0 8px 24px rgba(2, 81, 184, .45); }
+  .btn:hover { background: #0a60d4; }
+
+  .hero { text-align: center; padding: 56px 0 24px; }
+  .logo-hero { width: 230px; max-width: 62vw; filter: drop-shadow(0 18px 40px rgba(0,0,0,.45)); }
+  .pastilla { display: inline-flex; align-items: center; gap: 8px; margin-top: 22px; padding: 7px 16px; border-radius: 999px; border: 1px solid var(--borde); background: var(--tarjeta); color: var(--suave); font-weight: 700; font-size: 14px; }
+  .pastilla::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--amarillo); }
+  h1 { font-family: "Playfair Display", Georgia, serif; font-weight: 800; font-size: clamp(40px, 7.4vw, 82px); line-height: 1.04; letter-spacing: -0.5px; margin: 22px auto 0; max-width: 880px; background: linear-gradient(180deg, #ffffff, #bcd3ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .bajada { max-width: 640px; margin: 22px auto 0; color: var(--suave); font-size: clamp(17px, 2.2vw, 20px); }
+
+  .tiendas { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin: 34px 0 0; }
+  .tienda { display: flex; align-items: center; gap: 12px; min-width: 210px; padding: 12px 22px; border-radius: 14px; text-decoration: none; background: var(--crema); color: #0b1631; box-shadow: 0 10px 30px rgba(0,0,0,.35); }
+  .tienda svg { width: 30px; height: 30px; flex: none; }
+  .tienda small { display: block; font-size: 12px; font-weight: 600; opacity: .7; line-height: 1.2; }
+  .tienda b { display: block; font-size: 20px; line-height: 1.2; }
+  .tienda.pronto { background: transparent; color: var(--texto); border: 1px solid var(--borde); box-shadow: none; cursor: default; }
+  .nota { margin: 16px auto 0; color: var(--suave); font-size: 14px; max-width: 560px; }
+
+  .cifras { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 56px 0 0; }
+  .cifra { text-align: center; padding: 26px 12px; border: 1px solid var(--borde); border-radius: 18px; background: var(--tarjeta); }
+  .cifra b { display: block; font-family: "Playfair Display", Georgia, serif; font-size: 42px; line-height: 1.1; color: #8fb6ff; }
+  .cifra span { display: block; margin-top: 6px; font-size: 13px; font-weight: 800; letter-spacing: 1.4px; color: var(--suave); text-transform: uppercase; }
+
+  section { padding: 72px 0 0; }
+  h2 { font-family: "Playfair Display", Georgia, serif; font-size: clamp(30px, 4.4vw, 46px); line-height: 1.1; margin: 0; text-align: center; }
+  .sub { text-align: center; color: var(--suave); max-width: 620px; margin: 14px auto 0; }
+
+  .funciones { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 36px; }
+  .funcion { padding: 26px 24px; border-radius: 20px; border: 1px solid var(--borde); background: var(--tarjeta); }
+  .funcion .ico { display: inline-flex; width: 52px; height: 52px; align-items: center; justify-content: center; border-radius: 14px; background: rgba(2, 81, 184, .35); color: #9cc0ff; }
+  .funcion .ico svg { width: 26px; height: 26px; }
+  .funcion h3 { margin: 16px 0 0; font-size: 22px; font-weight: 800; }
+  .funcion p { margin: 6px 0 0; color: var(--suave); font-size: 16px; }
+
+
+  .que { max-width: 760px; margin: 28px auto 0; color: #d6e2ff; font-size: 18px; text-align: center; }
+  .cita { max-width: 640px; margin: 28px auto 0; padding: 20px 24px; border-radius: 18px; border: 1px solid var(--borde); background: var(--tarjeta); text-align: center; font-size: 19px; font-weight: 600; }
+  .cita small { display: block; margin-top: 8px; color: #8fb6ff; font-weight: 800; font-size: 15px; }
+
+  .redes { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 30px; }
+  .red { display: inline-flex; align-items: center; gap: 10px; padding: 12px 18px; border-radius: 14px; border: 1px solid var(--borde); background: var(--tarjeta); text-decoration: none; font-weight: 700; }
+  .red svg { width: 20px; height: 20px; }
+
+  footer { margin-top: 80px; border-top: 1px solid var(--borde); padding: 28px 0 40px; color: var(--suave); font-size: 15px; }
+  footer .ancho { display: flex; flex-wrap: wrap; gap: 14px 24px; justify-content: space-between; align-items: center; }
+  footer nav { display: flex; gap: 20px; flex-wrap: wrap; }
+
+  @media (max-width: 820px) {
+    .cifras { grid-template-columns: repeat(2, 1fr); }
+    .funciones { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 480px) {
+    header .btn { padding: 9px 14px; }
+    .marca span { font-size: 17px; }
+    .tienda { min-width: 0; width: 100%; justify-content: center; }
+    .cifra b { font-size: 34px; }
+  }
 </style>
 </head>
 <body>
 <header>
-  <img src="logo.jpg" alt="">
-  <div><h1>Panel de la app</h1><small>Carpa del Encuentro</small></div>
-  <button id="salir" class="oculto" type="button">Salir</button>
+  <div class="ancho">
+    <a class="marca" href="#"><img src="img/icono.png" alt=""><span>Carpa del Encuentro</span></a>
+    <a class="btn" href="#descargar">Descargar</a>
+  </div>
 </header>
 
-<main>
-  <section id="login" class="card suave">
-    <h2>Entrar al panel</h2>
-    <label for="pass">Contraseña de administrador</label>
-    <input id="pass" type="password" autocomplete="current-password">
-    <div class="acciones"><button class="btn" id="entrar" type="button">Entrar</button></div>
-    <p id="loginEstado" class="ayuda" style="margin-top:10px"></p>
-    <p class="ayuda" style="margin-top:18px"><a href="#" id="verConfig">Configurar o cambiar la clave de GitHub</a></p>
+<main class="ancho">
+  <div class="hero">
+    <img class="logo-hero" src="img/logo.png" alt="Carpa del Encuentro">
+    <div><span class="pastilla">Prédicas · Oración · Iglesias cerca</span></div>
+    <h1>Llevando esperanza en Jesucristo</h1>
+    <p class="bajada">La app de la Carpa del Encuentro: mirá las prédicas de cada noche, pedí oración, encontrá una iglesia cerca de tu casa y leé un versículo cada día. Gratis y sin cuentas.</p>
+
+    <div class="tiendas" id="descargar">
+      <a class="tienda pronto" id="play" aria-disabled="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3.6 1.8c-.3.3-.5.8-.5 1.4v17.6c0 .6.2 1.1.5 1.4l10-10.2zM14.9 13.3l2.6 2.6-11.2 6.4c-.6.3-1.2.4-1.6.1zm4.3-4.8c.9.5 1.4 1.1 1.4 1.8s-.5 1.3-1.4 1.8l-2.4 1.4-2.8-2.8 2.8-2.8zM4.7 1.6c.4-.3 1-.2 1.6.1l11.2 6.4-2.6 2.6z"/></svg>
+        <span><small>Muy pronto en</small><b>Google Play</b></span>
+      </a>
+      <a class="tienda pronto" id="ios" aria-disabled="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.4 12.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.6 0 2 .8 3.4.8 1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9 0 0-2.7-1-2.7-4.1zM13.9 4.9c.7-.9 1.2-2 1-3.2-1 0-2.2.7-3 1.5-.6.7-1.2 1.9-1 3.1 1.1.1 2.3-.6 3-1.4z"/></svg>
+        <span><small>Muy pronto en</small><b>App Store</b></span>
+      </a>
+    </div>
+    <p class="nota">Funciona en español y en inglés: la app se pone sola en el idioma de tu celular.</p>
+
+    <div class="cifras">
+      <div class="cifra"><b>100%</b><span>Gratis</span></div>
+      <div class="cifra"><b id="nIglesias">32</b><span>Iglesias en el mapa</span></div>
+      <div class="cifra"><b>2</b><span>Idiomas</span></div>
+      <div class="cifra"><b>0</b><span>Anuncios</span></div>
+    </div>
+  </div>
+
+  <section>
+    <h2>Todo lo de la Carpa, en un solo lugar</h2>
+    <p class="sub">Cada noche de cada encuentro, los pedidos de oración y las iglesias de todo el país.</p>
+    <div class="funciones">
+      <div class="funcion"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3zM10 9l5 3-5 3z"/></svg></span><h3>Prédicas</h3><p>Las noches de cada encuentro en video. Se actualizan solas desde el canal de YouTube.</p></div>
+      <div class="funcion"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 11.5S8.5 9.4 8.5 7.1a1.8 1.8 0 0 1 3.5-.6 1.8 1.8 0 0 1 3.5.6c0 2.3-3.5 4.4-3.5 4.4zM2.5 13.5c2.6 0 4.6.9 6 2.4l1.1 1.3h4.8l1.1-1.3c1.4-1.5 3.4-2.4 6-2.4M2.5 13.5V21M21.5 13.5V21M9 21h6"/></svg></span><h3>Oración</h3><p>Contanos tu pedido y marcá cuando Dios responda.</p></div>
+      <div class="funcion"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11zM12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/></svg></span><h3>Iglesias cerca</h3><p>Un mapa con las iglesias, sus horarios, cómo llegar y su WhatsApp.</p></div>
+      <div class="funcion"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h12a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2zM5 18a2 2 0 0 1 2-2h12M12 7v6M9.5 9.5h5"/></svg></span><h3>Un versículo cada día</h3><p>Y si querés, te llega cada mañana a las 8:00.</p></div>
+    </div>
   </section>
 
-  <section id="config" class="card suave oculto">
-    <h2>Configurar el panel (una sola vez)</h2>
-    <p class="ayuda">El panel guarda los cambios en GitHub con una clave que solo puede editar este repositorio. La pegás acá una vez: queda guardada cifrada con la contraseña de administrador, y después se entra solo con la contraseña.</p>
-    <ol class="ayuda">
-      <li>Entrá a <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">crear una clave nueva</a> (con tu cuenta de GitHub).</li>
-      <li>En <b>Repository access</b> elegí <b>Only select repositories</b> y marcá <b>carpa-del-encuentro</b>.</li>
-      <li>En <b>Permissions → Contents</b> elegí <b>Read and write</b>. Creala y copiala.</li>
-    </ol>
-    <label for="token">Clave de GitHub</label>
-    <input id="token" type="password" autocomplete="off" placeholder="github_pat_...">
-    <div class="fila">
-      <div><label for="pass1">Contraseña de administrador</label><input id="pass1" type="password" autocomplete="new-password"></div>
-      <div><label for="pass2">Repetila</label><input id="pass2" type="password" autocomplete="new-password"></div>
-    </div>
-    <div class="acciones">
-      <button class="btn" id="guardarConfig" type="button">Guardar y entrar</button>
-      <button class="btn sec" id="volverLogin" type="button">Volver</button>
-    </div>
-    <p id="configEstado" class="ayuda" style="margin-top:10px"></p>
-  </section>
 
-  <section id="panel" class="oculto">
-    <nav class="tabs" id="tabs"></nav>
-    <div id="vista"></div>
+  <section>
+    <h2>¿Qué es la Carpa del Encuentro?</h2>
+    <p class="que">Somos un ministerio de iglesias cristianas evangélicas del Uruguay. Hace más de diez años llevamos una carpa por distintas ciudades del país para compartir un mensaje de fe y esperanza en Jesucristo. Cada noche hay música, la Palabra de Dios y actividades para toda la familia. Todo es gratis.</p>
+    <p class="cita">“Y me buscaréis y hallaréis, porque me buscaréis de todo vuestro corazón.”<small>Jeremías 29:13</small></p>
+    <div class="redes">
+      <a class="red" href="https://www.instagram.com/carpadelencuentrouy/" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>Instagram</a>
+      <a class="red" href="https://www.youtube.com/@carpadelencuentro" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4A2.5 2.5 0 0 0 2.4 7.2C2 8.8 2 12 2 12s0 3.2.4 4.8a2.5 2.5 0 0 0 1.8 1.8c1.6.4 7.8.4 7.8.4s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8c.4-1.6.4-4.8.4-4.8s0-3.2-.4-4.8zM10 15V9l5.2 3z"/></svg>YouTube</a>
+      <a class="red" href="https://wa.me/59891800800" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-3.3-.8-2.8-1.1-4.5-3.9-4.7-4.1-.1-.2-1.1-1.5-1.1-2.8s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.6 2 1.1 1 2 1.3 2.3 1.4.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.1 1.2z"/></svg>091 800 800</a>
+    </div>
   </section>
 </main>
 
-<div class="barra oculto" id="barra">
-  <span class="estado" id="estado">Sin cambios</span>
-  <button class="btn" id="guardar" type="button" disabled>Guardar cambios</button>
-</div>
-
-<div id="modal">
-  <div class="caja">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-      <b style="font-size:17px">Arrastrá el punto hasta la puerta de la iglesia</b>
-      <button class="btn sec" id="cerrarMapa" type="button" style="margin-left:auto">Listo</button>
-    </div>
-    <div id="mapa"></div>
+<footer>
+  <div class="ancho">
+    <span>CorApps 2026 · Carpa del Encuentro</span>
+    <nav><a href="privacidad/">Política de privacidad</a><a href="mailto:tomicorvetto@gmail.com">Contacto</a></nav>
   </div>
-</div>
+</footer>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-const $ = (s) => document.querySelector(s);
-const ARCHIVO = 'contenido.json';
-let datos = null, sha = null, sucio = false, tab = 'novedades';
-
-function el(tag, attrs = {}, ...hijos) {
-  const e = document.createElement(tag);
-  for (const [k, v] of Object.entries(attrs)) {
-    if (k === 'on') for (const [ev, fn] of Object.entries(v)) e.addEventListener(ev, fn);
-    else if (k === 'text') e.textContent = v;
-    else if (k === 'value') e.value = v ?? '';
-    else e.setAttribute(k, v);
-  }
-  for (const h of hijos.flat()) if (h != null) e.append(h);
-  return e;
-}
-
-function cambio() { sucio = true; $('#guardar').disabled = false; $('#estado').textContent = 'Hay cambios sin guardar'; $('#estado').className = 'estado'; }
-
-function campo(etiqueta, obj, clave, opts = {}) {
-  const id = 'c' + Math.random().toString(36).slice(2);
-  const input = opts.multilinea ? el('textarea', { id, value: obj[clave] ?? '' }) : el('input', { id, value: obj[clave] ?? '', type: opts.tipo || 'text' });
-  if (opts.placeholder) input.placeholder = opts.placeholder;
-  input.addEventListener('input', () => { obj[clave] = opts.numero ? parseFloat(input.value) : input.value; if (opts.alCambiar) opts.alCambiar(); cambio(); });
-  return el('div', {}, el('label', { for: id, text: etiqueta }), input, opts.ayuda ? el('p', { class: 'ayuda', text: opts.ayuda, style: 'margin:6px 0 0' }) : null);
-}
-
-// Inglés: la app se ve en inglés en los celulares que no están en español.
-// Cada texto se traduce solo y se puede corregir a mano; se guarda en datos.en.
-async function traducir(t) {
-  const r = await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=es&tl=en&dt=t&q=' + encodeURIComponent(t));
-  if (!r.ok) throw new Error('traductor');
-  return (await r.json())[0].map((p) => p[0]).join('');
-}
-
-function textosATraducir() {
-  const xs = [];
-  const add = (t) => { if (t && String(t).trim()) xs.push(String(t)); };
-  datos.noticias.forEach((n) => { add(n.titulo); add(n.texto); });
-  ['proximo_titulo', 'proximo_fecha', 'proximo_lugar'].forEach((k) => add(datos.config[k]));
-  datos.iglesias.forEach((c) => { add(c.nombre); add(c.reuniones); });
-  datos.misioneros.forEach((m) => { add(m.frase); add(m.obra); (m.motivos || []).forEach(add); });
-  return [...new Set(xs)];
-}
-
-async function completarIngles() {
-  datos.en = datos.en || {};
-  const usados = textosATraducir();
-  for (const t of usados) if (!datos.en[t]) { try { datos.en[t] = await traducir(t); } catch (e) {} }
-  const limpio = {};
-  usados.forEach((t) => { if (datos.en[t]) limpio[t] = datos.en[t]; });
-  datos.en = limpio;
-}
-
-// Campo en español + su vista previa en inglés debajo.
-function campoEn(etiqueta, obj, clave, opts = {}) {
-  datos.en = datos.en || {};
-  const lineas = () => String(obj[clave] ?? '').split('\n').map((x) => x.trim()).filter(Boolean);
-  const valorEn = () => opts.lineas ? lineas().map((l) => datos.en[l] || '').join('\n') : (datos.en[obj[clave]] || '');
-  const id = 'e' + Math.random().toString(36).slice(2);
-  const en = opts.multilinea ? el('textarea', { id, class: 'en' }) : el('input', { id, class: 'en' });
-  en.value = valorEn();
-  en.placeholder = 'Se traduce solo cuando escribís en español';
-  en.addEventListener('input', () => {
-    if (opts.lineas) { const es = lineas(), xs = en.value.split('\n'); es.forEach((l, i) => { if (xs[i] != null) datos.en[l] = xs[i].trim(); }); }
-    else if (obj[clave]) datos.en[obj[clave]] = en.value;
-    cambio();
-  });
-  let timer = null;
-  const programar = () => {
-    clearTimeout(timer);
-    timer = setTimeout(async () => {
-      const faltan = (opts.lineas ? lineas() : [String(obj[clave] ?? '')]).filter((t) => t.trim() && !datos.en[t]);
-      if (faltan.length) en.placeholder = 'Traduciendo...';
-      try { for (const t of faltan) datos.en[t] = await traducir(t); } catch (e) { en.placeholder = 'No se pudo traducir: escribilo a mano'; }
-      en.value = valorEn();
-    }, 700);
+// Links de las tiendas y cantidad de iglesias: salen del contenido que se edita en el panel.
+fetch('contenido.json', { cache: 'no-store' }).then((r) => r.ok ? r.json() : null).then((d) => {
+  if (!d) return;
+  const cfg = d.config || {};
+  const poner = (id, url) => {
+    if (typeof url !== 'string' || !/^https:\/\//.test(url)) return;
+    const a = document.getElementById(id);
+    a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+    a.classList.remove('pronto'); a.removeAttribute('aria-disabled');
+    a.querySelector('small').textContent = 'Disponible en';
   };
-  const caja = campo(etiqueta, obj, clave, { ...opts, alCambiar: () => { if (opts.alCambiar) opts.alCambiar(); programar(); } });
-  caja.append(el('label', { for: id, class: 'en-label', text: 'En inglés (vista previa, la podés corregir)' }), en);
-  return caja;
-}
-
-function telefonos(texto) {
-  return texto.split(/[,;/]|\s-\s/).map((p) => p.replace(/\D/g, '')).filter(Boolean).map((d) => {
-    if (d.length === 9 && d.startsWith('09')) return { num: `${d.slice(0, 3)} ${d.slice(3, 6)} ${d.slice(6)}`, wa: '598' + d.slice(1), tel: '+598' + d.slice(1) };
-    if (d.length === 8 && /^[24]/.test(d)) return { num: `${d.slice(0, 4)} ${d.slice(4)}`, wa: null, tel: '+598' + d };
-    return { num: d, wa: null, tel: '+' + d };
-  });
-}
-
-function idVideo(t) {
-  const m = String(t || '').match(/(?:v=|youtu\.be\/|shorts\/|live\/)([\w-]{11})/) || String(t || '').match(/^([\w-]{11})$/);
-  return m ? m[1] : '';
-}
-
-function fotoSrc(f) { return !f ? '' : /^https?:/.test(f) ? f : null; }
-
-const TABS = [
-  ['novedades', 'Novedades'], ['vivo', 'En vivo y encuentro'], ['brou', 'Cuenta BROU'],
-  ['iglesias', 'Iglesias'], ['misioneros', 'Misioneros'], ['app', 'Actualización'],
-];
-
-function pintarTabs() {
-  $('#tabs').replaceChildren(...TABS.map(([id, t]) => el('button', { type: 'button', class: id === tab ? 'on' : '', text: t, on: { click: () => { tab = id; pintarTabs(); pintar(); } } })));
-}
-
-function pintar() {
-  const v = $('#vista');
-  const cfg = datos.config;
-  if (tab === 'novedades') {
-    v.replaceChildren(
-      el('h2', { text: 'Novedades' }),
-      el('p', { class: 'ayuda', text: 'Aparecen en Inicio y en Avisos de la app. La primera de la lista es la que se ve arriba.' }),
-      el('button', { class: 'btn', type: 'button', text: '+ Nueva novedad', on: { click: () => { datos.noticias.unshift({ titulo: '', texto: '', fecha: new Date().toISOString().slice(0, 10) }); cambio(); pintar(); } } }),
-      el('div', { style: 'height:12px' }),
-      ...datos.noticias.map((n, i) => {
-        const tipo = n.video ? 'video' : (n.accion || 'nada');
-        const sel = el('select', {}, ...[['nada', 'Nada (solo texto)'], ['video', 'Abrir un video de YouTube'], ['predicas', 'Ir a Prédicas'], ['encuentros', 'Ir a Encuentros']].map(([val, t]) => el('option', { value: val, text: t })));
-        sel.value = tipo;
-        const videoBox = el('div', { class: tipo === 'video' ? '' : 'oculto' }, campo('Link del video', { v: n.video ? 'https://youtu.be/' + n.video : '' }, 'v', { placeholder: 'https://youtu.be/...', alCambiar: () => {} }));
-        videoBox.querySelector('input').addEventListener('input', (e) => { n.video = idVideo(e.target.value); });
-        sel.addEventListener('change', () => { delete n.accion; delete n.video; if (sel.value === 'predicas' || sel.value === 'encuentros') n.accion = sel.value; videoBox.classList.toggle('oculto', sel.value !== 'video'); cambio(); });
-        return el('div', { class: 'card' },
-          campoEn('Título', n, 'titulo'), campoEn('Texto', n, 'texto', { multilinea: true }),
-          el('div', { class: 'fila' }, campo('Fecha', n, 'fecha', { tipo: 'date' }), el('div', {}, el('label', { text: 'Al tocarla' }), sel)),
-          videoBox,
-          el('div', { class: 'acciones' },
-            el('button', { class: 'btn sec', type: 'button', text: 'Subir', on: { click: () => { if (i > 0) { [datos.noticias[i - 1], datos.noticias[i]] = [datos.noticias[i], datos.noticias[i - 1]]; cambio(); pintar(); } } } }),
-            el('button', { class: 'btn peligro', type: 'button', text: 'Borrar', on: { click: () => { if (confirm('¿Borrar esta novedad?')) { datos.noticias.splice(i, 1); cambio(); pintar(); } } } })));
-      }));
-  } else if (tab === 'vivo') {
-    v.replaceChildren(
-      el('h2', { text: 'En vivo' }),
-      el('p', { class: 'ayuda', text: 'La app detecta sola cuando el canal de YouTube está transmitiendo. Si querés mostrar el cartel EN VIVO con otro link, pegalo acá. Cuando termine, borralo.' }),
-      el('div', { class: 'card' }, campo('Link de la transmisión (opcional)', cfg, 'envivo_url', { placeholder: 'https://www.youtube.com/watch?v=...' })),
-      el('h2', { text: 'Próximo encuentro' }),
-      el('p', { class: 'ayuda', text: 'Si dejás el título vacío, el cuadro no aparece en la app.' }),
-      el('div', { class: 'card' },
-        campoEn('Título', cfg, 'proximo_titulo', { placeholder: 'Carpa Paysandú 2026' }),
-        el('div', { class: 'fila' }, campoEn('Fechas', cfg, 'proximo_fecha', { placeholder: '1 al 5 de diciembre' }), campoEn('Lugar', cfg, 'proximo_lugar', { placeholder: 'Paysandú' }))));
-  } else if (tab === 'brou') {
-    v.replaceChildren(
-      el('h2', { text: 'Cuenta BROU de la Carpa' }),
-      el('p', { class: 'ayuda', text: 'Se muestra en Ofrendar. Mientras el número esté vacío, la app dice que se publica pronto.' }),
-      el('div', { class: 'card' },
-        el('div', { class: 'fila' }, campo('Titular', cfg, 'brou_titular'), campo('Número de cuenta', cfg, 'brou_cuenta')),
-        el('div', { class: 'fila' }, campo('Moneda', cfg, 'brou_moneda'), campo('Sucursal (opcional)', cfg, 'brou_sucursal'))),
-      el('p', { class: 'ayuda', text: 'Las cuentas de cada misionero se cargan en la pestaña Misioneros.' }));
-  } else if (tab === 'app') {
-    v.replaceChildren(
-      el('h2', { text: 'Actualización de la app' }),
-      el('p', { class: 'ayuda', text: 'Cuando publiques una versión nueva en las tiendas, poné acá su número: al abrir la app, a quien tenga una versión anterior le aparece el cartel para actualizar.' }),
-      el('div', { class: 'card' },
-        campo('Versión nueva (ej: 1.0.1)', cfg, 'version_app'),
-        campo('Link de Android', cfg, 'actualizar_url', { placeholder: 'https://play.google.com/store/apps/details?id=com.corapps.carpadelencuentro' }),
-        campo('Link de iPhone', cfg, 'actualizar_url_ios', { placeholder: 'https://apps.apple.com/app/id...' })));
-  } else if (tab === 'iglesias') pintarIglesias(v);
-  else if (tab === 'misioneros') pintarMisioneros(v);
-}
-
-let abiertas = new Set(), filtro = '';
-
-function pintarIglesias(v) {
-  const buscar = el('input', { value: filtro, placeholder: 'Buscar iglesia...' });
-  buscar.addEventListener('input', () => { filtro = buscar.value; pintarLista(); });
-  const lista = el('div');
-  function pintarLista() {
-    const q = filtro.toLowerCase();
-    lista.replaceChildren(...datos.iglesias.map((c, i) => [c, i]).filter(([c]) => !q || `${c.ciudad} ${c.nombre} ${c.direccion}`.toLowerCase().includes(q)).map(([c, i]) => {
-      const abierta = abiertas.has(i);
-      const foto = (c.fotos || [])[0];
-      const cab = el('div', { class: 'item-cab', on: { click: () => { abierta ? abiertas.delete(i) : abiertas.add(i); pintarLista(); } } },
-        fotoSrc(foto) ? el('img', { src: fotoSrc(foto), alt: '' }) : el('img', { alt: '', src: 'logo.jpg' }),
-        el('div', {}, el('b', { text: c.ciudad || '(sin nombre)' }), el('span', { text: c.nombre })),
-        c.aprox ? el('span', { class: 'chip aprox', text: 'ubicación aproximada' }) : el('span', { class: 'chip', text: 'ubicación exacta' }),
-        el('span', { class: 'chev', text: abierta ? '▴' : '▾' }));
-      if (!abierta) return el('div', { class: 'card' }, cab);
-      const tels = { t: (c.telefonos || []).map((t) => t.num).join(', ') };
-      const fotoObj = { f: (c.fotos || []).find((f) => /^https?:/.test(f)) || '' };
-      const coord = el('p', { class: 'ayuda', text: `Coordenadas: ${(+c.lat).toFixed(5)}, ${(+c.lng).toFixed(5)}` });
-      return el('div', { class: 'card' }, cab, el('div', { class: 'detalle' },
-        el('div', { class: 'fila' }, campo('Ciudad o barrio', c, 'ciudad'), campoEn('Nombre de la iglesia', c, 'nombre')),
-        campo('Dirección', c, 'direccion'),
-        campo('Teléfonos (separados por coma)', tels, 't', { alCambiar: () => { c.telefonos = telefonos(tels.t); }, ayuda: 'Los celulares que empiezan con 09 tienen botón de WhatsApp.' }),
-        campoEn('Reuniones', c, 'reuniones', { multilinea: true }),
-        campo('Foto nueva (link, opcional)', fotoObj, 'f', { alCambiar: () => { const u = fotoObj.f.trim(); c.fotos = (u ? [u] : []).concat((c.fotos || []).filter((f) => !/^https?:/.test(f))); }, ayuda: 'Pegá el link de una foto para reemplazar la actual.' }),
-        coord,
-        el('div', { class: 'acciones' },
-          el('button', { class: 'btn', type: 'button', text: 'Ubicar en el mapa', on: { click: () => abrirMapa(c, () => { coord.textContent = `Coordenadas: ${(+c.lat).toFixed(5)}, ${(+c.lng).toFixed(5)}`; pintarLista(); }) } }),
-          el('button', { class: 'btn peligro', type: 'button', text: 'Borrar iglesia', on: { click: () => { if (confirm(`¿Borrar ${c.ciudad}?`)) { datos.iglesias.splice(i, 1); abiertas.clear(); cambio(); pintarLista(); } } } }))));
-    }));
-  }
-  pintarLista();
-  v.replaceChildren(
-    el('h2', { text: 'Iglesias' }),
-    el('p', { class: 'ayuda', text: 'Tocá una iglesia para editarla. Con "Ubicar en el mapa" arrastrás el punto a la ubicación exacta.' }),
-    el('div', { class: 'acciones', style: 'margin:0 0 12px' }, el('button', { class: 'btn', type: 'button', text: '+ Nueva iglesia', on: { click: () => { datos.iglesias.unshift({ id: 'nueva-' + Date.now(), ciudad: '', nombre: '', direccion: '', telefonos: [], reuniones: '', fotos: [], lat: -34.88, lng: -56.17, aprox: true }); abiertas = new Set([0]); filtro = ''; cambio(); pintar(); } } })),
-    buscar, el('div', { style: 'height:12px' }), lista);
-}
-
-function pintarMisioneros(v) {
-  v.replaceChildren(
-    el('h2', { text: 'Misioneros' }),
-    el('p', { class: 'ayuda', text: 'La cuenta BROU de cada familia aparece en la app con el botón "Apoyar a esta familia".' }),
-    el('div', { class: 'acciones', style: 'margin:0 0 12px' }, el('button', { class: 'btn', type: 'button', text: '+ Nuevo misionero', on: { click: () => { datos.misioneros.unshift({ id: 'nuevo-' + Date.now(), nombres: '', foto: '', frase: '', obra: '', enviados: '', versiculo: '', motivos: [], brou_titular: '', brou_cuenta: '' }); abiertas = new Set(['m0']); cambio(); pintar(); } } })),
-    ...datos.misioneros.map((m, i) => {
-      const key = 'm' + i, abierta = abiertas.has(key);
-      const cab = el('div', { class: 'item-cab', on: { click: () => { abierta ? abiertas.delete(key) : abiertas.add(key); pintar(); } } },
-        el('img', { alt: '', src: /^https?:/.test(m.foto) ? m.foto : 'logo.jpg' }),
-        el('div', {}, el('b', { text: m.nombres || '(sin nombre)' }), el('span', { text: m.obra })),
-        m.brou_cuenta ? el('span', { class: 'chip', text: 'con cuenta' }) : null,
-        el('span', { class: 'chev', text: abierta ? '▴' : '▾' }));
-      if (!abierta) return el('div', { class: 'card' }, cab);
-      const mot = { t: (m.motivos || []).join('\n') };
-      return el('div', { class: 'card' }, cab, el('div', { class: 'detalle' },
-        campo('Nombres', m, 'nombres', { placeholder: 'Nombre; Nombre' }),
-        el('div', { class: 'fila' }, campoEn('Dónde sirven', m, 'obra'), campo('Enviados por', m, 'enviados')),
-        el('div', { class: 'fila' }, campo('Versículo', m, 'versiculo'), campo('Foto (link, solo para misioneros nuevos)', m, 'foto')),
-        campoEn('Frase', m, 'frase', { multilinea: true }),
-        campoEn('Motivos de oración (uno por renglón)', mot, 't', { multilinea: true, lineas: true, alCambiar: () => { m.motivos = mot.t.split('\n').map((x) => x.trim()).filter(Boolean); } }),
-        el('div', { class: 'fila' }, campo('Titular de la cuenta BROU', m, 'brou_titular'), campo('Número de cuenta BROU', m, 'brou_cuenta')),
-        el('div', { class: 'acciones' }, el('button', { class: 'btn peligro', type: 'button', text: 'Borrar misionero', on: { click: () => { if (confirm(`¿Borrar a ${m.nombres}?`)) { datos.misioneros.splice(i, 1); abiertas.clear(); cambio(); pintar(); } } } }))));
-    }));
-}
-
-let mapa = null, marca = null, alListo = null;
-function abrirMapa(c, listo) {
-  $('#modal').style.display = 'flex';
-  alListo = () => { c.lat = +marca.getLatLng().lat.toFixed(6); c.lng = +marca.getLatLng().lng.toFixed(6); c.aprox = false; cambio(); listo(); };
-  if (!mapa) {
-    mapa = L.map('mapa');
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(mapa);
-    marca = L.marker([c.lat, c.lng], { draggable: true }).addTo(mapa);
-  }
-  marca.setLatLng([c.lat, c.lng]);
-  mapa.setView([c.lat, c.lng], c.aprox ? 15 : 17);
-  setTimeout(() => mapa.invalidateSize(), 50);
-}
-$('#cerrarMapa').addEventListener('click', () => { $('#modal').style.display = 'none'; if (alListo) alListo(); alListo = null; });
-
-const DUENO = location.hostname.endsWith('.github.io') ? location.hostname.split('.')[0] : 'tomicor';
-const REPO = (location.hostname.endsWith('.github.io') && location.pathname.split('/').filter(Boolean)[0]) || 'carpa-del-encuentro';
-
-function api(ruta, opciones = {}, token = sessionStorage.getItem('clave')) {
-  return fetch(`https://api.github.com/repos/${DUENO}/${REPO}/${ruta}`, {
-    ...opciones,
-    cache: 'no-store',
-    headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}), Accept: 'application/vnd.github+json', ...(opciones.headers || {}) },
-  });
-}
-
-// La clave de GitHub se guarda en clave.json cifrada (AES-GCM) con la contraseña de administrador.
-const b64 = (u8) => btoa(String.fromCharCode(...u8));
-const deb64 = (t) => Uint8Array.from(atob(t), (c) => c.charCodeAt(0));
-async function llave(pass, sal) {
-  const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pass), 'PBKDF2', false, ['deriveKey']);
-  return crypto.subtle.deriveKey({ name: 'PBKDF2', salt: sal, iterations: 310000, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
-}
-async function cifrar(texto, pass) {
-  const sal = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12));
-  const c = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, await llave(pass, sal), new TextEncoder().encode(texto));
-  return { sal: b64(sal), iv: b64(iv), datos: b64(new Uint8Array(c)) };
-}
-async function descifrar(j, pass) {
-  const c = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: deb64(j.iv) }, await llave(pass, deb64(j.sal)), deb64(j.datos));
-  return new TextDecoder().decode(c);
-}
-async function leerClaveCifrada() {
-  const r = await api('contents/clave.json', {}, null);
-  if (r.status === 404) return null;
-  if (!r.ok) throw new Error('No pude leer la configuración (' + r.status + ').');
-  const j = await r.json();
-  return { ...JSON.parse(de64(j.content)), sha: j.sha };
-}
-const a64 = (s) => { const b = new TextEncoder().encode(s); let x = ''; b.forEach((c) => (x += String.fromCharCode(c))); return btoa(x); };
-const de64 = (s) => new TextDecoder().decode(Uint8Array.from(atob(s.replace(/\n/g, '')), (c) => c.charCodeAt(0)));
-
-async function cargar() {
-  const r = await api(`contents/${ARCHIVO}`);
-  if (r.status === 401 || r.status === 403) throw new Error('La clave no tiene permiso. Revisá que tenga Contents: Read and write.');
-  if (!r.ok) throw new Error('No encontré el archivo de datos (' + r.status + ').');
-  const j = await r.json();
-  sha = j.sha;
-  datos = JSON.parse(de64(j.content));
-  datos.config = datos.config || {}; datos.en = datos.en || {}; datos.noticias = datos.noticias || []; datos.iglesias = datos.iglesias || []; datos.misioneros = datos.misioneros || [];
-}
-
-async function guardar() {
-  $('#guardar').disabled = true;
-  $('#estado').textContent = 'Guardando...'; $('#estado').className = 'estado';
-  try {
-    $('#estado').textContent = 'Traduciendo al inglés...';
-    await completarIngles();
-    $('#estado').textContent = 'Guardando...';
-    datos.actualizado = new Date().toISOString().slice(0, 10);
-    const r = await api(`contents/${ARCHIVO}`, {
-      method: 'PUT',
-      body: JSON.stringify({ message: 'Panel: cambios del ' + new Date().toLocaleString('es-UY'), content: a64(JSON.stringify(datos, null, 1)), sha }),
-    });
-    if (r.status === 409) throw new Error('Alguien guardó cambios antes. Recargá la página.');
-    if (!r.ok) throw new Error('No se pudo guardar (' + r.status + ').');
-    sha = (await r.json()).content.sha;
-    sucio = false;
-    $('#estado').textContent = 'Guardado. La app lo muestra en unos minutos.'; $('#estado').className = 'estado ok';
-  } catch (e) {
-    $('#estado').textContent = e.message; $('#estado').className = 'estado error';
-    $('#guardar').disabled = false;
-  }
-}
-
-async function entrar() {
-  $('#loginEstado').textContent = 'Entrando...'; $('#loginEstado').className = 'ayuda';
-  try {
-    if (!sessionStorage.getItem('clave')) {
-      const pass = $('#pass').value;
-      if (!pass) throw new Error('Escribí la contraseña.');
-      const cifrada = await leerClaveCifrada();
-      if (!cifrada) { mostrar('config'); return; }
-      try { sessionStorage.setItem('clave', await descifrar(cifrada, pass)); } catch (e) { throw new Error('Contraseña incorrecta.'); }
-    }
-    await cargar();
-    $('#login').classList.add('oculto'); $('#config').classList.add('oculto');
-    $('#panel').classList.remove('oculto'); $('#barra').classList.remove('oculto'); $('#salir').classList.remove('oculto');
-    pintarTabs(); pintar();
-  } catch (e) {
-    sessionStorage.removeItem('clave');
-    $('#loginEstado').textContent = e.message; $('#loginEstado').className = 'ayuda error';
-  }
-}
-
-function mostrar(cual) {
-  $('#login').classList.toggle('oculto', cual !== 'login');
-  $('#config').classList.toggle('oculto', cual !== 'config');
-}
-
-async function guardarConfig() {
-  const est = $('#configEstado'), token = $('#token').value.trim(), p1 = $('#pass1').value, p2 = $('#pass2').value;
-  est.className = 'ayuda';
-  try {
-    if (!token) throw new Error('Pegá la clave de GitHub.');
-    if (p1.length < 8) throw new Error('La contraseña tiene que tener al menos 8 caracteres.');
-    if (p1 !== p2) throw new Error('Las contraseñas no coinciden.');
-    est.textContent = 'Probando la clave...';
-    const prueba = await api(`contents/${ARCHIVO}`, {}, token);
-    if (!prueba.ok) throw new Error('La clave no funciona (' + prueba.status + '). Revisá que tenga Contents: Read and write en este repositorio.');
-    const vieja = await leerClaveCifrada();
-    const cuerpo = { message: 'Panel: configuración de acceso', content: a64(JSON.stringify(await cifrar(token, p1))) };
-    if (vieja) cuerpo.sha = vieja.sha;
-    const r = await api('contents/clave.json', { method: 'PUT', body: JSON.stringify(cuerpo) }, token);
-    if (!r.ok) throw new Error('No pude guardar la configuración (' + r.status + ').');
-    $('#token').value = $('#pass1').value = $('#pass2').value = '';
-    sessionStorage.setItem('clave', token);
-    est.textContent = 'Listo.';
-    entrar();
-  } catch (e) { est.textContent = e.message; est.className = 'ayuda error'; }
-}
-
-(function inicio() {
-  $('#entrar').addEventListener('click', entrar);
-  $('#pass').addEventListener('keydown', (e) => { if (e.key === 'Enter') entrar(); });
-  $('#verConfig').addEventListener('click', (e) => { e.preventDefault(); mostrar('config'); });
-  $('#volverLogin').addEventListener('click', () => mostrar('login'));
-  $('#guardarConfig').addEventListener('click', guardarConfig);
-  $('#guardar').addEventListener('click', guardar);
-  $('#salir').addEventListener('click', () => { if (sucio && !confirm('Hay cambios sin guardar. ¿Salir igual?')) return; sessionStorage.removeItem('clave'); location.reload(); });
-  window.addEventListener('beforeunload', (e) => { if (sucio) { e.preventDefault(); e.returnValue = ''; } });
-  localStorage.removeItem('clave');
-  if (sessionStorage.getItem('clave')) entrar();
-})();
+  poner('play', cfg.actualizar_url);
+  poner('ios', cfg.actualizar_url_ios);
+  if (Array.isArray(d.iglesias) && d.iglesias.length) document.getElementById('nIglesias').textContent = d.iglesias.length;
+}).catch(() => {});
 </script>
 </body>
 </html>
