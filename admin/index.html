@@ -2,10 +2,12 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.googleapis.com; font-src https://fonts.gstatic.com 'self'; img-src 'self' data: blob: https:; connect-src https://api.github.com https://translate.googleapis.com https://oauth2.googleapis.com https://fcm.googleapis.com https://raw.githubusercontent.com; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Panel · Carpa del Encuentro</title>
 <link rel="icon" href="../logo.jpg">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400..800&display=swap">
 <style>
@@ -23,17 +25,23 @@
   .tabs button.on { background:var(--tinta); color:#fff; border-color:var(--tinta); }
   .card { border:1px solid var(--linea); border-radius:16px; padding:16px; margin-bottom:12px; background:#fff; }
   .card.suave { background:var(--suave); border-color:transparent; }
+  .card.alerta { background:#FFF8E1; border-color:#F0D98A; }
   h2 { font-size:22px; margin:6px 0 4px; }
-  p.ayuda { color:var(--gris); margin:0 0 14px; line-height:1.45; }
+  h3 { font-size:17px; margin:2px 0 6px; }
+  p.ayuda, ol.ayuda { color:var(--gris); margin:0 0 14px; line-height:1.45; }
+  ol.ayuda li { margin-bottom:4px; }
   label { display:block; font-weight:700; font-size:14px; margin:10px 0 6px; }
   input, textarea, select { width:100%; font:inherit; font-size:16px; padding:11px 12px; border:1.5px solid #D5D9E2; border-radius:12px; background:#fff; color:var(--tinta); }
+  input[type=file] { padding:9px; }
   textarea { min-height:80px; resize:vertical; }
   input:focus, textarea:focus, select:focus { outline:none; border-color:var(--azul2); }
+  input[readonly] { background:var(--suave); }
   .fila { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
   @media (max-width:560px) { .fila { grid-template-columns:1fr; } }
   .btn { height:44px; padding:0 16px; border-radius:12px; border:0; background:var(--azul2); color:#fff; font:inherit; font-weight:800; cursor:pointer; }
   .btn.sec { background:#fff; color:var(--azul2); border:1px solid #C8D3F5; }
   .btn.peligro { background:#fff; color:var(--rojo); border:1px solid #F3C4C0; }
+  .btn.chico { height:34px; padding:0 10px; font-size:13px; border-radius:10px; }
   .btn:disabled { background:#E3E6EC; color:#4A4E60; cursor:not-allowed; }
   .acciones { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
   .item-cab { display:flex; align-items:center; gap:10px; cursor:pointer; }
@@ -52,8 +60,31 @@
   #modal .caja { background:#fff; border-radius:18px; width:min(720px,100%); padding:14px; }
   #mapa { height:420px; border-radius:12px; }
   .oculto { display:none !important; }
+  #dialogo { position:fixed; inset:0; background:rgba(11,22,56,.55); display:flex; align-items:center; justify-content:center; z-index:1001; padding:16px; }
+  #dialogo .caja { background:#fff; border-radius:18px; width:min(560px,100%); max-height:calc(100vh - 32px); overflow:auto; padding:20px; box-shadow:0 20px 60px rgba(0,0,0,.3); }
   .en-label { display:block; margin:10px 0 6px; font-size:13px; font-weight:700; color:var(--azul2); }
   input.en, textarea.en { background:#EEF4FF; border-color:#C9DAF8; }
+  .contador { float:right; font-weight:600; font-size:13px; color:var(--gris); }
+  .mini { width:72px; height:72px; border-radius:12px; object-fit:cover; background:var(--suave); border:1px solid var(--linea); display:block; }
+  .foto-fila { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .galeria { display:flex; gap:12px; flex-wrap:wrap; }
+  .foto-item { display:flex; flex-direction:column; gap:6px; align-items:flex-start; width:124px; }
+  .foto-item img { width:124px; height:92px; object-fit:cover; border-radius:10px; background:var(--suave); }
+  .link-fila { display:flex; gap:8px; }
+  .link-fila input { flex:1; min-width:0; }
+  .link-fila .btn { flex:none; }
+  .celus { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin:14px 0 4px; }
+  @media (max-width:560px) { .celus { grid-template-columns:1fr; } }
+  .cel { background:linear-gradient(160deg,#1F3FA8,#0B1638); border-radius:24px; padding:12px 10px 22px; }
+  .cel-hora { color:#fff; text-align:center; font-weight:700; font-size:13px; opacity:.85; margin-bottom:12px; }
+  .noti { background:rgba(255,255,255,.95); border-radius:16px; padding:10px 12px; display:flex; gap:10px; }
+  .noti img { width:36px; height:36px; border-radius:9px; flex:none; }
+  .noti-app { font-size:12px; color:var(--gris); }
+  .noti b { display:block; font-size:14px; overflow-wrap:anywhere; }
+  .noti p { margin:2px 0 0; font-size:13px; color:#2B3045; overflow-wrap:anywhere; display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden; }
+  .noti .vacio { color:#9AA0B4; }
+  .cel-nombre { text-align:center; font-weight:700; font-size:13px; color:var(--gris); margin-top:6px; }
+  .aviso { position:fixed; left:16px; right:16px; bottom:86px; max-width:620px; margin:0 auto; background:#FFF4CF; color:#5C4400; border:1px solid #F0D98A; border-radius:14px; padding:12px 14px; font-weight:700; z-index:700; }
 </style>
 </head>
 <body>
@@ -67,31 +98,23 @@
   <section id="login" class="card suave">
     <h2>Entrar al panel</h2>
     <label for="pass">Contraseña de administrador</label>
-    <input id="pass" type="password" autocomplete="current-password">
+    <input id="pass" type="password" autocomplete="current-password" maxlength="200">
     <div class="acciones"><button class="btn" id="entrar" type="button">Entrar</button></div>
-    <p id="loginEstado" class="ayuda" style="margin-top:10px"></p>
-    <p class="ayuda" style="margin-top:18px"><a href="#" id="verConfig">Configurar o cambiar la clave de GitHub</a></p>
-  </section>
+    <p id="loginEstado" class="ayuda" style="margin-top:10px" aria-live="polite"></p>
 
-  <section id="config" class="card suave oculto">
-    <h2>Configurar el panel (una sola vez)</h2>
-    <p class="ayuda">El panel guarda los cambios en GitHub con una clave que solo puede editar este repositorio. La pegás acá una vez: queda guardada cifrada con la contraseña de administrador, y después se entra solo con la contraseña.</p>
-    <ol class="ayuda">
-      <li>Entrá a <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">crear una clave nueva</a> (con tu cuenta de GitHub).</li>
-      <li>En <b>Repository access</b> elegí <b>Only select repositories</b> y marcá <b>carpa-del-encuentro</b>.</li>
-      <li>En <b>Permissions → Contents</b> elegí <b>Read and write</b>. Creala y copiala.</li>
-    </ol>
-    <label for="token">Clave de GitHub</label>
-    <input id="token" type="password" autocomplete="off" placeholder="github_pat_...">
-    <div class="fila">
-      <div><label for="pass1">Contraseña de administrador</label><input id="pass1" type="password" autocomplete="new-password"></div>
-      <div><label for="pass2">Repetila</label><input id="pass2" type="password" autocomplete="new-password"></div>
+    <div id="primeraVez" class="oculto">
+      <h3 id="primeraTitulo"></h3>
+      <p class="ayuda" id="primeraAyuda"></p>
+      <div id="pasosToken"></div>
+      <label for="token">Clave de GitHub</label>
+      <input id="token" type="password" autocomplete="off" maxlength="255" placeholder="github_pat_...">
+      <div id="cajaPass2"><label for="pass2">Repetí la contraseña</label><input id="pass2" type="password" autocomplete="new-password" maxlength="200"></div>
+      <div class="acciones">
+        <button class="btn" id="guardarPrimera" type="button">Guardar y entrar</button>
+        <button class="btn sec" id="cancelarPrimera" type="button">Cancelar</button>
+      </div>
+      <p id="primeraEstado" class="ayuda" style="margin-top:10px" aria-live="polite"></p>
     </div>
-    <div class="acciones">
-      <button class="btn" id="guardarConfig" type="button">Guardar y entrar</button>
-      <button class="btn sec" id="volverLogin" type="button">Volver</button>
-    </div>
-    <p id="configEstado" class="ayuda" style="margin-top:10px"></p>
   </section>
 
   <section id="panel" class="oculto">
@@ -100,10 +123,14 @@
   </section>
 </main>
 
+<div class="aviso oculto" id="avisoSesion" role="status"></div>
+
 <div class="barra oculto" id="barra">
   <span class="estado" id="estado">Sin cambios</span>
   <button class="btn" id="guardar" type="button" disabled>Guardar cambios</button>
 </div>
+
+<div id="dialogo" class="oculto"><div class="caja"></div></div>
 
 <div id="modal">
   <div class="caja">
@@ -115,11 +142,15 @@
   </div>
 </div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
 const $ = (s) => document.querySelector(s);
 const ARCHIVO = 'contenido.json';
+const DUENO = 'carpadelencuentro';
+const REPO = 'carpadelencuentro.github.io';
 let datos = null, sha = null, sucio = false, tab = 'novedades';
+// Claves descifradas (GitHub y Firebase): viven solo en esta variable, nunca en el navegador.
+let secretos = null, formatoViejo = false, pendiente = null;
 
 function el(tag, attrs = {}, ...hijos) {
   const e = document.createElement(tag);
@@ -133,14 +164,27 @@ function el(tag, attrs = {}, ...hijos) {
   return e;
 }
 
-function cambio() { sucio = true; $('#guardar').disabled = false; $('#estado').textContent = 'Hay cambios sin guardar'; $('#estado').className = 'estado'; }
+let version = 0;
+function cambio() { sucio = true; version++; $('#guardar').disabled = false; $('#estado').textContent = 'Hay cambios sin guardar'; $('#estado').className = 'estado'; }
+
+const esHttps = (u) => { try { const x = new URL(String(u)); return x.protocol === 'https:' && !!x.hostname; } catch (e) { return false; } };
+const MAX_LINEA = 200, MAX_TEXTO = 3000;
+const nuevoId = () => 'c' + Math.random().toString(36).slice(2);
 
 function campo(etiqueta, obj, clave, opts = {}) {
-  const id = 'c' + Math.random().toString(36).slice(2);
+  const id = nuevoId();
   const input = opts.multilinea ? el('textarea', { id, value: obj[clave] ?? '' }) : el('input', { id, value: obj[clave] ?? '', type: opts.tipo || 'text' });
   if (opts.placeholder) input.placeholder = opts.placeholder;
-  input.addEventListener('input', () => { obj[clave] = opts.numero ? parseFloat(input.value) : input.value; if (opts.alCambiar) opts.alCambiar(); cambio(); });
-  return el('div', {}, el('label', { for: id, text: etiqueta }), input, opts.ayuda ? el('p', { class: 'ayuda', text: opts.ayuda, style: 'margin:6px 0 0' }) : null);
+  if (opts.multilinea || !opts.tipo || opts.tipo === 'text') input.maxLength = opts.max || (opts.multilinea ? MAX_TEXTO : MAX_LINEA);
+  const aviso = el('p', { class: 'ayuda error oculto', style: 'margin:6px 0 0' });
+  const revisarLink = () => {
+    const u = input.value.trim(), malo = !!(opts.https && u && !esHttps(u));
+    aviso.textContent = malo ? 'Tiene que ser un link que empiece con https://' : '';
+    aviso.classList.toggle('oculto', !malo);
+  };
+  input.addEventListener('input', () => { obj[clave] = opts.numero ? parseFloat(input.value) : input.value; revisarLink(); if (opts.alCambiar) opts.alCambiar(); cambio(); });
+  revisarLink();
+  return el('div', {}, el('label', { for: id, text: etiqueta }), input, aviso, opts.ayuda ? el('p', { class: 'ayuda', text: opts.ayuda, style: 'margin:6px 0 0' }) : null);
 }
 
 // Inglés: la app se ve en inglés en los celulares que no están en español.
@@ -157,7 +201,6 @@ function textosATraducir() {
   datos.noticias.forEach((n) => { add(n.titulo); add(n.texto); });
   ['proximo_titulo', 'proximo_fecha', 'proximo_lugar'].forEach((k) => add(datos.config[k]));
   datos.iglesias.forEach((c) => { add(c.nombre); add(c.reuniones); });
-  datos.misioneros.forEach((m) => { add(m.frase); add(m.obra); (m.motivos || []).forEach(add); });
   return [...new Set(xs)];
 }
 
@@ -177,6 +220,7 @@ function campoEn(etiqueta, obj, clave, opts = {}) {
   const valorEn = () => opts.lineas ? lineas().map((l) => datos.en[l] || '').join('\n') : (datos.en[obj[clave]] || '');
   const id = 'e' + Math.random().toString(36).slice(2);
   const en = opts.multilinea ? el('textarea', { id, class: 'en' }) : el('input', { id, class: 'en' });
+  en.maxLength = opts.multilinea ? MAX_TEXTO : MAX_LINEA * 2;
   en.value = valorEn();
   en.placeholder = 'Se traduce solo cuando escribís en español';
   en.addEventListener('input', () => {
@@ -199,6 +243,93 @@ function campoEn(etiqueta, obj, clave, opts = {}) {
   return caja;
 }
 
+// Ventana para agregar: lo nuevo se suma a la lista recién al tocar "Agregar".
+function abrirDialogo(titulo, campos, alAgregar) {
+  const fondo = $('#dialogo'), caja = $('#dialogo .caja');
+  const error = el('p', { class: 'ayuda error' });
+  const inputs = {};
+  const filas = campos.map((c) => {
+    const id = 'd' + Math.random().toString(36).slice(2);
+    let input;
+    if (c.opciones) input = el('select', { id }, ...c.opciones.map(([v, t]) => el('option', { value: v, text: t })));
+    else if (c.multilinea) input = el('textarea', { id });
+    else input = el('input', { id, type: c.tipo || 'text' });
+    if (c.valor != null) input.value = c.valor;
+    if (c.placeholder) input.placeholder = c.placeholder;
+    if (c.max) input.maxLength = c.max;
+    inputs[c.clave] = input;
+    return { c, fila: el('div', { style: 'margin-bottom:12px' }, el('label', { for: id, text: c.etiqueta }), input, c.ayuda ? el('p', { class: 'ayuda', text: c.ayuda, style: 'margin:6px 0 0' }) : null) };
+  });
+  const mostrarSegun = () => filas.forEach(({ c, fila }) => { if (c.visibleSi) fila.classList.toggle('oculto', !c.visibleSi(inputs)); });
+  Object.values(inputs).forEach((i) => i.addEventListener('change', mostrarSegun));
+  const cerrar = () => { fondo.classList.add('oculto'); caja.replaceChildren(); document.removeEventListener('keydown', esc); };
+  const esc = (e) => { if (e.key === 'Escape') cerrar(); };
+  const agregar = () => {
+    const v = {};
+    for (const [k, i] of Object.entries(inputs)) v[k] = i.value.trim();
+    const problema = alAgregar(v);
+    if (problema) { error.textContent = problema; return; }
+    cerrar();
+  };
+  caja.replaceChildren(
+    el('h2', { text: titulo, style: 'margin-top:0' }),
+    ...filas.map((f) => f.fila), error,
+    el('div', { class: 'acciones' },
+      el('button', { class: 'btn', type: 'button', text: 'Agregar', on: { click: agregar } }),
+      el('button', { class: 'btn sec', type: 'button', text: 'Cancelar', on: { click: cerrar } })));
+  mostrarSegun();
+  fondo.classList.remove('oculto');
+  document.addEventListener('keydown', esc);
+  const primero = caja.querySelector('input, textarea, select');
+  if (primero) primero.focus();
+}
+
+async function traducirNuevos(textos) {
+  for (const t of textos) if (t && !datos.en[t]) { try { datos.en[t] = await traducir(t); } catch (e) {} }
+  if (!$('#dialogo').classList.contains('oculto')) return;
+  pintar();
+}
+
+function nuevaNovedad() {
+  abrirDialogo('Nueva novedad', [
+    { clave: 'titulo', etiqueta: 'Título', max: 80 },
+    { clave: 'texto', etiqueta: 'Texto', multilinea: true, max: 400 },
+    { clave: 'fecha', etiqueta: 'Fecha', tipo: 'date', valor: new Date().toISOString().slice(0, 10) },
+    { clave: 'tipo', etiqueta: 'Al tocarla', opciones: [['nada', 'Nada (solo texto)'], ['video', 'Abrir un video de YouTube'], ['predicas', 'Ir a Prédicas'], ['encuentros', 'Ir a Encuentros']] },
+    { clave: 'video', etiqueta: 'Link del video', placeholder: 'https://youtu.be/...', visibleSi: (i) => i.tipo.value === 'video' },
+  ], (v) => {
+    if (!v.titulo) return 'Escribí el título.';
+    const n = { titulo: v.titulo, texto: v.texto, fecha: /^\d{4}-\d{2}-\d{2}$/.test(v.fecha) ? v.fecha : new Date().toISOString().slice(0, 10) };
+    if (v.tipo === 'video') {
+      const id = idVideo(v.video);
+      if (!id) return 'Pegá un link de YouTube que funcione.';
+      n.video = id;
+    } else if (v.tipo === 'predicas' || v.tipo === 'encuentros') n.accion = v.tipo;
+    datos.noticias.unshift(n);
+    cambio(); pintar();
+    traducirNuevos([n.titulo, n.texto]);
+  });
+}
+
+function nuevaIglesia() {
+  abrirDialogo('Nueva iglesia', [
+    { clave: 'ciudad', etiqueta: 'Ciudad o barrio', max: 60 },
+    { clave: 'nombre', etiqueta: 'Nombre de la iglesia', valor: 'Iglesia Cristiana Evangélica', max: 90 },
+    { clave: 'direccion', etiqueta: 'Dirección', placeholder: 'Calle 1234 - Ciudad', max: 120 },
+    { clave: 'tels', etiqueta: 'Teléfonos (separados por coma)', ayuda: 'Los celulares que empiezan con 09 tienen botón de WhatsApp.', max: 120 },
+    { clave: 'reuniones', etiqueta: 'Reuniones', multilinea: true, placeholder: 'Domingo\n10:00 hs. Culto', max: 800 },
+  ], (v) => {
+    if (!v.ciudad) return 'Escribí la ciudad o el barrio.';
+    const slug = v.ciudad.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'iglesia';
+    const c = { id: `${slug}-${Date.now().toString(36)}`, ciudad: v.ciudad, nombre: v.nombre, direccion: v.direccion, telefonos: telefonos(v.tels), reuniones: v.reuniones, fotos: [], lat: -34.88, lng: -56.17, aprox: true };
+    datos.iglesias.unshift(c);
+    abiertas = new Set([0]); filtro = '';
+    cambio(); pintar();
+    $('#estado').textContent = 'Iglesia agregada: ubicala en el mapa, subí una foto y tocá Guardar cambios';
+    traducirNuevos([c.nombre, c.reuniones]);
+  });
+}
+
 function telefonos(texto) {
   return texto.split(/[,;/]|\s-\s/).map((p) => p.replace(/\D/g, '')).filter(Boolean).map((d) => {
     if (d.length === 9 && d.startsWith('09')) return { num: `${d.slice(0, 3)} ${d.slice(3, 6)} ${d.slice(6)}`, wa: '598' + d.slice(1), tel: '+598' + d.slice(1) };
@@ -208,39 +339,59 @@ function telefonos(texto) {
 }
 
 function idVideo(t) {
-  const m = String(t || '').match(/(?:v=|youtu\.be\/|shorts\/|live\/)([\w-]{11})/) || String(t || '').match(/^([\w-]{11})$/);
+  const m = String(t || '').match(/(?:v=|youtu\.be\/|shorts\/|live\/)([\w-]{11})/) || String(t || '').trim().match(/^([\w-]{11})$/);
   return m ? m[1] : '';
 }
 
-function fotoSrc(f, carpeta = 'iglesias') { return !f ? '' : /^https:\/\//.test(f) ? f : /^[\w.-]+\.(jpe?g|png|webp)$/i.test(f) ? `../fotos/${carpeta}/${f}` : null; }
+// Fotos: un link https se muestra tal cual; un nombre suelto es una foto que ya viene dentro de la app.
+const vistasPrevias = new Map();
+const NOMBRE_FOTO_APP = /^[\w-][\w.-]*$/; // nombre de archivo suelto, sin carpetas ni ".."
+function srcFoto(f, carpeta) {
+  if (vistasPrevias.has(f)) return vistasPrevias.get(f);
+  if (esHttps(f)) return f;
+  if (f && NOMBRE_FOTO_APP.test(f)) return `../fotos/${carpeta}/${encodeURIComponent(f)}`;
+  return '../logo.jpg';
+}
+function imgFoto(f, carpeta, clase) {
+  const i = el('img', { alt: '' });
+  if (clase) i.className = clase;
+  i.addEventListener('error', () => { if (!i.src.endsWith('/logo.jpg')) i.src = '../logo.jpg'; });
+  i.src = srcFoto(f, carpeta);
+  return i;
+}
 
 const TABS = [
-  ['novedades', 'Novedades'], ['vivo', 'En vivo y encuentro'], ['brou', 'Cuenta BROU'],
-  ['iglesias', 'Iglesias'], ['misioneros', 'Misioneros'], ['app', 'Actualización'],
+  ['novedades', 'Novedades'], ['push', 'Notificaciones push'], ['vivo', 'En vivo y encuentro'], ['brou', 'Cuenta BROU'],
+  ['iglesias', 'Iglesias'], ['app', 'Actualización'], ['seguridad', 'Seguridad'],
 ];
 
+function irA(id) { tab = id; pintarTabs(); pintar(); window.scrollTo(0, 0); }
+
 function pintarTabs() {
-  $('#tabs').replaceChildren(...TABS.map(([id, t]) => el('button', { type: 'button', class: id === tab ? 'on' : '', text: t, on: { click: () => { tab = id; pintarTabs(); pintar(); } } })));
+  $('#tabs').replaceChildren(...TABS.map(([id, t]) => el('button', { type: 'button', class: id === tab ? 'on' : '', text: t, on: { click: () => irA(id) } })));
 }
 
 function pintar() {
+  if (!datos) return;
   const v = $('#vista');
   const cfg = datos.config;
   if (tab === 'novedades') {
     v.replaceChildren(
       el('h2', { text: 'Novedades' }),
-      el('p', { class: 'ayuda', text: 'Aparecen en Inicio y en Avisos de la app. La primera de la lista es la que se ve arriba.' }),
-      el('button', { class: 'btn', type: 'button', text: '+ Nueva novedad', on: { click: () => { datos.noticias.unshift({ titulo: '', texto: '', fecha: new Date().toISOString().slice(0, 10) }); cambio(); pintar(); } } }),
+      el('p', { class: 'ayuda', text: 'Aparecen en Inicio y en Avisos de la app. La primera de la lista es la que se ve arriba. Si querés que además le llegue un aviso al celular, usá la pestaña Notificaciones push.' }),
+      el('button', { class: 'btn', type: 'button', text: '+ Nueva novedad', on: { click: nuevaNovedad } }),
       el('div', { style: 'height:12px' }),
       ...datos.noticias.map((n, i) => {
         const tipo = n.video ? 'video' : (n.accion || 'nada');
         const sel = el('select', {}, ...[['nada', 'Nada (solo texto)'], ['video', 'Abrir un video de YouTube'], ['predicas', 'Ir a Prédicas'], ['encuentros', 'Ir a Encuentros']].map(([val, t]) => el('option', { value: val, text: t })));
         sel.value = tipo;
-        const videoBox = el('div', { class: tipo === 'video' ? '' : 'oculto' }, campo('Link del video', { v: n.video ? 'https://youtu.be/' + n.video : '' }, 'v', { placeholder: 'https://youtu.be/...', alCambiar: () => {} }));
-        videoBox.querySelector('input').addEventListener('input', (e) => { n.video = idVideo(e.target.value); });
-        sel.addEventListener('change', () => { delete n.accion; delete n.video; if (sel.value === 'predicas' || sel.value === 'encuentros') n.accion = sel.value; videoBox.classList.toggle('oculto', sel.value !== 'video'); cambio(); });
+        const vid = { v: n.video ? 'https://youtu.be/' + n.video : '' };
+        const avisoVideo = el('p', { class: 'ayuda error oculto', style: 'margin:6px 0 0', text: 'No reconozco ese link de YouTube. Copiá el link del video y pegalo entero.' });
+        const tomarVideo = () => { const idv = idVideo(vid.v); if (idv) n.video = idv; else delete n.video; avisoVideo.classList.toggle('oculto', !vid.v.trim() || !!idv); };
+        const videoBox = el('div', { class: tipo === 'video' ? '' : 'oculto' }, campo('Link del video', vid, 'v', { placeholder: 'https://youtu.be/...', max: 300, alCambiar: tomarVideo }), avisoVideo);
+        sel.addEventListener('change', () => { delete n.accion; delete n.video; if (sel.value === 'predicas' || sel.value === 'encuentros') n.accion = sel.value; if (sel.value === 'video') tomarVideo(); videoBox.classList.toggle('oculto', sel.value !== 'video'); cambio(); });
         return el('div', { class: 'card' },
-          campoEn('Título', n, 'titulo'), campoEn('Texto', n, 'texto', { multilinea: true }),
+          campoEn('Título', n, 'titulo', { max: 150 }), campoEn('Texto', n, 'texto', { multilinea: true, max: 1500 }),
           el('div', { class: 'fila' }, campo('Fecha', n, 'fecha', { tipo: 'date' }), el('div', {}, el('label', { text: 'Al tocarla' }), sel)),
           videoBox,
           el('div', { class: 'acciones' },
@@ -251,58 +402,57 @@ function pintar() {
     v.replaceChildren(
       el('h2', { text: 'En vivo' }),
       el('p', { class: 'ayuda', text: 'La app detecta sola cuando el canal de YouTube está transmitiendo. Si querés mostrar el cartel EN VIVO con otro link, pegalo acá. Cuando termine, borralo.' }),
-      el('div', { class: 'card' }, campo('Link de la transmisión (opcional)', cfg, 'envivo_url', { placeholder: 'https://www.youtube.com/watch?v=...' })),
+      el('div', { class: 'card' }, campo('Link de la transmisión (opcional)', cfg, 'envivo_url', { placeholder: 'https://www.youtube.com/watch?v=...', https: true, max: 300 })),
       el('h2', { text: 'Próximo encuentro' }),
       el('p', { class: 'ayuda', text: 'Si dejás el título vacío, el cuadro no aparece en la app.' }),
       el('div', { class: 'card' },
-        campoEn('Título', cfg, 'proximo_titulo', { placeholder: 'Carpa Paysandú 2026' }),
-        el('div', { class: 'fila' }, campoEn('Fechas', cfg, 'proximo_fecha', { placeholder: '1 al 5 de diciembre' }), campoEn('Lugar', cfg, 'proximo_lugar', { placeholder: 'Paysandú' }))));
+        campoEn('Título', cfg, 'proximo_titulo', { placeholder: 'Carpa Paysandú 2026', max: 120 }),
+        el('div', { class: 'fila' }, campoEn('Fechas', cfg, 'proximo_fecha', { placeholder: '1 al 5 de diciembre', max: 120 }), campoEn('Lugar', cfg, 'proximo_lugar', { placeholder: 'Paysandú', max: 120 }))));
   } else if (tab === 'brou') {
     v.replaceChildren(
       el('h2', { text: 'Cuenta BROU de la Carpa' }),
       el('p', { class: 'ayuda', text: 'Se muestra en Ofrendar. Mientras el número esté vacío, la app dice que se publica pronto.' }),
       el('div', { class: 'card' },
-        el('div', { class: 'fila' }, campo('Titular', cfg, 'brou_titular'), campo('Número de cuenta', cfg, 'brou_cuenta')),
-        el('div', { class: 'fila' }, campo('Moneda', cfg, 'brou_moneda'), campo('Sucursal (opcional)', cfg, 'brou_sucursal'))),
+        el('div', { class: 'fila' }, campo('Titular', cfg, 'brou_titular', { max: 120 }), campo('Número de cuenta', cfg, 'brou_cuenta', { max: 60 })),
+        el('div', { class: 'fila' }, campo('Moneda', cfg, 'brou_moneda', { max: 60 }), campo('Sucursal (opcional)', cfg, 'brou_sucursal', { max: 120 }))),
       el('p', { class: 'ayuda', text: 'Las cuentas de cada misionero se cargan en la pestaña Misioneros.' }));
   } else if (tab === 'app') {
     v.replaceChildren(
       el('h2', { text: 'Actualización de la app' }),
       el('p', { class: 'ayuda', text: 'Cuando publiques una versión nueva en las tiendas, poné acá su número: al abrir la app, a quien tenga una versión anterior le aparece el cartel para actualizar.' }),
       el('div', { class: 'card' },
-        campo('Versión nueva (ej: 1.0.1)', cfg, 'version_app'),
-        campo('Link de Android', cfg, 'actualizar_url', { placeholder: 'https://play.google.com/store/apps/details?id=com.corapps.carpadelencuentro' }),
-        campo('Link de iPhone', cfg, 'actualizar_url_ios', { placeholder: 'https://apps.apple.com/app/id...' })));
+        campo('Versión nueva (ej: 1.0.1)', cfg, 'version_app', { max: 20 }),
+        campo('Link de Android', cfg, 'actualizar_url', { placeholder: 'https://play.google.com/store/apps/details?id=com.corapps.carpadelencuentro', https: true, max: 300 }),
+        campo('Link de iPhone', cfg, 'actualizar_url_ios', { placeholder: 'https://apps.apple.com/app/id...', https: true, max: 300 })));
   } else if (tab === 'iglesias') pintarIglesias(v);
-  else if (tab === 'misioneros') pintarMisioneros(v);
+  else if (tab === 'push') pintarPush(v);
+  else if (tab === 'seguridad') pintarSeguridad(v);
 }
 
 let abiertas = new Set(), filtro = '';
 
 function pintarIglesias(v) {
-  const buscar = el('input', { value: filtro, placeholder: 'Buscar iglesia...' });
+  const buscar = el('input', { value: filtro, placeholder: 'Buscar iglesia...', maxlength: '100' });
   buscar.addEventListener('input', () => { filtro = buscar.value; pintarLista(); });
   const lista = el('div');
   function pintarLista() {
     const q = filtro.toLowerCase();
     lista.replaceChildren(...datos.iglesias.map((c, i) => [c, i]).filter(([c]) => !q || `${c.ciudad} ${c.nombre} ${c.direccion}`.toLowerCase().includes(q)).map(([c, i]) => {
       const abierta = abiertas.has(i);
-      const foto = (c.fotos || [])[0];
       const cab = el('div', { class: 'item-cab', on: { click: () => { abierta ? abiertas.delete(i) : abiertas.add(i); pintarLista(); } } },
-        fotoSrc(foto) ? el('img', { src: fotoSrc(foto), alt: '' }) : el('img', { alt: '', src: '../logo.jpg' }),
+        imgFoto((c.fotos || [])[0], 'iglesias'),
         el('div', {}, el('b', { text: c.ciudad || '(sin nombre)' }), el('span', { text: c.nombre })),
         c.aprox ? el('span', { class: 'chip aprox', text: 'ubicación aproximada' }) : el('span', { class: 'chip', text: 'ubicación exacta' }),
         el('span', { class: 'chev', text: abierta ? '▴' : '▾' }));
       if (!abierta) return el('div', { class: 'card' }, cab);
       const tels = { t: (c.telefonos || []).map((t) => t.num).join(', ') };
-      const fotoObj = { f: (c.fotos || []).find((f) => /^https?:/.test(f)) || '' };
       const coord = el('p', { class: 'ayuda', text: `Coordenadas: ${(+c.lat).toFixed(5)}, ${(+c.lng).toFixed(5)}` });
       return el('div', { class: 'card' }, cab, el('div', { class: 'detalle' },
-        el('div', { class: 'fila' }, campo('Ciudad o barrio', c, 'ciudad'), campoEn('Nombre de la iglesia', c, 'nombre')),
+        el('div', { class: 'fila' }, campo('Ciudad o barrio', c, 'ciudad', { max: 80 }), campoEn('Nombre de la iglesia', c, 'nombre', { max: 150 })),
         campo('Dirección', c, 'direccion'),
         campo('Teléfonos (separados por coma)', tels, 't', { alCambiar: () => { c.telefonos = telefonos(tels.t); }, ayuda: 'Los celulares que empiezan con 09 tienen botón de WhatsApp.' }),
         campoEn('Reuniones', c, 'reuniones', { multilinea: true }),
-        campo('Foto nueva (link, opcional)', fotoObj, 'f', { alCambiar: () => { const u = fotoObj.f.trim(); c.fotos = (u ? [u] : []).concat((c.fotos || []).filter((f) => !/^https?:/.test(f))); }, ayuda: 'Pegá el link de una foto para reemplazar la actual.' }),
+        fotosIglesia(c, () => { const img = cab.querySelector('img'); img.src = srcFoto((c.fotos || [])[0], 'iglesias'); }),
         coord,
         el('div', { class: 'acciones' },
           el('button', { class: 'btn', type: 'button', text: 'Ubicar en el mapa', on: { click: () => abrirMapa(c, () => { coord.textContent = `Coordenadas: ${(+c.lat).toFixed(5)}, ${(+c.lng).toFixed(5)}`; pintarLista(); }) } }),
@@ -313,33 +463,445 @@ function pintarIglesias(v) {
   v.replaceChildren(
     el('h2', { text: 'Iglesias' }),
     el('p', { class: 'ayuda', text: 'Tocá una iglesia para editarla. Con "Ubicar en el mapa" arrastrás el punto a la ubicación exacta.' }),
-    el('div', { class: 'acciones', style: 'margin:0 0 12px' }, el('button', { class: 'btn', type: 'button', text: '+ Nueva iglesia', on: { click: () => { datos.iglesias.unshift({ id: 'nueva-' + Date.now(), ciudad: '', nombre: '', direccion: '', telefonos: [], reuniones: '', fotos: [], lat: -34.88, lng: -56.17, aprox: true }); abiertas = new Set([0]); filtro = ''; cambio(); pintar(); } } })),
+    el('div', { class: 'acciones', style: 'margin:0 0 12px' }, el('button', { class: 'btn', type: 'button', text: '+ Nueva iglesia', on: { click: nuevaIglesia } })),
     buscar, el('div', { style: 'height:12px' }), lista);
 }
 
-function pintarMisioneros(v) {
+function fotosIglesia(c, alCambiar) {
+  const galeria = el('div', { class: 'galeria' });
+  const listo = () => { cambio(); pintarGaleria(); alCambiar(); };
+  function pintarGaleria() {
+    const fotos = c.fotos || [];
+    galeria.replaceChildren(...(fotos.length ? fotos.map((f, i) => el('div', { class: 'foto-item' },
+      imgFoto(f, 'iglesias'),
+      i === 0 ? el('span', { class: 'chip', text: 'Principal' }) : el('button', { class: 'btn sec chico', type: 'button', text: 'Hacer principal', on: { click: () => { c.fotos.splice(i, 1); c.fotos.unshift(f); listo(); } } }),
+      el('button', { class: 'btn peligro chico', type: 'button', text: 'Quitar', on: { click: () => { if (confirm('¿Quitar esta foto?')) { c.fotos.splice(i, 1); listo(); } } } })))
+      : [el('p', { class: 'ayuda', style: 'margin:0', text: 'Todavía no tiene fotos.' })]));
+  }
+  pintarGaleria();
+  return el('div', {}, el('label', { text: 'Fotos (la primera es la principal)' }), galeria,
+    selectorFoto(() => nombreBase(c.id, c.ciudad), (url) => { c.fotos = [url, ...(c.fotos || []).filter((f) => f !== url)]; listo(); }));
+}
+
+// ---------- Subir fotos desde la PC ----------
+const TIPOS_FOTO = ['image/png', 'image/jpeg', 'image/webp'];
+const sanitizarNombre = (t) => String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'foto';
+const nombreBase = (id, alternativo) => sanitizarNombre(/^nuev[ao]-\d+$/.test(id || '') && alternativo ? alternativo : (id || alternativo));
+
+function selectorFoto(base, alListo) {
+  const estado = el('p', { class: 'ayuda', style: 'margin:6px 0 0' });
+  const decir = (t, clase = '') => { estado.textContent = t; estado.className = 'ayuda ' + clase; };
+  const archivo = el('input', { type: 'file', accept: 'image/png,image/jpeg,image/webp', class: 'oculto' });
+  const boton = el('button', { class: 'btn sec', type: 'button', text: 'Subir foto desde la PC', on: { click: () => archivo.click() } });
+  archivo.addEventListener('change', async () => {
+    const f = archivo.files[0];
+    archivo.value = '';
+    if (!f) return;
+    boton.disabled = true;
+    try { alListo(await subirFoto(f, base(), decir)); decir('Lista. Tocá "Guardar cambios" para que aparezca en la app.', 'ok'); }
+    catch (e) { decir(e.message || 'No se pudo subir la foto.', 'error'); }
+    finally { boton.disabled = false; }
+  });
+  const idLink = nuevoId();
+  const link = el('input', { id: idLink, placeholder: 'https://...', maxlength: '500' });
+  const usar = el('button', { class: 'btn sec', type: 'button', text: 'Usar este link', on: { click: () => {
+    const u = link.value.trim();
+    if (!esHttps(u)) return decir('El link tiene que empezar con https://', 'error');
+    alListo(u); link.value = '';
+    decir('Listo. Tocá "Guardar cambios" para que aparezca en la app.', 'ok');
+  } } });
+  return el('div', {},
+    el('div', { class: 'foto-fila', style: 'margin-top:10px' }, boton, archivo),
+    estado,
+    el('label', { for: idLink, text: 'O pegá el link de una foto' }),
+    el('div', { class: 'link-fila' }, link, usar));
+}
+
+async function achicarFoto(archivo) {
+  let img;
+  try { img = await createImageBitmap(archivo, { imageOrientation: 'from-image' }); }
+  catch (e) {
+    img = await new Promise((ok, mal) => {
+      const i = new Image(), u = URL.createObjectURL(archivo);
+      i.onload = () => { URL.revokeObjectURL(u); ok(i); };
+      i.onerror = () => { URL.revokeObjectURL(u); mal(new Error('No pude abrir esa imagen. Probá con otra.')); };
+      i.src = u;
+    });
+  }
+  const w0 = img.naturalWidth || img.width, h0 = img.naturalHeight || img.height;
+  if (!w0 || !h0) throw new Error('No pude abrir esa imagen. Probá con otra.');
+  const k = Math.min(1, 1280 / Math.max(w0, h0));
+  const w = Math.max(1, Math.round(w0 * k)), h = Math.max(1, Math.round(h0 * k));
+  const lienzo = document.createElement('canvas');
+  lienzo.width = w; lienzo.height = h;
+  const g = lienzo.getContext('2d');
+  g.fillStyle = '#ffffff'; g.fillRect(0, 0, w, h);
+  g.imageSmoothingQuality = 'high';
+  g.drawImage(img, 0, 0, w, h);
+  if (img.close) img.close();
+  return new Promise((ok, mal) => lienzo.toBlob((b) => (b ? ok(b) : mal(new Error('No pude convertir la foto.'))), 'image/jpeg', 0.85));
+}
+
+const blobABase64 = (b) => new Promise((ok, mal) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(',')[1]); r.onerror = () => mal(new Error('No pude leer la foto.')); r.readAsDataURL(b); });
+
+async function nombreLibre(base) {
+  const r = await api('contents/fotos');
+  const lista = r.ok ? await r.json() : [];
+  const usados = new Set(Array.isArray(lista) ? lista.map((f) => f.name) : []);
+  let n = 1;
+  while (usados.has(`${base}-${n}.jpg`)) n++;
+  return `${base}-${n}.jpg`;
+}
+
+async function subirFoto(archivo, base, decir) {
+  if (!TIPOS_FOTO.includes(archivo.type)) throw new Error('Elegí una foto JPG, PNG o WEBP.');
+  if (archivo.size > 15 * 1024 * 1024) throw new Error('La foto pesa más de 15 MB. Elegí una más liviana.');
+  decir('Preparando la foto...');
+  const jpg = await achicarFoto(archivo);
+  const previa = URL.createObjectURL(jpg);
+  const contenido = await blobABase64(jpg);
+  decir('Subiendo...');
+  let nombre = await nombreLibre(base);
+  for (let intento = 0; intento < 3; intento++) {
+    const r = await api('contents/fotos/' + nombre, { method: 'PUT', body: JSON.stringify({ message: 'Panel: foto ' + nombre, content: contenido }) });
+    if (r.ok) {
+      const url = `https://raw.githubusercontent.com/${DUENO}/${REPO}/main/fotos/${nombre}`;
+      vistasPrevias.set(url, previa);
+      return url;
+    }
+    if (r.status !== 422) throw new Error('No se pudo subir la foto (' + r.status + ').');
+    nombre = nombre.replace(/-(\d+)\.jpg$/, (_, n) => `-${+n + 1}.jpg`);
+  }
+  throw new Error('No se pudo subir la foto. Probá de nuevo.');
+}
+
+// ---------- Notificaciones push (Firebase Cloud Messaging) ----------
+const ACCIONES_PUSH = [['inicio', 'Inicio'], ['predicas', 'Prédicas'], ['encuentros', 'Encuentros'], ['link', 'Un link (https)']];
+const MAX_TITULO_PUSH = 65, MAX_TEXTO_PUSH = 240;
+const pushVacio = () => ({ titulo: '', texto: '', titulo_en: '', texto_en: '', accion: 'inicio', link: '' });
+let push = pushVacio(), pushManual = { titulo: false, texto: false }, pushResultado = null, accesoFcm = null;
+
+const fechaLinda = (iso) => { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleString('es-UY', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }); };
+const nombreAccion = (a) => (ACCIONES_PUSH.find(([x]) => x === a) || [, 'Inicio'])[1];
+
+function pintarPush(v) {
+  const hayFirebase = !!(secretos && secretos.firebase);
+  const celular = (nombre) => {
+    const t = el('b'), x = el('p');
+    const caja = el('div', {},
+      el('div', { class: 'cel' }, el('div', { class: 'cel-hora', text: '9:41' }),
+        el('div', { class: 'noti' }, el('img', { src: '../logo.jpg', alt: '' }), el('div', { style: 'min-width:0' }, el('div', { class: 'noti-app', text: 'Carpa del Encuentro · ahora' }), t, x))),
+      el('div', { class: 'cel-nombre', text: nombre }));
+    return { caja, t, x };
+  };
+  const celEs = celular('Celular en español'), celEn = celular('Celular en inglés');
+  const poner = (nodo, texto, vacio) => { nodo.textContent = texto.trim() || vacio; nodo.classList.toggle('vacio', !texto.trim()); };
+  const refrescar = () => {
+    poner(celEs.t, push.titulo, 'Título del aviso'); poner(celEs.x, push.texto, 'Acá se ve el mensaje.');
+    poner(celEn.t, push.titulo_en, 'Título en inglés'); poner(celEn.x, push.texto_en, 'Acá se ve el mensaje en inglés.');
+  };
+
+  const campoPush = (clave, etiqueta, max, multilinea) => {
+    const id = nuevoId(), idEn = nuevoId(), claveEn = clave + '_en';
+    const es = multilinea ? el('textarea', { id, value: push[clave] }) : el('input', { id, value: push[clave] });
+    const en = multilinea ? el('textarea', { id: idEn, class: 'en', value: push[claveEn] }) : el('input', { id: idEn, class: 'en', value: push[claveEn] });
+    es.maxLength = en.maxLength = max;
+    en.placeholder = 'Se traduce solo cuando escribís en español';
+    const cont = el('span', { class: 'contador' }), contEn = el('span', { class: 'contador' });
+    const contar = () => {
+      cont.textContent = es.value.length + '/' + max; contEn.textContent = en.value.length + '/' + max;
+      cont.classList.toggle('error', es.value.length > max); contEn.classList.toggle('error', en.value.length > max);
+    };
+    let timer = null;
+    es.addEventListener('input', () => {
+      push[clave] = es.value; contar(); refrescar();
+      if (pushManual[clave]) return;
+      clearTimeout(timer);
+      timer = setTimeout(async () => {
+        const original = push[clave].trim();
+        if (!original) { push[claveEn] = en.value = ''; contar(); refrescar(); return; }
+        en.placeholder = 'Traduciendo...';
+        try {
+          const tr = await traducir(original);
+          if (push[clave].trim() === original && !pushManual[clave]) { push[claveEn] = en.value = tr; }
+          en.placeholder = 'Se traduce solo cuando escribís en español';
+        } catch (e) { en.placeholder = 'No se pudo traducir: escribilo a mano'; }
+        contar(); refrescar();
+      }, 700);
+    });
+    en.addEventListener('input', () => { push[claveEn] = en.value; pushManual[clave] = !!en.value.trim(); contar(); refrescar(); });
+    contar();
+    return el('div', {},
+      el('label', { for: id }, etiqueta, cont), es,
+      el('label', { for: idEn, class: 'en-label' }, 'En inglés (vista previa, la podés corregir)', contEn), en);
+  };
+
+  const sel = el('select', { id: 'pushAccion' }, ...ACCIONES_PUSH.map(([val, t]) => el('option', { value: val, text: t })));
+  sel.value = push.accion;
+  const link = el('input', { id: 'pushLink', value: push.link, placeholder: 'https://...', maxlength: '500' });
+  const avisoLink = el('p', { class: 'ayuda error oculto', style: 'margin:6px 0 0', text: 'Tiene que ser un link que empiece con https://' });
+  const cajaLink = el('div', { class: push.accion === 'link' ? '' : 'oculto' }, el('label', { for: 'pushLink', text: 'Link que se abre' }), link, avisoLink);
+  sel.addEventListener('change', () => { push.accion = sel.value; cajaLink.classList.toggle('oculto', sel.value !== 'link'); });
+  link.addEventListener('input', () => { push.link = link.value; const u = link.value.trim(); avisoLink.classList.toggle('oculto', !u || esHttps(u)); });
+
+  const estado = el('p', { class: 'ayuda', style: 'margin:10px 0 0', 'aria-live': 'polite' });
+  if (pushResultado) { estado.textContent = pushResultado.texto; estado.className = 'ayuda ' + (pushResultado.ok ? 'ok' : 'error'); pushResultado = null; }
+  let envio;
+  if (hayFirebase) {
+    const boton = el('button', { class: 'btn', type: 'button', text: 'Enviar a todos' });
+    boton.addEventListener('click', () => enviarPush(boton, estado));
+    envio = el('div', {}, el('div', { class: 'acciones' }, boton), estado);
+  } else {
+    envio = el('div', { class: 'card alerta', style: 'margin-top:12px' },
+      el('b', { text: 'Para mandar push falta conectar Firebase (una sola vez).' }),
+      el('p', { class: 'ayuda', style: 'margin:6px 0 0' }, 'Se hace en la pestaña ', el('a', { href: '#', text: 'Seguridad', on: { click: (e) => { e.preventDefault(); irA('seguridad'); } } }), '. Después aparece acá el botón para enviar.'), estado);
+  }
+
+  const hist = datos.push_historial;
+  const lista = hist.length ? hist.map((h, i) => el('div', { class: 'card' },
+    el('span', { style: 'font-size:13px;font-weight:600;color:var(--gris)' }, fechaLinda(h.fecha) + ' · Abre: ' + nombreAccion(h.accion)),
+    el('b', { style: 'display:block;margin-top:4px', text: h.titulo || '' }),
+    el('p', { style: 'margin:4px 0 0;white-space:pre-line', text: h.texto || '' }),
+    h.titulo_en || h.texto_en ? el('p', { class: 'ayuda', style: 'margin:6px 0 0', text: 'Inglés: ' + (h.titulo_en || '') + ' — ' + (h.texto_en || '') }) : null,
+    h.accion === 'link' && h.link ? el('p', { class: 'ayuda', style: 'margin:4px 0 0;overflow-wrap:anywhere', text: h.link }) : null,
+    el('div', { class: 'acciones' }, el('button', { class: 'btn peligro chico', type: 'button', text: 'Quitar de Avisos', on: { click: () => {
+      if (confirm('¿Quitar este aviso de la lista de Avisos de la app? (A los celulares ya les llegó: eso no se puede deshacer.)')) { hist.splice(i, 1); cambio(); pintar(); }
+    } } }))))
+    : [el('p', { class: 'ayuda', text: 'Todavía no se mandó ningún aviso.' })];
+
   v.replaceChildren(
-    el('h2', { text: 'Misioneros' }),
-    el('p', { class: 'ayuda', text: 'La cuenta BROU de cada familia aparece en la app con el botón "Apoyar a esta familia".' }),
-    el('div', { class: 'acciones', style: 'margin:0 0 12px' }, el('button', { class: 'btn', type: 'button', text: '+ Nuevo misionero', on: { click: () => { datos.misioneros.unshift({ id: 'nuevo-' + Date.now(), nombres: '', foto: '', frase: '', obra: '', enviados: '', versiculo: '', motivos: [], brou_titular: '', brou_cuenta: '' }); abiertas = new Set(['m0']); cambio(); pintar(); } } })),
-    ...datos.misioneros.map((m, i) => {
-      const key = 'm' + i, abierta = abiertas.has(key);
-      const cab = el('div', { class: 'item-cab', on: { click: () => { abierta ? abiertas.delete(key) : abiertas.add(key); pintar(); } } },
-        el('img', { alt: '', src: fotoSrc(m.foto, 'misioneros') || '../logo.jpg' }),
-        el('div', {}, el('b', { text: m.nombres || '(sin nombre)' }), el('span', { text: m.obra })),
-        m.brou_cuenta ? el('span', { class: 'chip', text: 'con cuenta' }) : null,
-        el('span', { class: 'chev', text: abierta ? '▴' : '▾' }));
-      if (!abierta) return el('div', { class: 'card' }, cab);
-      const mot = { t: (m.motivos || []).join('\n') };
-      return el('div', { class: 'card' }, cab, el('div', { class: 'detalle' },
-        campo('Nombres', m, 'nombres', { placeholder: 'Nombre; Nombre' }),
-        el('div', { class: 'fila' }, campoEn('Dónde sirven', m, 'obra'), campo('Enviados por', m, 'enviados')),
-        el('div', { class: 'fila' }, campo('Versículo', m, 'versiculo'), campo('Foto (link, solo para misioneros nuevos)', m, 'foto')),
-        campoEn('Frase', m, 'frase', { multilinea: true }),
-        campoEn('Motivos de oración (uno por renglón)', mot, 't', { multilinea: true, lineas: true, alCambiar: () => { m.motivos = mot.t.split('\n').map((x) => x.trim()).filter(Boolean); } }),
-        el('div', { class: 'fila' }, campo('Titular de la cuenta BROU', m, 'brou_titular'), campo('Número de cuenta BROU', m, 'brou_cuenta')),
-        el('div', { class: 'acciones' }, el('button', { class: 'btn peligro', type: 'button', text: 'Borrar misionero', on: { click: () => { if (confirm(`¿Borrar a ${m.nombres}?`)) { datos.misioneros.splice(i, 1); abiertas.clear(); cambio(); pintar(); } } } }))));
-    }));
+    el('h2', { text: 'Notificaciones push' }),
+    el('p', { class: 'ayuda', text: 'Es el aviso que le llega al celular aunque la app esté cerrada. Las novedades, en cambio, se ven solo adentro de la app. Cada aviso que mandes queda también en Avisos de la app.' }),
+    el('div', { class: 'card' },
+      campoPush('titulo', 'Título', MAX_TITULO_PUSH, false),
+      campoPush('texto', 'Mensaje', MAX_TEXTO_PUSH, true),
+      el('label', { for: 'pushAccion', text: 'Al tocarla abre' }), sel, cajaLink,
+      el('div', { class: 'celus' }, celEs.caja, celEn.caja),
+      envio),
+    el('h2', { text: 'Avisos enviados' }),
+    el('p', { class: 'ayuda', text: 'Se ven en Avisos de la app. Quedan los últimos 30.' }),
+    ...lista);
+  refrescar();
+}
+
+async function enviarPush(boton, estado) {
+  const p = { titulo: push.titulo.trim(), texto: push.texto.trim(), titulo_en: push.titulo_en.trim(), texto_en: push.texto_en.trim(), accion: push.accion, link: push.accion === 'link' ? push.link.trim() : '' };
+  const error = (t) => { estado.textContent = t; estado.className = 'ayuda error'; };
+  if (!p.titulo || !p.texto) return error('Escribí el título y el mensaje.');
+  if (!p.titulo_en || !p.texto_en) return error('Falta el texto en inglés. Esperá a que se traduzca o escribilo a mano.');
+  if (p.titulo.length > MAX_TITULO_PUSH || p.titulo_en.length > MAX_TITULO_PUSH) return error(`El título puede tener hasta ${MAX_TITULO_PUSH} letras (fijate también el de inglés).`);
+  if (p.texto.length > MAX_TEXTO_PUSH || p.texto_en.length > MAX_TEXTO_PUSH) return error(`El mensaje puede tener hasta ${MAX_TEXTO_PUSH} letras (fijate también el de inglés).`);
+  if (!ACCIONES_PUSH.some(([a]) => a === p.accion)) return error('Elegí qué abre la notificación.');
+  if (p.accion === 'link' && !esHttps(p.link)) return error('El link tiene que empezar con https://');
+  if (!secretos || !secretos.firebase) return error('Falta conectar Firebase en la pestaña Seguridad.');
+  const extra = sucio ? '\n\nOjo: también se van a guardar los cambios pendientes de las otras pestañas.' : '';
+  if (!confirm(`¿Enviar este aviso a todos los celulares que tienen la app?\n\n${p.titulo}\n${p.texto}\n\nNo se puede deshacer.${extra}`)) return;
+  boton.disabled = true;
+  estado.className = 'ayuda'; estado.textContent = 'Conectando con Firebase...';
+  const azar = crypto.getRandomValues(new Uint8Array(6));
+  const id = Date.now().toString(36) + '-' + Array.from(azar, (b) => b.toString(16).padStart(2, '0')).join('');
+  const data = { accion: p.accion, link: p.link, id };
+  const enviados = [], fallas = [];
+  try {
+    const acceso = await pedirAcceso(secretos.firebase);
+    estado.textContent = 'Enviando...';
+    for (const [topic, idioma, titulo, texto] of [['todos_es', 'español', p.titulo, p.texto], ['todos_en', 'inglés', p.titulo_en, p.texto_en]]) {
+      try { await mandarPush(acceso, secretos.firebase.project_id, topic, titulo, texto, data); enviados.push(idioma); }
+      catch (e) { fallas.push(idioma + ': ' + e.message); }
+    }
+  } catch (e) { fallas.push(e.message); }
+  if (!enviados.length) { boton.disabled = false; return error('No se envió. ' + fallas.join(' · ')); }
+  datos.push_historial.unshift({ id, fecha: new Date().toISOString(), ...p });
+  datos.push_historial = datos.push_historial.slice(0, 30);
+  cambio();
+  estado.textContent = 'Guardando en Avisos...';
+  const guardado = await guardar();
+  let texto = fallas.length ? `Se envió solo a los celulares en ${enviados.join(' y ')}. Falló: ${fallas.join(' · ')}. Si lo mandás de nuevo, a los celulares en ${enviados.join(' y ')} les llega dos veces.` : 'Enviado a todos los celulares (en español y en inglés).';
+  texto += guardado ? ' En unos minutos aparece también en Avisos de la app.' : ' Pero no se pudo guardar en Avisos: tocá "Guardar cambios".';
+  if (!fallas.length) { push = pushVacio(); pushManual = { titulo: false, texto: false }; }
+  pushResultado = { ok: !fallas.length && guardado, texto };
+  if (tab === 'push') pintar();
+}
+
+async function mandarPush(acceso, proyecto, topic, titulo, texto, data) {
+  const r = await fetch(`https://fcm.googleapis.com/v1/projects/${encodeURIComponent(proyecto)}/messages:send`, {
+    method: 'POST',
+    cache: 'no-store',
+    headers: { Authorization: 'Bearer ' + acceso, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: { topic, notification: { title: titulo, body: texto }, data, android: { priority: 'HIGH', notification: { channel_id: 'avisos' } }, apns: { payload: { aps: { sound: 'default' } } } } }),
+  });
+  if (r.ok) return;
+  const j = await r.json().catch(() => ({}));
+  const motivo = (j.error && j.error.message) || 'error ' + r.status;
+  if (r.status === 403) throw new Error('Google no dejó enviar (' + motivo + '). Revisá que la API "Firebase Cloud Messaging API" esté activada en el proyecto.');
+  throw new Error(motivo);
+}
+
+// Firma un JWT con la cuenta de servicio y lo canjea por un permiso de 1 hora para mandar push.
+async function pedirAcceso(cuenta) {
+  if (accesoFcm && accesoFcm.email === cuenta.client_email && accesoFcm.vence > Date.now() + 120000) return accesoFcm.valor;
+  const ahora = Math.floor(Date.now() / 1000);
+  const parte = (o) => b64url(new TextEncoder().encode(JSON.stringify(o)));
+  const sinFirmar = parte({ alg: 'RS256', typ: 'JWT' }) + '.' + parte({ iss: cuenta.client_email, scope: 'https://www.googleapis.com/auth/firebase.messaging', aud: 'https://oauth2.googleapis.com/token', iat: ahora, exp: ahora + 3600 });
+  let privada;
+  try { privada = await crypto.subtle.importKey('pkcs8', pemABytes(cuenta.private_key), { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' }, false, ['sign']); }
+  catch (e) { throw new Error('No se pudo leer la clave privada de Firebase. Generá una nueva en Firebase y conectala otra vez.'); }
+  const firma = new Uint8Array(await crypto.subtle.sign('RSASSA-PKCS1-v1_5', privada, new TextEncoder().encode(sinFirmar)));
+  const r = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    cache: 'no-store',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({ grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer', assertion: sinFirmar + '.' + b64url(firma) }),
+  });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok || !j.access_token) {
+    const motivo = j.error_description || j.error || r.status;
+    throw new Error('Google no aceptó la cuenta de Firebase (' + motivo + ').' + (j.error === 'invalid_grant' ? ' Revisá que la fecha y hora de la compu estén bien, o que la clave no se haya borrado en Firebase.' : ''));
+  }
+  accesoFcm = { valor: j.access_token, vence: Date.now() + (j.expires_in || 3600) * 1000, email: cuenta.client_email };
+  return j.access_token;
+}
+
+async function leerCuentaServicio(archivo) {
+  if (!archivo) throw new Error('Elegí el archivo .json que bajaste de Firebase.');
+  if (archivo.size > 20000) throw new Error('Ese archivo es muy grande para ser la clave de Firebase.');
+  let j;
+  try { j = JSON.parse(await archivo.text()); } catch (e) { throw new Error('Ese archivo no es un .json válido.'); }
+  if (!j || j.type !== 'service_account') throw new Error('Ese archivo no es una cuenta de servicio de Firebase.');
+  if (typeof j.project_id !== 'string' || !/^[a-z0-9-]{4,40}$/.test(j.project_id)) throw new Error('Al archivo le falta project_id.');
+  if (typeof j.client_email !== 'string' || !/^[^@\s]+@[^@\s]+\.iam\.gserviceaccount\.com$/.test(j.client_email)) throw new Error('Al archivo le falta client_email.');
+  if (typeof j.private_key !== 'string' || !j.private_key.includes('BEGIN PRIVATE KEY')) throw new Error('Al archivo le falta private_key.');
+  return j;
+}
+
+// ---------- Seguridad ----------
+let mensajeSeguridad = null;
+
+function pasosToken() {
+  return el('ol', { class: 'ayuda' },
+    el('li', {}, 'Entrá a ', el('a', { href: 'https://github.com/settings/personal-access-tokens/new', target: '_blank', rel: 'noopener noreferrer', text: 'crear una clave nueva en GitHub' }), ' (con tu cuenta). En Expiration elegí la fecha más lejana que te deje.'),
+    el('li', {}, 'En ', el('b', { text: 'Repository access' }), ' elegí ', el('b', { text: 'Only select repositories' }), ' y marcá ', el('b', { text: REPO }), '.'),
+    el('li', {}, 'En ', el('b', { text: 'Permissions → Contents' }), ' elegí ', el('b', { text: 'Read and write' }), '. Tocá Generate token, copiala y pegala acá.'));
+}
+
+function validarToken(t) {
+  if (!t) throw new Error('Pegá la clave de GitHub.');
+  if (!/^(github_pat_|ghp_)[A-Za-z0-9_]{20,250}$/.test(t)) throw new Error('Eso no parece una clave de GitHub. Tiene que empezar con github_pat_.');
+}
+
+async function probarToken(token) {
+  const r = await api(`contents/${ARCHIVO}`, {}, token);
+  if (r.status === 401) throw new Error('GitHub no reconoce esa clave. Copiala de nuevo.');
+  if (!r.ok) throw new Error(`La clave no puede leer ${ARCHIVO} (${r.status}). Revisá que hayas marcado el repositorio ${REPO}.`);
+}
+
+// Vuelve a leer clave.json, confirma la contraseña actual y guarda las claves nuevas cifradas (formato v2).
+async function guardarSecretos(nuevos, passActual, passNueva) {
+  if (espera()) throw new Error('Por seguridad, esperá ' + mmss(espera()) + ' para volver a probar.');
+  if (!passActual) throw new Error('Escribí la contraseña actual.');
+  const actual = await leerClaveCifrada();
+  if (!actual) throw new Error('No encontré la configuración guardada.');
+  try { await abrirSecretos(actual, passActual); } catch (e) { anotarFallo(); throw new Error('La contraseña actual no es correcta.'); }
+  limpiarFallos();
+  await escribirClave(nuevos, passNueva || passActual, actual.sha);
+  secretos = nuevos; formatoViejo = false; accesoFcm = null;
+  passCorta = (passNueva || passActual).length < 10;
+}
+
+function pintarSeguridad(v) {
+  const clave = (auto) => el('input', { type: 'password', autocomplete: auto, maxlength: '200' });
+  const caja = (etiqueta, input) => { input.id = nuevoId(); return el('div', {}, el('label', { for: input.id, text: etiqueta }), input); };
+  // Botón que corre una tarea, muestra el error abajo o, si sale bien, vuelve a pintar la pestaña con el mensaje.
+  const accion = (texto, clase, estado, tarea) => {
+    const b = el('button', { class: clase, type: 'button', text: texto });
+    b.addEventListener('click', async () => {
+      b.disabled = true; estado.className = 'ayuda'; estado.textContent = 'Un momento...';
+      try { mensajeSeguridad = await tarea(); pintar(); window.scrollTo(0, 0); }
+      catch (e) { estado.textContent = e.message; estado.className = 'ayuda error'; b.disabled = false; }
+    });
+    return b;
+  };
+  const partes = [
+    el('h2', { text: 'Seguridad' }),
+    el('p', { class: 'ayuda', text: 'Las claves de GitHub y de Firebase se guardan cifradas con la contraseña de administrador: sin la contraseña no sirven. Usá una contraseña larga que no uses en otro lado. El panel se cierra solo después de 20 minutos sin actividad.' }),
+  ];
+  if (mensajeSeguridad) { partes.push(el('div', { class: 'card suave' }, el('b', { class: 'ok', text: mensajeSeguridad }))); mensajeSeguridad = null; }
+
+  if (passCorta) partes.push(el('div', { class: 'card alerta' },
+    el('h3', { text: 'Tu contraseña es corta' }),
+    el('p', { class: 'ayuda', style: 'margin:0', text: 'La configuración cifrada está a la vista en GitHub: con una contraseña corta se puede adivinar probando. Cambiala acá abajo por una de 10 caracteres o más, y después reemplazá también la clave de GitHub.' })));
+
+  if (formatoViejo) {
+    const pV = clave('current-password'), estV = el('p', { class: 'ayuda', style: 'margin:10px 0 0' });
+    partes.push(el('div', { class: 'card alerta' },
+      el('h3', { text: 'Actualizá el cifrado' }),
+      el('p', { class: 'ayuda', text: 'Tu configuración está guardada con el cifrado anterior, que es más débil. Escribí tu contraseña y tocá el botón para pasarla al cifrado nuevo. La contraseña sigue siendo la misma. Ojo: GitHub guarda la versión vieja, así que para quedar protegido de verdad, después reemplazá también la clave de GitHub acá abajo y borrá la vieja en GitHub.' }),
+      caja('Contraseña actual', pV),
+      el('div', { class: 'acciones' }, accion('Actualizar cifrado', 'btn', estV, async () => { await guardarSecretos({ ...secretos }, pV.value); return 'Listo: la configuración ya usa el cifrado nuevo.'; })),
+      estV));
+  }
+
+  const pA = clave('current-password'), pN = clave('new-password'), pR = clave('new-password'), estP = el('p', { class: 'ayuda', style: 'margin:10px 0 0' });
+  partes.push(el('div', { class: 'card' },
+    el('h3', { text: 'Cambiar la contraseña de administrador' }),
+    el('p', { class: 'ayuda', text: 'GitHub guarda las versiones anteriores de la configuración, cifradas con la contraseña vieja. Por eso, después de cambiarla, reemplazá también la clave de GitHub (y borrá la vieja en GitHub).' + (secretos && secretos.firebase ? ' Con Firebase hacé lo mismo: conectá una clave nueva y borrá la vieja en Firebase.' : '') }),
+    caja('Contraseña actual', pA),
+    el('div', { class: 'fila' }, caja('Contraseña nueva (10 letras o más)', pN), caja('Repetí la nueva', pR)),
+    el('div', { class: 'acciones' }, accion('Guardar contraseña', 'btn', estP, async () => {
+      if (pN.value.length < 10) throw new Error('La contraseña nueva tiene que tener al menos 10 caracteres.');
+      if (pN.value !== pR.value) throw new Error('Las contraseñas nuevas no coinciden.');
+      await guardarSecretos({ ...secretos }, pA.value, pN.value);
+      return 'Listo. Desde ahora se entra con la contraseña nueva.';
+    })),
+    estP));
+
+  const tA = clave('current-password'), tN = el('input', { type: 'password', autocomplete: 'off', maxlength: '255', placeholder: 'github_pat_...' }), estT = el('p', { class: 'ayuda', style: 'margin:10px 0 0' });
+  partes.push(el('div', { class: 'card' },
+    el('h3', { text: 'Reemplazar la clave de GitHub' }),
+    el('p', { class: 'ayuda', text: 'Hacelo si la clave está por vencer o si creés que alguien la vio. Después borrá la vieja en GitHub.' }),
+    pasosToken(),
+    el('div', { class: 'fila' }, caja('Clave nueva de GitHub', tN), caja('Contraseña actual', tA)),
+    el('div', { class: 'acciones' }, accion('Guardar clave nueva', 'btn', estT, async () => {
+      const token = tN.value.trim();
+      validarToken(token);
+      estT.textContent = 'Probando la clave...';
+      await probarToken(token);
+      await guardarSecretos({ ...secretos, github: token }, tA.value);
+      return 'Listo: el panel ya usa la clave nueva. Ahora podés borrar la vieja en GitHub.';
+    })),
+    estT));
+
+  const f = secretos && secretos.firebase;
+  const archivo = el('input', { type: 'file', accept: '.json,application/json' }), fA = clave('current-password'), estF = el('p', { class: 'ayuda', style: 'margin:10px 0 0' });
+  const conectar = accion(f ? 'Reemplazar Firebase' : 'Conectar Firebase', 'btn', estF, async () => {
+    const cuenta = await leerCuentaServicio(archivo.files[0]);
+    if (!fA.value) throw new Error('Escribí la contraseña actual.');
+    // La clave de Firebase deja mandar push a todos: no se guarda protegida con una contraseña corta.
+    if (fA.value.length < 10) throw new Error('Para conectar Firebase, primero cambiá la contraseña por una de 10 caracteres o más (más arriba, en "Cambiar la contraseña de administrador").');
+    estF.textContent = 'Probando la cuenta con Google...';
+    await pedirAcceso(cuenta);
+    estF.textContent = 'Guardando cifrado...';
+    await guardarSecretos({ ...secretos, firebase: cuenta }, fA.value);
+    return `Firebase conectado (proyecto ${cuenta.project_id}). Ya podés mandar notificaciones push. Borrá de la compu el archivo .json que bajaste.`;
+  });
+  const botones = [conectar];
+  if (f) botones.push(accion('Desconectar Firebase', 'btn peligro', estF, async () => {
+    if (!confirm('¿Desconectar Firebase? No vas a poder mandar notificaciones push hasta conectarlo de nuevo.')) throw new Error('No se cambió nada.');
+    await guardarSecretos({ ...secretos, firebase: null }, fA.value);
+    return 'Firebase desconectado.';
+  }));
+  partes.push(el('div', { class: 'card' },
+    el('h3', { text: 'Notificaciones push (Firebase)' }),
+    f ? el('p', { class: 'ayuda ok', text: `Conectado al proyecto ${f.project_id}.` }) : el('p', { class: 'ayuda', text: 'Todavía no está conectado. Se hace una sola vez:' }),
+    passCorta ? el('p', { class: 'ayuda error', text: 'Antes de conectar Firebase cambiá la contraseña por una de 10 caracteres o más.' }) : null,
+    el('ol', { class: 'ayuda' },
+      el('li', {}, 'Entrá a la ', el('a', { href: 'https://console.firebase.google.com/', target: '_blank', rel: 'noopener noreferrer', text: 'Firebase Console' }), ' y abrí el proyecto de la app.'),
+      el('li', {}, 'Tocá el engranaje → ', el('b', { text: 'Configuración del proyecto → Cuentas de servicio → Generar nueva clave privada' }), '. Se baja un archivo .json.'),
+      el('li', {}, 'Elegí ese archivo acá abajo, escribí la contraseña y tocá ', el('b', { text: f ? 'Reemplazar Firebase' : 'Conectar Firebase' }), '. Después borrá el archivo de la compu.')),
+    el('div', { class: 'fila' }, caja('Archivo .json de Firebase', archivo), caja('Contraseña actual', fA)),
+    el('div', { class: 'acciones' }, ...botones),
+    estF));
+  v.replaceChildren(...partes);
 }
 
 let mapa = null, marca = null, alListo = null;
@@ -348,7 +910,8 @@ function abrirMapa(c, listo) {
   alListo = () => { c.lat = +marca.getLatLng().lat.toFixed(6); c.lng = +marca.getLatLng().lng.toFixed(6); c.aprox = false; cambio(); listo(); };
   if (!mapa) {
     mapa = L.map('mapa');
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(mapa);
+    // OpenStreetMap pide saber desde qué sitio se piden los mapas: a ellos sí se les manda el origen.
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap', referrerPolicy: 'strict-origin-when-cross-origin' }).addTo(mapa);
     marca = L.marker([c.lat, c.lng], { draggable: true }).addTo(mapa);
   }
   marca.setLatLng([c.lat, c.lng]);
@@ -357,10 +920,7 @@ function abrirMapa(c, listo) {
 }
 $('#cerrarMapa').addEventListener('click', () => { $('#modal').style.display = 'none'; if (alListo) alListo(); alListo = null; });
 
-const DUENO = 'carpadelencuentro';
-const REPO = 'carpadelencuentro.github.io';
-
-function api(ruta, opciones = {}, token = sessionStorage.getItem('clave')) {
+function api(ruta, opciones = {}, token = secretos && secretos.github) {
   return fetch(`https://api.github.com/repos/${DUENO}/${REPO}/${ruta}`, {
     ...opciones,
     cache: 'no-store',
@@ -368,123 +928,341 @@ function api(ruta, opciones = {}, token = sessionStorage.getItem('clave')) {
   });
 }
 
-// La clave de GitHub se guarda en clave.json cifrada (AES-GCM) con la contraseña de administrador.
-const b64 = (u8) => btoa(String.fromCharCode(...u8));
+// ---------- Cifrado ----------
+// clave.json (público) guarda {v:2, iter, sal, iv, datos}: AES-GCM-256 con clave PBKDF2-SHA256 de la contraseña.
+// Adentro va {github, firebase}. El formato viejo (sin "v", 310000 vueltas, solo el token) se acepta y se migra.
+const ITER = 600000, ITER_VIEJO = 310000;
+const b64 = (u8) => { let x = ''; for (let i = 0; i < u8.length; i += 0x8000) x += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000)); return btoa(x); };
 const deb64 = (t) => Uint8Array.from(atob(t), (c) => c.charCodeAt(0));
-async function llave(pass, sal) {
+const b64url = (u8) => b64(u8).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+const pemABytes = (pem) => deb64(String(pem).replace(/-----[A-Z ]+-----/g, '').replace(/\\n/g, '').replace(/\s+/g, ''));
+const a64 = (s) => b64(new TextEncoder().encode(s));
+const de64 = (s) => new TextDecoder().decode(deb64(s.replace(/\n/g, '')));
+
+async function llave(pass, sal, iter = ITER) {
   const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pass), 'PBKDF2', false, ['deriveKey']);
-  return crypto.subtle.deriveKey({ name: 'PBKDF2', salt: sal, iterations: 310000, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+  return crypto.subtle.deriveKey({ name: 'PBKDF2', salt: sal, iterations: iter, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
 }
 async function cifrar(texto, pass) {
   const sal = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12));
-  const c = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, await llave(pass, sal), new TextEncoder().encode(texto));
-  return { sal: b64(sal), iv: b64(iv), datos: b64(new Uint8Array(c)) };
+  const c = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, await llave(pass, sal, ITER), new TextEncoder().encode(texto));
+  return { v: 2, iter: ITER, sal: b64(sal), iv: b64(iv), datos: b64(new Uint8Array(c)) };
 }
 async function descifrar(j, pass) {
-  const c = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: deb64(j.iv) }, await llave(pass, deb64(j.sal)), deb64(j.datos));
+  const iter = j.v === 2 ? j.iter : ITER_VIEJO;
+  const c = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: deb64(j.iv) }, await llave(pass, deb64(j.sal), iter), deb64(j.datos));
   return new TextDecoder().decode(c);
+}
+async function abrirSecretos(j, pass) {
+  const texto = await descifrar(j, pass);
+  if (j.v !== 2) return { secretos: { github: texto.trim(), firebase: null }, viejo: true };
+  const s = JSON.parse(texto);
+  if (!s || typeof s.github !== 'string') throw new Error('formato');
+  return { secretos: { github: s.github, firebase: s.firebase && typeof s.firebase === 'object' ? s.firebase : null }, viejo: false };
 }
 async function leerClaveCifrada() {
   const r = await api('contents/clave.json', {}, null);
   if (r.status === 404) return null;
+  if (r.status === 403 || r.status === 429) throw new Error('GitHub está frenando las consultas. Esperá unos minutos y probá de nuevo.');
   if (!r.ok) throw new Error('No pude leer la configuración (' + r.status + ').');
   const j = await r.json();
-  return { ...JSON.parse(de64(j.content)), sha: j.sha };
+  let c = null;
+  try { c = JSON.parse(de64(j.content)); } catch (e) {}
+  const valido = c && typeof c.sal === 'string' && typeof c.iv === 'string' && typeof c.datos === 'string' &&
+    (c.v === undefined || (c.v === 2 && Number.isInteger(c.iter) && c.iter >= 100000 && c.iter <= 5000000));
+  if (!valido) throw new Error('La configuración guardada está dañada.');
+  return { ...c, sha: j.sha };
 }
-const a64 = (s) => { const b = new TextEncoder().encode(s); let x = ''; b.forEach((c) => (x += String.fromCharCode(c))); return btoa(x); };
-const de64 = (s) => new TextDecoder().decode(Uint8Array.from(atob(s.replace(/\n/g, '')), (c) => c.charCodeAt(0)));
+async function escribirClave(nuevos, pass, shaClave) {
+  const cuerpo = { message: 'Panel: configuración de acceso', content: a64(JSON.stringify(await cifrar(JSON.stringify(nuevos), pass))) };
+  if (shaClave) cuerpo.sha = shaClave;
+  const r = await api('contents/clave.json', { method: 'PUT', body: JSON.stringify(cuerpo) }, nuevos.github);
+  if (r.status === 401 || r.status === 403 || r.status === 404) throw new Error('La clave de GitHub no tiene permiso para guardar. Revisá que tenga Contents: Read and write.');
+  if (r.status === 409 || r.status === 422) throw new Error('La configuración cambió mientras tanto. Recargá la página y probá de nuevo.');
+  if (!r.ok) throw new Error('No pude guardar la configuración (' + r.status + ').');
+}
 
+// ---------- Datos ----------
 async function cargar() {
   const r = await api(`contents/${ARCHIVO}`);
-  if (r.status === 401 || r.status === 403) throw new Error('La clave no tiene permiso. Revisá que tenga Contents: Read and write.');
+  if (r.status === 401) { const e = new Error('La clave de GitHub dejó de funcionar.'); e.vencida = true; throw e; }
+  if (r.status === 403) throw new Error('La clave no tiene permiso. Revisá que tenga Contents: Read and write.');
   if (!r.ok) throw new Error('No encontré el archivo de datos (' + r.status + ').');
   const j = await r.json();
   sha = j.sha;
   datos = JSON.parse(de64(j.content));
   datos.config = datos.config || {}; datos.en = datos.en || {}; datos.noticias = datos.noticias || []; datos.iglesias = datos.iglesias || []; datos.misioneros = datos.misioneros || [];
+  datos.push_historial = Array.isArray(datos.push_historial) ? datos.push_historial.filter((h) => h && typeof h === 'object') : [];
 }
 
+// Revisa lo que se va a guardar: links https, ids de YouTube y largos.
+function revisar() {
+  const cfg = datos.config;
+  for (const [k, nombre] of [['envivo_url', 'El link de la transmisión'], ['actualizar_url', 'El link de Android'], ['actualizar_url_ios', 'El link de iPhone']]) {
+    if (typeof cfg[k] === 'string') cfg[k] = cfg[k].trim();
+    if (cfg[k] && !esHttps(cfg[k])) return nombre + ' tiene que empezar con https://';
+  }
+  if (cfg.version_app && !/^\d+(\.\d+){0,3}$/.test(String(cfg.version_app).trim())) return 'La versión tiene que ser solo números y puntos (ej: 1.0.1).';
+  for (const n of datos.noticias) {
+    if (n.video && !/^[\w-]{11}$/.test(n.video)) return 'Hay una novedad con un link de YouTube que no reconozco.';
+    if (String(n.titulo || '').length > 150 || String(n.texto || '').length > 1500) return 'Hay una novedad con un texto demasiado largo.';
+  }
+  const fotoOk = (f) => !f || esHttps(f) || NOMBRE_FOTO_APP.test(f);
+  for (const c of datos.iglesias) {
+    if (!(c.fotos || []).every(fotoOk)) return `La iglesia ${c.ciudad || c.nombre} tiene una foto con un link que no empieza con https://`;
+    if (!Number.isFinite(+c.lat) || !Number.isFinite(+c.lng)) return `La iglesia ${c.ciudad || c.nombre} no tiene bien la ubicación.`;
+  }
+  // Avisos enviados: la app los lee tal cual, así que tienen que respetar el formato acordado.
+  const textosAviso = ['id', 'fecha', 'titulo', 'texto', 'titulo_en', 'texto_en', 'accion', 'link'];
+  for (const h of datos.push_historial) {
+    const bien = textosAviso.every((k) => typeof h[k] === 'string') && ACCIONES_PUSH.some(([a]) => a === h.accion) && (h.accion === 'link' ? esHttps(h.link) : h.link === '');
+    if (!bien) return `El aviso enviado "${String(h.titulo || '').slice(0, 40)}" tiene datos que la app no puede usar (por ejemplo, un link sin https://). Quitalo en la pestaña Notificaciones push.`;
+  }
+  return '';
+}
+
+let guardando = false;
 async function guardar() {
+  // Si ya se está guardando (por ejemplo, al mandar un push justo después de "Guardar cambios"), espera y guarda de nuevo.
+  while (guardando) await new Promise((ok) => setTimeout(ok, 200));
+  if (!datos) return false;
+  const problema = revisar();
+  if (problema) { $('#estado').textContent = problema; $('#estado').className = 'estado error'; return false; }
+  guardando = true;
   $('#guardar').disabled = true;
-  $('#estado').textContent = 'Guardando...'; $('#estado').className = 'estado';
+  $('#estado').className = 'estado';
   try {
     $('#estado').textContent = 'Traduciendo al inglés...';
     await completarIngles();
     $('#estado').textContent = 'Guardando...';
     datos.actualizado = new Date().toISOString().slice(0, 10);
+    const guardada = version;
     const r = await api(`contents/${ARCHIVO}`, {
       method: 'PUT',
       body: JSON.stringify({ message: 'Panel: cambios del ' + new Date().toLocaleString('es-UY'), content: a64(JSON.stringify(datos, null, 1)), sha }),
     });
     if (r.status === 409) throw new Error('Alguien guardó cambios antes. Recargá la página.');
+    if (r.status === 401) throw new Error('La clave de GitHub dejó de funcionar. Reemplazala en la pestaña Seguridad y volvé a guardar.');
+    if (r.status === 403 || r.status === 404) throw new Error('La clave de GitHub no tiene permiso para guardar. Revisá que tenga Contents: Read and write.');
     if (!r.ok) throw new Error('No se pudo guardar (' + r.status + ').');
     sha = (await r.json()).content.sha;
+    // Lo que se escribió mientras se guardaba no entró en este guardado: queda pendiente.
+    if (version !== guardada) { $('#guardar').disabled = false; $('#estado').textContent = 'Guardado, pero hay cambios nuevos sin guardar.'; $('#estado').className = 'estado'; return true; }
     sucio = false;
     $('#estado').textContent = 'Guardado. La app lo muestra en unos minutos.'; $('#estado').className = 'estado ok';
+    return true;
   } catch (e) {
     $('#estado').textContent = e.message; $('#estado').className = 'estado error';
     $('#guardar').disabled = false;
-  }
+    return false;
+  } finally { guardando = false; }
 }
+
+// ---------- Sesión: bloqueo por intentos y cierre por inactividad ----------
+const CLAVE_INTENTOS = 'carpa_panel_intentos';
+let intentosMem = { fallos: 0, hasta: 0 }, relojBloqueo = null;
+const TOPE_ESPERA = 15 * 60000;
+function leerIntentos() {
+  try {
+    const j = JSON.parse(localStorage.getItem(CLAVE_INTENTOS) || 'null');
+    if (j) {
+      // Si la hora de la compu se atrasó (o alguien tocó el dato), la espera nunca pasa de 15 minutos.
+      const n = { fallos: +j.fallos || 0, hasta: +j.hasta || 0 }, tope = Date.now() + TOPE_ESPERA;
+      if (n.hasta > tope) { n.hasta = tope; localStorage.setItem(CLAVE_INTENTOS, JSON.stringify(n)); }
+      return n;
+    }
+  } catch (e) {}
+  return intentosMem;
+}
+function anotarFallo() {
+  const n = { ...leerIntentos() };
+  n.fallos++;
+  if (n.fallos >= 5) n.hasta = Date.now() + Math.min(30000 * 2 ** (n.fallos - 5), TOPE_ESPERA);
+  intentosMem = n;
+  try { localStorage.setItem(CLAVE_INTENTOS, JSON.stringify(n)); } catch (e) {}
+}
+function limpiarFallos() { intentosMem = { fallos: 0, hasta: 0 }; try { localStorage.removeItem(CLAVE_INTENTOS); } catch (e) {} }
+const espera = () => Math.max(0, leerIntentos().hasta - Date.now());
+const mmss = (ms) => { const s = Math.ceil(ms / 1000); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+
+function mostrarBloqueo(antes = '') {
+  const est = $('#loginEstado'), boton = $('#entrar');
+  clearInterval(relojBloqueo);
+  const paso = () => {
+    const ms = espera();
+    if (!ms) { clearInterval(relojBloqueo); boton.disabled = false; est.textContent = 'Ya podés volver a probar.'; est.className = 'ayuda'; return; }
+    boton.disabled = true;
+    est.textContent = antes + 'Por seguridad, esperá ' + mmss(ms) + ' para volver a probar.'; est.className = 'ayuda error';
+  };
+  paso();
+  relojBloqueo = setInterval(paso, 1000);
+}
+
+const INACTIVIDAD = 20 * 60000, AVISO_ANTES = 2 * 60000;
+let ultimaActividad = Date.now(), relojSesion = null;
+function actividad() {
+  if (!secretos) return;
+  if (Date.now() - ultimaActividad >= INACTIVIDAD) { cerrarSesion(); return; }
+  ultimaActividad = Date.now();
+  $('#avisoSesion').classList.add('oculto');
+}
+function vigilarSesion() {
+  ultimaActividad = Date.now();
+  clearInterval(relojSesion);
+  relojSesion = setInterval(() => {
+    if (!secretos) return;
+    const resto = INACTIVIDAD - (Date.now() - ultimaActividad), aviso = $('#avisoSesion');
+    if (resto <= 0) { cerrarSesion(); return; }
+    if (resto > AVISO_ANTES) return;
+    aviso.textContent = `Por seguridad, el panel se cierra en ${mmss(resto)} por falta de actividad.` + (sucio ? ' Tenés cambios sin guardar: guardalos o tocá cualquier lado para seguir.' : ' Tocá cualquier lado para seguir.');
+    aviso.classList.remove('oculto');
+  }, 1000);
+}
+function cerrarSesion() {
+  if (sucio && datos) pendiente = { datos, sha };
+  secretos = null; accesoFcm = null; datos = null; sha = null; sucio = false; formatoViejo = false;
+  clearInterval(relojSesion);
+  $('#avisoSesion').classList.add('oculto'); $('#modal').style.display = 'none'; alListo = null;
+  $('#panel').classList.add('oculto'); $('#barra').classList.add('oculto'); $('#salir').classList.add('oculto');
+  $('#vista').replaceChildren();
+  $('#guardar').disabled = true; $('#estado').textContent = 'Sin cambios'; $('#estado').className = 'estado';
+  cancelarPrimera();
+  $('#pass').value = '';
+  $('#login').classList.remove('oculto');
+  $('#loginEstado').textContent = 'Se cerró la sesión después de 20 minutos sin actividad.' + (pendiente ? ' Tus cambios sin guardar siguen en esta pestaña: entrá de nuevo y guardalos.' : '');
+  $('#loginEstado').className = 'ayuda';
+}
+
+async function abrirPanel() {
+  await cargar();
+  let recuperado = false;
+  if (pendiente) { if (pendiente.sha === sha) { datos = pendiente.datos; recuperado = true; } pendiente = null; }
+  cancelarPrimera();
+  $('#pass').value = '';
+  $('#login').classList.add('oculto');
+  $('#panel').classList.remove('oculto'); $('#barra').classList.remove('oculto'); $('#salir').classList.remove('oculto');
+  $('#loginEstado').textContent = '';
+  vigilarSesion();
+  pintarTabs(); pintar();
+  if (recuperado) { cambio(); $('#estado').textContent = 'Recuperamos tus cambios sin guardar. Tocá "Guardar cambios".'; }
+}
+
+// ---------- Entrar ----------
+let modoPrimera = 'nueva', guardadosVencida = null, entrando = false, guardandoPrimera = false, passCorta = false;
 
 async function entrar() {
-  $('#loginEstado').textContent = 'Entrando...'; $('#loginEstado').className = 'ayuda';
+  const est = $('#loginEstado'), boton = $('#entrar');
+  // Con Enter se puede llamar varias veces seguidas: un solo intento por vez, así el bloqueo no se saltea.
+  if (entrando) return;
+  if (espera()) { mostrarBloqueo(); return; }
+  const pass = $('#pass').value;
+  if (!pass) { est.textContent = 'Escribí la contraseña.'; est.className = 'ayuda error'; return; }
+  entrando = true;
+  boton.disabled = true; est.textContent = 'Entrando...'; est.className = 'ayuda';
   try {
-    if (!sessionStorage.getItem('clave')) {
-      const pass = $('#pass').value;
-      if (!pass) throw new Error('Escribí la contraseña.');
-      const cifrada = await leerClaveCifrada();
-      if (!cifrada) { mostrar('config'); return; }
-      try { sessionStorage.setItem('clave', await descifrar(cifrada, pass)); } catch (e) { throw new Error('Contraseña incorrecta.'); }
+    const cifrada = await leerClaveCifrada();
+    if (!cifrada) { est.textContent = ''; mostrarPrimeraVez('nueva'); return; }
+    let abierto;
+    try { abierto = await abrirSecretos(cifrada, pass); } catch (e) {
+      anotarFallo();
+      if (espera()) { mostrarBloqueo('Contraseña incorrecta. '); return; }
+      throw new Error('Contraseña incorrecta.');
     }
-    await cargar();
-    $('#login').classList.add('oculto'); $('#config').classList.add('oculto');
-    $('#panel').classList.remove('oculto'); $('#barra').classList.remove('oculto'); $('#salir').classList.remove('oculto');
-    pintarTabs(); pintar();
+    limpiarFallos();
+    secretos = abierto.secretos; formatoViejo = abierto.viejo; passCorta = pass.length < 10;
+    try { await abrirPanel(); } catch (e) {
+      secretos = null;
+      if (!e.vencida) throw e;
+      guardadosVencida = abierto.secretos;
+      est.textContent = '';
+      mostrarPrimeraVez('vencida');
+    }
   } catch (e) {
-    sessionStorage.removeItem('clave');
-    $('#loginEstado').textContent = e.message; $('#loginEstado').className = 'ayuda error';
-  }
+    secretos = null;
+    est.textContent = e.message; est.className = 'ayuda error';
+  } finally { entrando = false; if (!espera()) boton.disabled = false; }
 }
 
-function mostrar(cual) {
-  $('#login').classList.toggle('oculto', cual !== 'login');
-  $('#config').classList.toggle('oculto', cual !== 'config');
+function mostrarPrimeraVez(modo) {
+  modoPrimera = modo;
+  $('#primeraTitulo').textContent = modo === 'nueva' ? 'Configurar el panel (una sola vez)' : 'La clave de GitHub dejó de funcionar';
+  $('#primeraAyuda').textContent = modo === 'nueva'
+    ? 'Todavía no hay nada configurado. El panel guarda los cambios en GitHub con una clave que solo puede tocar este repositorio. La pegás acá una vez y queda guardada cifrada con la contraseña que escribiste arriba. Después se entra solo con la contraseña.'
+    : 'La contraseña está bien, pero la clave de GitHub venció o la borraron. Creá una nueva y pegala acá: se guarda cifrada con la misma contraseña.';
+  $('#pasosToken').replaceChildren(pasosToken());
+  $('#cajaPass2').classList.toggle('oculto', modo !== 'nueva');
+  $('#pass').readOnly = modo === 'vencida';
+  $('#entrar').classList.add('oculto');
+  $('#primeraVez').classList.remove('oculto');
+  $('#token').focus();
 }
 
-async function guardarConfig() {
-  const est = $('#configEstado'), token = $('#token').value.trim(), p1 = $('#pass1').value, p2 = $('#pass2').value;
+function cancelarPrimera() {
+  guardadosVencida = null;
+  $('#primeraVez').classList.add('oculto'); $('#entrar').classList.remove('oculto');
+  $('#pass').readOnly = false;
+  $('#token').value = ''; $('#pass2').value = ''; $('#primeraEstado').textContent = '';
+}
+
+async function guardarPrimera() {
+  if (guardandoPrimera) return;
+  const est = $('#primeraEstado'), boton = $('#guardarPrimera'), token = $('#token').value.trim(), pass = $('#pass').value;
   est.className = 'ayuda';
+  guardandoPrimera = true;
+  boton.disabled = true;
   try {
-    if (!token) throw new Error('Pegá la clave de GitHub.');
-    if (p1.length < 8) throw new Error('La contraseña tiene que tener al menos 8 caracteres.');
-    if (p1 !== p2) throw new Error('Las contraseñas no coinciden.');
+    if (modoPrimera === 'nueva') {
+      if (pass.length < 10) throw new Error('La contraseña tiene que tener al menos 10 caracteres. Cambiala arriba.');
+      if ($('#pass2').value !== pass) throw new Error('Las dos contraseñas no coinciden.');
+    } else if (!guardadosVencida) throw new Error('Volvé a escribir la contraseña y tocá Entrar.');
+    validarToken(token);
     est.textContent = 'Probando la clave...';
-    const prueba = await api(`contents/${ARCHIVO}`, {}, token);
-    if (!prueba.ok) throw new Error('La clave no funciona (' + prueba.status + '). Revisá que tenga Contents: Read and write en este repositorio.');
+    await probarToken(token);
     const vieja = await leerClaveCifrada();
-    const cuerpo = { message: 'Panel: configuración de acceso', content: a64(JSON.stringify(await cifrar(token, p1))) };
-    if (vieja) cuerpo.sha = vieja.sha;
-    const r = await api('contents/clave.json', { method: 'PUT', body: JSON.stringify(cuerpo) }, token);
-    if (!r.ok) throw new Error('No pude guardar la configuración (' + r.status + ').');
-    $('#token').value = $('#pass1').value = $('#pass2').value = '';
-    sessionStorage.setItem('clave', token);
-    est.textContent = 'Listo.';
-    entrar();
-  } catch (e) { est.textContent = e.message; est.className = 'ayuda error'; }
+    if (modoPrimera === 'nueva' && vieja) throw new Error('Ya hay una configuración guardada. Recargá la página y entrá con tu contraseña.');
+    const nuevos = { github: token, firebase: modoPrimera === 'vencida' ? guardadosVencida.firebase : null };
+    est.textContent = 'Guardando cifrado...';
+    await escribirClave(nuevos, pass, vieja && vieja.sha);
+    secretos = nuevos; formatoViejo = false; passCorta = pass.length < 10;
+    est.textContent = '';
+    await abrirPanel();
+  } catch (e) {
+    if (!$('#panel').classList.contains('oculto')) return;
+    secretos = null;
+    est.textContent = e.message; est.className = 'ayuda error';
+  } finally { guardandoPrimera = false; boton.disabled = false; }
+}
+
+function salir() {
+  if (sucio && !confirm('Hay cambios sin guardar. ¿Salir igual?')) return;
+  secretos = null; accesoFcm = null; guardadosVencida = null; datos = null; sucio = false; pendiente = null;
+  try { sessionStorage.removeItem('clave'); } catch (e) {}
+  location.reload();
 }
 
 (function inicio() {
+  // Versiones anteriores del panel guardaban la clave en el navegador: se borra.
+  try { sessionStorage.removeItem('clave'); localStorage.removeItem('clave'); } catch (e) {}
+  // GitHub Pages no deja prohibir que otra página meta el panel adentro (iframe) para engañar los clics: en ese caso no arranca.
+  let enMarco = true;
+  try { enMarco = window.top !== window.self; } catch (e) {}
+  if (enMarco) {
+    $('#login').replaceChildren(el('h2', { text: 'Abrí el panel directamente' }), el('p', { class: 'ayuda', text: 'Por seguridad, el panel no funciona dentro de otra página. Entrá escribiendo la dirección en el navegador.' }));
+    return;
+  }
+  const enter = (fn) => (e) => { if (e.key === 'Enter') fn(); };
   $('#entrar').addEventListener('click', entrar);
-  $('#pass').addEventListener('keydown', (e) => { if (e.key === 'Enter') entrar(); });
-  $('#verConfig').addEventListener('click', (e) => { e.preventDefault(); mostrar('config'); });
-  $('#volverLogin').addEventListener('click', () => mostrar('login'));
-  $('#guardarConfig').addEventListener('click', guardarConfig);
+  $('#pass').addEventListener('keydown', enter(() => ($('#primeraVez').classList.contains('oculto') ? entrar() : guardarPrimera())));
+  $('#token').addEventListener('keydown', enter(guardarPrimera));
+  $('#pass2').addEventListener('keydown', enter(guardarPrimera));
+  $('#guardarPrimera').addEventListener('click', guardarPrimera);
+  $('#cancelarPrimera').addEventListener('click', cancelarPrimera);
   $('#guardar').addEventListener('click', guardar);
-  $('#salir').addEventListener('click', () => { if (sucio && !confirm('Hay cambios sin guardar. ¿Salir igual?')) return; sessionStorage.removeItem('clave'); location.reload(); });
-  window.addEventListener('beforeunload', (e) => { if (sucio) { e.preventDefault(); e.returnValue = ''; } });
-  localStorage.removeItem('clave');
-  if (sessionStorage.getItem('clave')) entrar();
+  $('#salir').addEventListener('click', salir);
+  ['pointerdown', 'keydown', 'mousemove', 'wheel', 'touchstart', 'scroll'].forEach((ev) => window.addEventListener(ev, actividad, { passive: true, capture: true }));
+  window.addEventListener('beforeunload', (e) => { if (sucio || pendiente) { e.preventDefault(); e.returnValue = ''; } });
+  if (espera()) mostrarBloqueo();
+  $('#pass').focus();
 })();
 </script>
 </body>
