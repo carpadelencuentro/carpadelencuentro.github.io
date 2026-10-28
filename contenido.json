@@ -1,0 +1,938 @@
+{
+ "actualizado": "2026-10-28",
+ "config": {
+  "brou_titular": "",
+  "brou_cuenta": "",
+  "brou_moneda": "Pesos uruguayos",
+  "brou_sucursal": "",
+  "envivo_url": "",
+  "proximo_titulo": "",
+  "proximo_fecha": "",
+  "proximo_lugar": "",
+  "version_app": "",
+  "actualizar_url": "https://play.google.com/store/apps/details?id=com.corapps.carpadelencuentro",
+  "actualizar_url_ios": ""
+ },
+ "noticias": [
+  {
+   "titulo": "Prédicas de Salto 2026",
+   "texto": "Ya podés ver las 5 noches de la carpa en Salto.",
+   "fecha": "2026-09-28",
+   "accion": "predicas"
+  },
+  {
+   "titulo": "Campañas evangelísticas 2026",
+   "texto": "Mirá el resumen de las campañas de este año por todo el país.",
+   "fecha": "2026-04-06",
+   "video": "jlx7T1iMWU0"
+  }
+ ],
+ "iglesias": [
+  {
+   "id": "arrieta",
+   "ciudad": "Arrieta",
+   "nombre": "Iglesia Cristiana Evangélica",
+   "direccion": "Arrieta 3462 - Montevideo",
+   "telefonos": [
+    {
+     "num": "098 797 857",
+     "wa": "59898797857",
+     "tel": "+59898797857"
+    }
+   ],
+   "reuniones": "Miércoles:\n19:30 hs. Reunión de oración y estudio bíblico\nSábados (2dos de cada mes):\nReunión de adolescentes\nSábados (1er y 3er de cada mes):\nReunión de jóvenes\nDomingos\n11:30 hs. Escuela Dominical\n18:00 hs. Reunión de Santa Cena\n19:00 hs. Reunión de predicación",
+   "fotos": [
+    "arrieta-1.jpg"
+   ],
+   "lat": -34.867165,
+   "lng": -56.155585,
+   "aprox": false
+  },
+  {
+   "id": "barros-blancos",
+   "ciudad": "Barros Blancos",
+   "nombre": "Iglesia Cristiana Evangélica Barros Blancos (ICEBB)",
+   "direccion": "Ruta 8km. 26,500 / Río Arapey 156 - Barros Blancos, Canelones",
+   "telefonos": [
+    {
+     "num": "096 102 668",
+     "wa": "59896102668",
+     "tel": "+59896102668"
+    }
+   ],
+   "reuniones": "Domingo:\n15:30 hs. Escuelita Dominical\n17:30 hs. Cena del Señor y Reunión General\nSábado (1 vez al mes):\nReunión de damas\nSábado (Semana por medio):\nReunión de adolescentes",
+   "fotos": [
+    "barros-blancos-1.jpg",
+    "barros-blancos-2.jpg"
+   ],
+   "lat": -34.750698,
+   "lng": -55.990657,
+   "aprox": true
+  },
+  {
+   "id": "carmelo",
+   "ciudad": "Carmelo",
+   "nombre": "Iglesia Cristiana Evangélica",
+   "direccion": "Piedras 447 esq. Sarandí - Carmelo, Colonia",
+   "telefonos": [
+    {
+     "num": "095 065 260",
+     "wa": "59895065260",
+     "tel": "+59895065260"
+    }
+   ],
+   "reuniones": "Martes\n18:00 hs. Grupo de conexión de damas\nMiércoles\n19:30 hs. Reunión de Oración\nJueves\n19:30 hs. Reunión de Hombres\nSábados\n16:00 hs. Actividad de niños\n17:30 hs. Reunión de Adolescentes y jóvenes\nDomingo\n18:00 hs. Reunión General*\n*En verano 10:00am",
+   "fotos": [
+    "carmelo-1.jpg"
+   ],
+   "lat": -33.993667,
+   "lng": -58.277134,
+   "aprox": true
+  },
+  {
+   "id": "cerro",
+   "ciudad": "Cerro",
+   "nombre": "Iglesia Cristiana Evangélica",
+   "direccion": "Paso Morlan 2701 - Montevideo",
+   "telefonos": [
+    {
+     "num": "095 734 028",
+     "wa": "59895734028",
+     "tel": "+59895734028"
+    }
+   ],
+   "reuniones": "Domingo\n18:30 hs. Reunión Central\nJueves\n19:30 hs. Reunión de Estudio y Oración\nSábado\n15:30 hs. Reunión de niños y adolescentes\n19:30 hs. Reunión de Jóvenes",
+   "fotos": [],
+   "lat": -34.874937,
+   "lng": -56.271029,
+   "aprox": false
+  },
+  {
+   "id": "chuy",
+   "ciudad": "Chuy",
+   "nombre": "Iglesia Cristiana Bíblica de Chuy: Una fe sin fronteras",
+   "direccion": "Avenida Brasil esq. Yaguarón - Chuy, Rocha",
+   "telefonos": [
+    {
+     "num": "099 872 918",
+     "wa": "59899872918",
+     "tel": "+59899872918"
+    }
+   ],
+   "reuniones": "Martes:\n19:00 hs. Reunión de Adolescentes\nMiércoles:\n19:30 hs. Reunión de estudio bíblico y oración\nJueves:\n19:30 hs. Reunión de Hombres (cada 15 días)\nSábado:\n11:30 hs. Escuela bíblica para niños (en Uruguay)\n16:30 hs. Escuela bíblica para niños (en Brasil)\n20:00 hs. Reunión de Jóvenes\nDomingo:\n19:30 hs. Cena del Señor\n20:30 hs. Reunion general",
+   "fotos": [
+    "chuy-1.jpg"
+   ],
+   "lat": -33.692071,
+   "lng": -53.46881,
+   "aprox": true
+  },
+  {
+   "id": "ciudad-del-carmen",
+   "ciudad": "Ciudad del Carmen",
+   "nombre": "Iglesia Evangélica del Carmen",
+   "direccion": "Dr. Rodolfo de Angelis - Ciudad del Carmen, Durazno",
+   "telefonos": [
+    {
+     "num": "099 570 286",
+     "wa": "59899570286",
+     "tel": "+59899570286"
+    }
+   ],
+   "reuniones": "Sábado\n16:00 hs. Reunión de adolescentes y escuelita dominical.\nDomingo\n10:00 hs. Cena del Señor y predicación del evangelio.",
+   "fotos": [
+    "ciudad-del-carmen-1.jpg"
+   ],
+   "lat": -33.241355,
+   "lng": -56.012496,
+   "aprox": true
+  },
+  {
+   "id": "ciudad-de-la-costa",
+   "ciudad": "Ciudad de la Costa",
+   "nombre": "Iglesia Faro de la Costa",
+   "direccion": "Av. Giannattasio Km. 18 - Ciudad de la Costa, Canelones",
+   "telefonos": [
+    {
+     "num": "2682 8428",
+     "wa": null,
+     "tel": "+59826828428"
+    },
+    {
+     "num": "094 521 942",
+     "wa": "59894521942",
+     "tel": "+59894521942"
+    },
+    {
+     "num": "099 221 881",
+     "wa": "59899221881",
+     "tel": "+59899221881"
+    }
+   ],
+   "reuniones": "Domingo\n10:00 hs. Culto principal\nMiércoles\n19:00 hs. Reunión de oración y estudio bíblico\nSábado\nNiños, adolescentes y jóvenes",
+   "fotos": [],
+   "lat": -34.856311,
+   "lng": -56.010973,
+   "aprox": true
+  },
+  {
+   "id": "colonia-del-sacramento",
+   "ciudad": "Colonia del Sacramento",
+   "nombre": "Iglesia Cristiana Bíblica Ebenezer",
+   "direccion": "Colombia 68 - Colonia del Sacramento, Colonia",
+   "telefonos": [
+    {
+     "num": "098 738 850",
+     "wa": "59898738850",
+     "tel": "+59898738850"
+    }
+   ],
+   "reuniones": "Miércoles\n19:30 hs. Reunión de Oración\nViernes\n20:00 hs. Reunión de Estudio Bíblico\nSábados\n16:00 hs. Escuela Bíblica\n18:00 hs. Reunión de Adolescentes y Jóvenes\nDomingo\n10:00 hs. Santa Cena y Reunión Familiar",
+   "fotos": [],
+   "lat": -34.456951,
+   "lng": -57.842947,
+   "aprox": false
+  },
+  {
+   "id": "colon",
+   "ciudad": "Colón",
+   "nombre": "Iglesia Cristiana Evangélica",
+   "direccion": "Av. Garzón 1370 esq. Badajoz - Montevideo",
+   "telefonos": [
+    {
+     "num": "095 473 839",
+     "wa": "59895473839",
+     "tel": "+59895473839"
+    }
+   ],
+   "reuniones": "Miércoles:\n19:30 hs. Reunión de Oración y Estudio Bíblico\nViernes (uno cada mes, a definir):\n19:30 hs. Reunión de hombres\nSábados (2dos de cada mes):\n16:30 hs. Reunión de damas\nSábados (3eros de cada mes):\n18:00 hs. Reunión de Adolescentes\nDomingos:\n09:30 hs. Cena del Señor y Reunión Principal\n11:30 hs. Escuela Bíblica",
+   "fotos": [
+    "colon-1.jpg",
+    "colon-2.jpg"
+   ],
+   "lat": -34.82138,
+   "lng": -56.219807,
+   "aprox": false
+  },
+  {
+   "id": "dolores",
+   "ciudad": "Dolores",
+   "nombre": "Iglesia Cristiana",
+   "direccion": "Manuel Freire 1281 entre la Ruta 96 y 19 de abril - Dolores, Soriano",
+   "telefonos": [
+    {
+     "num": "091 301 118",
+     "wa": "59891301118",
+     "tel": "+59891301118"
+    }
+   ],
+   "reuniones": "Sábado\n10:00 hs. Escuela Bíblica\nDomingo\n09:30 hs. Cena del Señor\n10:30 hs. Reunión general",
+   "fotos": [
+    "dolores-1.jpg"
+   ],
+   "lat": -33.545671,
+   "lng": -58.202737,
+   "aprox": true
+  },
+  {
+   "id": "ecilda-paullier",
+   "ciudad": "Ecilda Paullier",
+   "nombre": "Iglesia Cristiana Evangélica",
+   "direccion": "Pedro Digiovanangelio 505 - Ecilda Paulier, San José",
+   "telefonos": [
+    {
+     "num": "099 194 690",
+     "wa": "59899194690",
+     "tel": "+59899194690"
+    }
+   ],
+   "reuniones": "Martes\n20:00 hs. Reunión de oración por Meet.\nViernes\n18:00 hs. Reunión de adolescentes\nSábados\n16:00 hs. Estudio bíblico de camas cada dos semanas.\nDomingos\n10:00 hs. Escuela Bíblica\n18:00 hs. Cena del Señor\n19:00 hs. Reunión general",
+   "fotos": [
+    "ecilda-paullier-1.jpg"
+   ],
+   "lat": -34.360695,
+   "lng": -57.050105,
+   "aprox": true
+  },
+  {
+   "id": "ituzaingo",
+   "ciudad": "Ituzaingó",
+   "nombre": "Iglesia Cristiana Evangélica",
+   "direccion": "Francisco Sainz Rosas 4645 - Montevideo",
+   "telefonos": [
+    {
+     "num": "099 939 874",
+     "wa": "59899939874",
+     "tel": "+59899939874"
+    }
+   ],
+   "reuniones": "Miércoles\n19:00 hs. Oración y estudio Bíblico\nSábado\n15:00 hs. Reunión de Niños\n17:30 hs. Reunión de Adolescentes\n20:00 hs. Reunión de Jóvenes\nDomingo\n10:00 hs. Reunión familiar",
+   "fotos": [
+    "ituzaingo-1.jpg"
+   ],
+   "lat": -34.852942,
+   "lng": -56.143538,
+   "aprox": false
+  },
+  {
+   "id": "juan-lacaze",
+   "ciudad": "Juan Lacaze",
+   "nombre": "Iglesia Cristiana Evangélica \"Busca a Dios\"",
+   "direccion": "Dionisio Acosta esq. Gardel, Barrio Charrua - Juan Lacaze, Colonia",
+   "telefonos": [
+    {
+     "num": "098 928 862",
+     "wa": "59898928862",
+     "tel": "+59898928862"
+    }
+   ],
+   "reuniones": "Martes\n14:00 hs. Reunión de Estudio por Meet\nMiércoles\n08:00 a 12:00 hs. y 14:00 a 20:00 hs. Iglesia abierta para orar y leer.\nSábado (semana por medio)\nEscuelita Bíblica\nDomingo\n10:00 hs. Cena del Señor y Estudio Bíblico",
+   "fotos": [
+    "juan-lacaze-1.jpg"
+   ],
+   "lat": -34.434249,
+   "lng": -57.434306,
+   "aprox": true
+  },
+  {
+   "id": "la-espada",
+   "ciudad": "La Espada",
+   "nombre": "Iglesia Cristiana Evangélica",
+   "direccion": "Raffo 812 - Montevideo",
+   "telefonos": [
+    {
+     "num": "094 762 252",
+     "wa": "59894762252",
+     "tel": "+59894762252"
+    }
+   ],
+   "reuniones": "Jueves\n19:20 hs. Reunión de Oración\nSábado\n19:30 hs. Reunión de Jóvenes\nDomingo\n10:00 hs. Cena del Señor y Reunión general",
+   "fotos": [
+    "la-espada-1.jpg"
+   ],
+   "lat": -34.837162,
+   "lng": -56.208899,
+   "aprox": true
+  },
+  {
+   "id": "la-teja",
+   "ciudad": "La Teja",
+   "nombre": "Iglesia Cristiana Evangélica",
+   "direccion": "Luis de la Peña 328 - Montevideo",
+   "telefonos": [
+    {
+     "num": "093 621 038",
+     "wa": "59893621038",
+     "tel": "+59893621038"
+    }
+   ],
+   "reuniones": "Jueves\n19:00 hs. Reunión de Oración y Estudio Bíblico\nSábado\nReunión de Adolescentes, Reunión de Jóvenes\nDomingo\n10:00 hs. Escuela Dominical\n18:30 hs. Cena del Señor\n19:00 hs. Reunión Familiar",
+   "fotos": [
+    "la-teja-1.jpg",
+    "la-teja-2.jpg"
+   ],
+   "lat": -34.864098,
+   "lng": -56.220846,
+   "aprox": false
+  },
+  {
+   "id": "la-union",
+   "ciudad": "La Unión",
+   "nombre": "Iglesia de La Unión",
+   "direccion": "Comercio 2394 - Montevideo",
+   "telefonos": [
+    {
+     "num": "094 521 942",
+     "wa": "59894521942",
+     "tel": "+59894521942"
+    },
+    {
+     "num": "099 221 881",
+     "wa": "59899221881",
+     "tel": "+59899221881"
+    }
+   ],
+   "reuniones": "Domingo\n16:00 hs. Culto principal\nViernes\n19:00 hs. Reunión de Oracion y Estudio Bíblico",
+   "fotos": [],
+   "lat": -34.878295,
+   "lng": -56.140456,
+   "aprox": false
+  },
+  {
+   "id": "maldonado",
+   "ciudad": "Maldonado",
+   "nombre": "Iglesia Bíblica Cristiana \"Surgiendo a la Vida\"",
+   "direccion": "Dr. Román Bergalli 442 - Maldonado, Maldonado",
+   "telefonos": [
+    {
+     "num": "098 090 470",
+     "wa": "59898090470",
+     "tel": "+59898090470"
+    }
+   ],
+   "reuniones": "Miércoles\n19:30 hs. Reunión de oración y estudio\nSábado\n11:00 hs. Horita feliz, Cañada Aparicio\n18:00 hs. Reunión de Jóvenes\nDomingo\n09:30 hs. Cena del Señor\n11:00 hs. Reunión general / actividad con niños",
+   "fotos": [
+    "maldonado-1.jpg",
+    "maldonado-2.jpg"
+   ],
+   "lat": -34.904491,
+   "lng": -54.950564,
+   "aprox": false
+  },
+  {
+   "id": "manga",
+   "ciudad": "Manga",
+   "nombre": "Iglesia Cristiana Evangélica",
+   "direccion": "José Belloni 4991 - Montevideo",
+   "telefonos": [
+    {
+     "num": "091 800 800",
+     "wa": "59891800800",
+     "tel": "+59891800800"
+    },
+    {
+     "num": "2227 6004",
+     "wa": null,
+     "tel": "+59822276004"
+    }
+   ],
+   "reuniones": "Domingo\n10:00 hs. Niños y adolescentes\n19:30 hs.Reunión General\nMiércoles\n20:00 hs. Reunión de Estudio y oración.\nJueves\n20:00hs. Reunión de adolescentes\nViernes\n20:00 hs. Reunión de Jóvenes\nwww.icemanga.com\nResplandorcontenidos",
+   "fotos": [
+    "manga-1.jpg"
+   ],
+   "lat": -34.812978,
+   "lng": -56.138528,
+   "aprox": false
+  },
+  {
+   "id": "marindia",
+   "ciudad": "Marindia",
+   "nombre": "Iglesia Cristiana en Marindia",
+   "direccion": "Mburucuya Solar 1 manzana 102 - Marindia, Canelones",
+   "telefonos": [
+    {
+     "num": "094 691 915",
+     "wa": "59894691915",
+     "tel": "+59894691915"
+    }
+   ],
+   "reuniones": "Miercoles\n19:30 hs. Reunión de Oración\nViernes\n20:00 hs. Reunión de Adolescentes\nSabado\n10:00 hs. Escuelita de niños\nDomingos\n10:00 hs. Cena del Señor y Reunión Central",
+   "fotos": [
+    "marindia-1.jpg"
+   ],
+   "lat": -34.76434,
+   "lng": -55.826623,
+   "aprox": true
+  },
+  {
+   "id": "mercedes",
+   "ciudad": "Mercedes",
+   "nombre": "Iglesia Cristiana Evangélica",
+   "direccion": "Tomas Gómez esq. Ferrería - Mercedes, Soriano Colmán esq. Romero - Mercedes, Soriano",
+   "telefonos": [
+    {
+     "num": "099 967 519",
+     "wa": "59899967519",
+     "tel": "+59899967519"
+    }
+   ],
+   "reuniones": "Jueves\n20:00 hs. Reunión de oración y estudio Bíblico\nSábado\n10:00 hs. Escuela Bíblica\n17:00 hs. Reunión de Adolescentes\n19:00 hs. Reunión de Jóvenes\nDomingo\n10:00 hs. Discipulado y clase adultos\n18:00 hs. Cena del Señor\n19:00 hs. Reunión Familiar",
+   "fotos": [
+    "mercedes-1.jpg",
+    "mercedes-2.jpg"
+   ],
+   "lat": -33.250143,
+   "lng": -58.020569,
+   "aprox": true
+  },
+  {
+   "id": "piriapolis",
+   "ciudad": "Piriapolis",
+   "nombre": "Iglesia Cristiana Evangélica",
+   "direccion": "Gral. Urquiza 48, Entre Chacabuco y Ayacucho - Piriápolis, Maldonado",
+   "telefonos": [
+    {
+     "num": "098 436 772",
+     "wa": "59898436772",
+     "tel": "+59898436772"
+    }
+   ],
+   "reuniones": "Jueves\n20:00 hs. Reunión de estudio Bíblico.\nSábado\n17:00 hs. Escuelita Bíblica .\n19:00 hs. Reunión de Adolescentes.\nDomingo\n10:00 hs. Cena del Señor y Reunión general.",
+   "fotos": [
+    "piriapolis-1.jpg"
+   ],
+   "lat": -34.870426,
+   "lng": -55.267941,
+   "aprox": false
+  },
+  {
+   "id": "progreso",
+   "ciudad": "Progreso",
+   "nombre": "Iglesia Cristiana Evangélica - Buenas noticias",
+   "direccion": "Ruta 5 Vieja km 27.800 - Progreso, Canelones",
+   "telefonos": [
+    {
+     "num": "094 410 613",
+     "wa": "59894410613",
+     "tel": "+59894410613"
+    }
+   ],
+   "reuniones": "Domingo\n10:30 hs. Escuela Dominical\n17:30 hs. Cena del Señor\n19:00 hs. Predicación del evangelio\nMartes\n20:00 hs. Oración y Estudio\nJueves\n19:30 hs. Reunión de adolescentes\nSábado\n19:30 hs. Reunión de familia (1er sábado del mes)\n17:00 hs. Reunión de damas (2do sábado del mes)",
+   "fotos": [
+    "progreso-1.jpg"
+   ],
+   "lat": -34.685059,
+   "lng": -56.216426,
+   "aprox": true
+  },
+  {
+   "id": "reducto",
+   "ciudad": "Reducto",
+   "nombre": "Iglesia Cristiana Evangélica",
+   "direccion": "Guadalupe 1615 - Montevideo",
+   "telefonos": [
+    {
+     "num": "098 113 536",
+     "wa": "59898113536",
+     "tel": "+59898113536"
+    }
+   ],
+   "reuniones": "Domingo\n10:00 hs. Cena del Señor y Reunión general\nSábado\n16:00 hs. Escuela Bíblica\nMiércoles\n20:00 hs. Reunión de Oración",
+   "fotos": [
+    "reducto-1.jpg"
+   ],
+   "lat": -34.878172,
+   "lng": -56.183396,
+   "aprox": false
+  },
+  {
+   "id": "rocha",
+   "ciudad": "Rocha",
+   "nombre": "Iglesia Cristiana de Rocha",
+   "direccion": "25 de Agosto 149 - Rocha, Rocha",
+   "telefonos": [
+    {
+     "num": "099 873 669",
+     "wa": "59899873669",
+     "tel": "+59899873669"
+    }
+   ],
+   "reuniones": "Martes\n20:00 hs. Reunión de Oración\nViernes\n20:00 hs. Reunión de Estudio Bíblico\nSábados\n18:00 hs. Reunión de Adolescentes\n20:30 hs. Reunión de Jóvenes\nDomingo\n10:15 hs. Culto Familiar\n19:00 hs. Reunión Central y Cena del Señor\nAntoniopolis - Campamento Alfa\nReferentes:\nRoberto Puñales; Sehila Pereyra\nHijos: Eliza\nChristopher Baum; Regina Baum\nHijos: Rafael, Eloisa, Felipe y Eleana\nDirección del Salón:\nRocha y calle 8 - Antoniópolis (La Paloma), Rocha\nContacto: 091 443 266\nReuniones:\nMiercoles\n18:30 hs. Estudio Bíblico\nViernes\n20:00 hs. Reunión de Adolescentes\nDomingo\n15:30 hs. Culto Familiar",
+   "fotos": [
+    "rocha-1.jpg",
+    "rocha-2.jpg"
+   ],
+   "lat": -34.478675,
+   "lng": -54.335075,
+   "aprox": false
+  },
+  {
+   "id": "rosario",
+   "ciudad": "Rosario",
+   "nombre": "Iglesia Cristiana Evangélica",
+   "direccion": "Z. de San Martín 466 - Rosario, Colonia",
+   "telefonos": [
+    {
+     "num": "099 333 617",
+     "wa": "59899333617",
+     "tel": "+59899333617"
+    }
+   ],
+   "reuniones": "Miércoles\n16:00 hs. Estudio bíblico - Damas\nJueves\n19:30 hs. Reunión de Oración\nSábado\n10:30 hs. Escuela Bíblica\n18:30 hs. Reunión de jovenes\nDomingo\n9:30 hs. Cena del Señor\n10:30 hs Reunión Familiar\nEn construcción...",
+   "fotos": [
+    "rosario-1.jpg",
+    "rosario-2.jpg"
+   ],
+   "lat": -34.310959,
+   "lng": -57.356649,
+   "aprox": false
+  },
+  {
+   "id": "salto",
+   "ciudad": "Salto",
+   "nombre": "Fraternidad Cristiana Salto",
+   "direccion": "Av Barbieri 1963 - Salto, Salto",
+   "telefonos": [
+    {
+     "num": "098 561 656",
+     "wa": "59898561656",
+     "tel": "+59898561656"
+    }
+   ],
+   "reuniones": "Miércoles\n19:30 hs. Reunión de Oración y estudio Bíblico\nSábado\n16:00 hs. Actividad con Niños\n18:00 hs. Adolescentes y jóvenes\nDomingo\n9:45 am. Cena del Señor - Reunión General",
+   "fotos": [
+    "salto-1.jpg"
+   ],
+   "lat": -31.38476,
+   "lng": -57.943999,
+   "aprox": false
+  },
+  {
+   "id": "san-carlos",
+   "ciudad": "San Carlos",
+   "nombre": "Iglesia Cristiana en San Carlos",
+   "direccion": "Ejido 569 - San Carlos, Maldonado",
+   "telefonos": [],
+   "reuniones": "Jueves\n20:00 hs. Reunión de estudio y oración.\nSábado\n11:00 hs. Clases bíblicas con niños\n18:00 hs. Reunión de adolescentes.\nDomingo\n09:00 hs. Reunión general.",
+   "fotos": [
+    "san-carlos-1.jpg",
+    "san-carlos-2.jpg"
+   ],
+   "lat": -34.78733,
+   "lng": -54.914078,
+   "aprox": true
+  },
+  {
+   "id": "san-jose",
+   "ciudad": "San José",
+   "nombre": "Iglesia Cristiana Evangélica",
+   "direccion": "Di Martino 503 esquina Asamblea - San José de Mayo, San José",
+   "telefonos": [
+    {
+     "num": "098 562 055",
+     "wa": "59898562055",
+     "tel": "+59898562055"
+    }
+   ],
+   "reuniones": "Jueves\n19:00 hs Ministerio y oración\nSábado\n16:00 hs. Escuela Bíblica\n19:00 hs. Reunión juvenil\nSegundos Sábados de cada mes, reunión de damas.\nDomingo\n09:30 hs. Cena del Señor\n10.30 hs. Reunión general",
+   "fotos": [
+    "san-jose-1.jpg"
+   ],
+   "lat": -34.338647,
+   "lng": -56.707015,
+   "aprox": false
+  },
+  {
+   "id": "solis-de-mataojo",
+   "ciudad": "Solís de Mataojo",
+   "nombre": "Iglesia Cristiana Evangélica Solís de Mataojo (Km. 73)",
+   "direccion": "25 de mayo 864 - Solís de Mataojo, Lavalleja",
+   "telefonos": [
+    {
+     "num": "098 630 083",
+     "wa": "59898630083",
+     "tel": "+59898630083"
+    }
+   ],
+   "reuniones": "Miércoles\n20:30 hs. Reunión de estudio en Soca.\nSábado\n18:00 hs. Reunión de adolescentes y jóvenes (En Solís de Mataojo)\nDomingo\n17:30 hs. Reunión de Santa Cena y Reunión General.",
+   "fotos": [
+    "solis-de-mataojo-1.jpg"
+   ],
+   "lat": -34.600729,
+   "lng": -55.46544,
+   "aprox": true
+  },
+  {
+   "id": "tacuarembo-barrio-la-cruz",
+   "ciudad": "Tacuarembó (Barrio la cruz)",
+   "nombre": "Iglesia Cristiana Evangélica (Barrio la cruz)",
+   "direccion": "",
+   "telefonos": [
+    {
+     "num": "099 832 590",
+     "wa": "59899832590",
+     "tel": "+59899832590"
+    }
+   ],
+   "reuniones": "Miércoles\n19:30 hs. Reunión de Oración y estudio Bíblico .\nSábados\n16:00 hs. Actividad con Niños\n19:00 hs. Adolescentes y jóvenes\nDomingo\n17:00 hs. Cena del Señor\n18:00pm* - Reunión General\n*En verano 10:00am",
+   "fotos": [
+    "tacuarembo-barrio-la-cruz-1.jpg",
+    "tacuarembo-barrio-la-cruz-2.jpg"
+   ],
+   "lat": -31.7186,
+   "lng": -55.9812,
+   "aprox": true
+  },
+  {
+   "id": "tacuarembo-barrio-lopez",
+   "ciudad": "Tacuarembó (Barrio López)",
+   "nombre": "Salón Evangélico",
+   "direccion": "Vivienda de Humberto Correa: Ruta 5 Km. 397,500 Casilla 78019, Tacuarembó",
+   "telefonos": [],
+   "reuniones": "",
+   "fotos": [
+    "tacuarembo-barrio-lopez-1.jpg"
+   ],
+   "lat": -31.765,
+   "lng": -55.975,
+   "aprox": true
+  },
+  {
+   "id": "tarariras",
+   "ciudad": "Tarariras",
+   "nombre": "Mi esperanza",
+   "direccion": "Dr. Iparraguerre, entre Varela y J.Pignanesi - Tarariras, Colonia",
+   "telefonos": [
+    {
+     "num": "098 857 761",
+     "wa": "59898857761",
+     "tel": "+59898857761"
+    }
+   ],
+   "reuniones": "Sábado\n17:30 hs. Cena del Señor\n18:00 hs. Reunión familiar\n\"Encomienda a Jehová tu camino, Y confía en él; y él hará.\" Salmos 37:5\nGoogle Sites\nReport abuse\nPage details\nPage updated\nGoogle Sites\nReport abuse",
+   "fotos": [],
+   "lat": -34.264829,
+   "lng": -57.614342,
+   "aprox": true
+  }
+ ],
+ "misioneros": [
+  {
+   "id": "alejandro-alvarez",
+   "nombres": "Alejandro Álvarez; Ana Giménez",
+   "foto": "alejandro-alvarez.jpg",
+   "frase": "Acercándonos a él, piedra viva... Vosotros también,como piedras vivas, ser edificados...",
+   "obra": "Surgiendo a la Vida (Maldonado)",
+   "enviados": "Iglesia Bíblica Cristiana \"Surgiendo a Vida\" de Maldonado y CAMU",
+   "versiculo": "1 Pedro 2:4-5",
+   "motivos": [
+    "Pedir para que seamos siendo guiados por el Señor en el cuidado y desarrollo de Su iglesia",
+    "Para todos quienes formamos parte de la congregación, el vivir cada vez más profundamente el tipo de amor que jesús nos modeló y que vayamos priorizando cada vez más los valores de Su Reino, poniendo como prioridad la tarea de Evangelismo y Discipulado de aquellos que Él va añadiendo"
+   ],
+   "brou_titular": "",
+   "brou_cuenta": ""
+  },
+  {
+   "id": "alejandro-las",
+   "nombres": "Alejandro Las; Cristina Beigert",
+   "foto": "alejandro-las.jpg",
+   "frase": "Sea la luz de Jehová nuestro Dios sobre nosotros, y la obra de nuestras manos confirma sobre nosotros; Sí, la obra de nuestras manos confirma",
+   "obra": "Ciudad de la Costa / Unión (Mdeo)",
+   "enviados": "Iglesia Cristiana Evangélica de Reducto (Montevideo)",
+   "versiculo": "Salmo 90:17",
+   "motivos": [
+    "Familia - Estudios de nuestros hijos",
+    "Cris y yo pedimos oración por un mayor enfoque y efectividad en los planes de estos próximos años",
+    "Faro - Agradecemos los cuidados del Señor y pedimos que siga bendiciendo su pueblo",
+    "La Unión - Agradecemos los avances, bautismos, nuevos miembros y pedimos que se pueda construir el apartamento este año"
+   ],
+   "brou_titular": "",
+   "brou_cuenta": ""
+  },
+  {
+   "id": "alejandro-lopez",
+   "nombres": "Alejandro López; Delia Russell",
+   "foto": "alejandro-lopez.jpg",
+   "frase": "Poned la mira en las cosas de arriba, no en las de la tierra.",
+   "obra": "Mercedes (Soriano); Campamento Bíblico \"El Ombú\"; Instituto Bíblico Berea",
+   "enviados": "Iglesia Cristiana Evangélica de Mercedes",
+   "versiculo": "Colosenses 3:2",
+   "motivos": [
+    "Ministerio en Berea",
+    "Vida espiritual de cada uno de los integrantes",
+    "Ministerio en la iglesia local, vida de nuestros hijos",
+    "\"Nuestro ministerio esta principalmente enfocado en el Campamento Bíblico el Ombú, trabajando en el Instituto Bíblico Berea Internado y realizando allí diferentes actividades en los campamentos organizados por las iglesias del Litoral. También administramos y cuidamos la parte edilicia del campamento buscando mejorar las instalaciones para el servicio a las iglesias",
+    "También somos miembros de la iglesia en Mercedes sirviendo en diferentes ministerios en nuestra congregación y en actividades organizadas por nuestras iglesias.\""
+   ],
+   "brou_titular": "",
+   "brou_cuenta": ""
+  },
+  {
+   "id": "alejandro-luis-huerta-martinez",
+   "nombres": "Alejandro Luis Huerta Martínez; Susana Beitze",
+   "foto": "alejandro-luis-huerta-martinez.jpg",
+   "frase": "Jehová es bueno, fortaleza en el día de la angustia; y conoce a los que en él confían",
+   "obra": "Manga - Montevideo / Ciudad del Carmen - Durazno - Campamento Cristiano ALFA - Carpa del Encuentro - Trinidad - Flores",
+   "enviados": "Iglesia Cristiana Evangélica de Manga / Montevideo",
+   "versiculo": "Nahum 1:7",
+   "motivos": [
+    "Diferentes ministerios en los cuales estoy involucrado",
+    "\"En Montevideo, en el barrio de Manga, se realizan diferentes actividades, desde los niños hasta los más grandes",
+    "Varios de los miembros de la congregación están involucrados en otros ministerios como Llamado Frontera, campañas evangelísticas con la Carpa del Encuentro, trabajo en el hogar de niños.\""
+   ],
+   "brou_titular": "",
+   "brou_cuenta": ""
+  },
+  {
+   "id": "andrew-russell",
+   "nombres": "Andrew Russell; Leticia Startari",
+   "foto": "andrew-russell.jpg",
+   "frase": "Dios tenga misericordia de nosotros, y nos bendiga; Haga resplandecer su rostro sobre nosotros; Selah Para que sea conocido en la tierra tu camino, En todas las naciones tu salvación.",
+   "obra": "La Espada (Montevideo) - Carmelo (Colonia)",
+   "enviados": "Canadá",
+   "versiculo": "Salmos 67: 1-2",
+   "motivos": [
+    "Sabiduría, gracia y dirección para nuestro ministerio"
+   ],
+   "brou_titular": "",
+   "brou_cuenta": ""
+  },
+  {
+   "id": "christopher-baum",
+   "nombres": "Christopher Baum; Regina Baum",
+   "foto": "christopher-baum.jpg",
+   "frase": "Porque los montes se moverán, y los collados temblarán, pero no se apartará de ti mi misericordia, ni el pacto de mi paz se quebrantará, dijo Jehová, el que tiene misericordia de ti.",
+   "obra": "Antoniopolis (Rocha) - Campamento Cristiano ALFA",
+   "enviados": "Alemania",
+   "versiculo": "Isaías 54:10",
+   "motivos": [
+    "Poder avanzar más con el evangelio en La Paloma",
+    "Que Dios siga obrando en los corazones de los que siempre asisten a las actividades para que entiendan y acepten a Cristo",
+    "Por la pronta fundación de la Iglesia en Antoniópolis"
+   ],
+   "brou_titular": "",
+   "brou_cuenta": ""
+  },
+  {
+   "id": "enrique-vazquez",
+   "nombres": "Enrique Vázquez; Elida Paparamborda",
+   "foto": "enrique-vazquez.jpg",
+   "frase": "Dios es nuestro amparo y fortaleza,. Nuestro pronto auxilio en las tribulaciones.",
+   "obra": "ICE Ituzaingó (Montevideo)",
+   "enviados": "Iglesia Cristiana Evangélica de Reducto (Montevideo), y Manga, Colón, La Espada, Cerrito, Comercio, Buceo, Jacinto Vera y Progreso",
+   "versiculo": "Salmo 46:1",
+   "motivos": [
+    "Por la salud. Por la familia, hijos y nietos",
+    "Por las tareas en la Iglesia de Ituzaingó"
+   ],
+   "brou_titular": "",
+   "brou_cuenta": ""
+  },
+  {
+   "id": "ernesto-rey",
+   "nombres": "Ernesto Rey; Daniela Gómez",
+   "foto": "ernesto-rey.jpg",
+   "frase": "Pero de ninguna cosa hago caso, ni estimo preciosa mi vida para mí mismo, con tal que acabe mi carrera con gozo, y el ministerio que recibí del Señor Jesús, para dar testimonio del evangelio de la gracia de Dios.",
+   "obra": "San José",
+   "enviados": "Iglesia Cristiana Evangélica de Reducto (Montevideo), Mercedes y Dolores",
+   "versiculo": "Hechos 20:24",
+   "motivos": [
+    "Agradecemos por los que se mantienen perseverando y comprometidos en diferentes áreas de servicio",
+    "Pedimos por la necesidad de hermanos capacitados en el ministerio bíblico, aunque alguna ayuda tengo de un joven, los sábados, que ha venido dando mensajes",
+    "Necesidad de Liderazgo",
+    "Agradecemos por los avances en los estudios de nuestros chicos",
+    "\"Hermanos que trabajan en el ministerio en San José, teniendo diferentes actividades, tanto con niños, adolescentes, Jóvenes y también reuniones familiares. Realizan discipulados, con hermanos nuevos en la fe; hay un grupo comprometido en el ministerio con niños, realizando diferentes modalidades para poder compartir de Cristo"
+   ],
+   "brou_titular": "",
+   "brou_cuenta": ""
+  },
+  {
+   "id": "guillermo-silva",
+   "nombres": "Guillermo Silva; Etel Gil",
+   "foto": "guillermo-silva.jpg",
+   "frase": "Porque todo el que quiera salvar su vida, la perderá; y todo el que pierda su vida por causa de mí, la hallará.",
+   "obra": "Carmelo - Colonia",
+   "enviados": "Iglesia Cristiana Evangélica de Carmelo",
+   "versiculo": "Mateo 16:25 (Guillermo); Hebreos 13:21 (Etel)",
+   "motivos": [
+    "Damos gracias al Señor por este año productivo y de frutos lindos para su gloria!",
+    "Damos gracias al Señor por su provisión",
+    "Pedimos por sabiduría para manejar asuntos difíciles, para dar buenos consejos y para amar y ver a las personas como Dios lo hace. (Cosa que es difícil)",
+    "Oren por Santi. No la pasa bien en el liceo por el tema bullying. Hemos hablado muchas veces con la directiva para poder resolver y por supuesto, ayudando a Santi con su autoestima y con el amor y propósito de Dios para su vida",
+    "Por Etel y los chequeos médicos post operatorios"
+   ],
+   "brou_titular": "",
+   "brou_cuenta": ""
+  },
+  {
+   "id": "humberto-correa",
+   "nombres": "Humberto Correa",
+   "foto": "humberto-correa.jpg",
+   "frase": "Hasta aquí nos ayudó Jehová.",
+   "obra": "Tacuarembó (Barrio Lopéz)",
+   "enviados": "Iglesia el Centro (Montevideo)",
+   "versiculo": "1 Samuel 7:12",
+   "motivos": [
+    "Reuniones de la iglesia",
+    "Pedir por salvación de las personas"
+   ],
+   "brou_titular": "",
+   "brou_cuenta": ""
+  },
+  {
+   "id": "ignacio-flandez",
+   "nombres": "Ignacio Flandez; Mónica Flores",
+   "foto": "ignacio-flandez.jpg",
+   "frase": "Porque de él, y por él, y para él, son todas las cosas. A él sea la gloria por los siglos. Amén.",
+   "obra": "La espada (Montevideo) - Palabra de Vida",
+   "enviados": "Iglesia Cristiana Evangélica de Reducto (Montevideo)",
+   "versiculo": "Romanos 11:36",
+   "motivos": [
+    "Salud de la familia",
+    "Sabiduría para el hogar y el ministerio",
+    "Sustento personal y provisión para proyectos evangelísticos",
+    "\"Diferentes ministerios en los cuales participan, como son los campeonatos deportivos para evangelismo. También apoyan a diferentes iglesias en Uruguay, haciendo capacitación en evangelismo personal y evangelismo ilustrado para Iglesias locales",
+    "Realizaron talleres sobre adicciones con un fin evangelístico"
+   ],
+   "brou_titular": "",
+   "brou_cuenta": ""
+  },
+  {
+   "id": "ken-russell",
+   "nombres": "Ken Russell; Eunice Rusell",
+   "foto": "ken-russell.jpg",
+   "frase": "Y la paz de Dios, que sobrepasa todo entendimiento, guardará vuestros corazones y vuestros pensamientos en Cristo Jesús.",
+   "obra": "Rosario, Nueva Helvecia (Colonia) ; Ecilda Paullier (San José) - Campamento Bíblico Peniel",
+   "enviados": "Canadá",
+   "versiculo": "Filipenses 4:6-7 / Nehemias 8:10",
+   "motivos": [
+    "Agradecemos por buenos líderes de ministerios y rogamos por más",
+    "Pedimos por bendición por los medios de comunicación, mensajes por radio, diario, etc"
+   ],
+   "brou_titular": "",
+   "brou_cuenta": ""
+  },
+  {
+   "id": "nurymar-rodriguez",
+   "nombres": "Nurymar Rodríguez",
+   "foto": "nurymar-rodriguez.jpg",
+   "frase": "Todo lo puedo en Cristo que me fortalece.",
+   "obra": "Iglesia Cristiana Evangélica de Dolores",
+   "enviados": "Iglesia Cristiana Evangélica de Dolores (Soriano)",
+   "versiculo": "Filipenses 4:13",
+   "motivos": [
+    "Hermanos que no se congregan, restauración",
+    "Por un liderazgo bien constituido",
+    "Por los adolescentes y jóvenes que desean tener su espacio",
+    "Familias de los niños, para que conozcan a Cristo"
+   ],
+   "brou_titular": "",
+   "brou_cuenta": ""
+  },
+  {
+   "id": "paul-schulz",
+   "nombres": "Paul Schulz; Lidia Schulz",
+   "foto": "paul-schulz.jpg",
+   "frase": "Luego les dijo: Id, comed grosuras, y bebed vino dulce, y enviad porciones a los que no tienen nada preparado; porque día santo es a nuestro Señor; no os entristezcáis, porque el gozo de Jehová es vuestra fuerza.",
+   "obra": "Iglesia Cristiana Evangélica San Carlos - Campamento Alfa - Carpa del Encuentro",
+   "enviados": "Alemania",
+   "versiculo": "Nehemías 8:10",
+   "motivos": [
+    "Por la salvación de personas que escuchan la palabra en San Carlos",
+    "Salud de Tabita"
+   ],
+   "brou_titular": "",
+   "brou_cuenta": ""
+  },
+  {
+   "id": "roberto-russell",
+   "nombres": "Roberto Russell; Cecilia Mateu",
+   "foto": "roberto-russell.jpg",
+   "frase": "Así que, hermanos míos amados, estad firmes y constantes, creciendo en la obra del Señor siempre, sabiendo que vuestro trabajo en el Señor no es en vano.",
+   "obra": "Iglesia Cristiana Evangélica de Mercedes (Soriano) - Campamento Bíblico Berea - Campamento Bíblico el Ombú",
+   "enviados": "Canadá",
+   "versiculo": "1 Corintios 15:58",
+   "motivos": [
+    "Que Dios bendiga las reuniones de evangelismo sobre la plaza",
+    "Agradecimiento por estudiantes (Bereanos) 2023 y crecimiento. Guía para la generación 2024"
+   ],
+   "brou_titular": "",
+   "brou_cuenta": ""
+  },
+  {
+   "id": "sergio-rodriguez",
+   "nombres": "Sergio Rodríguez; Virginia Pesce",
+   "foto": "sergio-rodriguez.jpg",
+   "frase": "Los muchachos se fatigan y se cansan, los jóvenes flaquean y caen; pero los que esperan a Jehová tendrán nuevas fuerzas; levantarán alas como las águilas; correrán, y no se cansarán; caminarán, y no se fatigarán.",
+   "obra": "Chuy - Rocha",
+   "enviados": "Iglesia Cristiana Evangélica de Rocha",
+   "versiculo": "Isaías 40:30-31",
+   "motivos": [
+    "Firmeza y decisiones de las personas que estamos realizando discipulado en obediencia a la palabra de Dios",
+    "Salvación de las personas a las cuales llegamos con el evangelio"
+   ],
+   "brou_titular": "",
+   "brou_cuenta": ""
+  }
+ ]
+}
