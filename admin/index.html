@@ -439,7 +439,7 @@ function imgFoto(f, carpeta, clase) {
 // Las mismas que trae la app de fábrica (lib/contenido.dart, seccionesBase): mientras no se guarden acá, la app usa esas.
 const SECCIONES_BASE = [
   { id: 'eventos', titulo: 'Carpa Salto 2026', sub: '22 al 26 de setiembre', pill: 'Eventos', foto: 'carpa', accion: 'eventos', link: '', visible: true },
-  { id: 'predicas', titulo: 'Prédicas', sub: 'Escuchá o mirá cada noche', pill: '', foto: 'predicas', accion: 'predicas', link: '', visible: true },
+  { id: 'predicas', titulo: 'Prédicas', sub: 'Escuchá las charlas más destacadas', pill: '', foto: 'predicas', accion: 'predicas', link: '', visible: true },
   { id: 'oracion', titulo: 'Oración', sub: 'Podemos orar por vos', pill: '', foto: 'oracion', accion: 'oracion', link: '', visible: true },
   { id: 'iglesias', titulo: 'Iglesias cerca', sub: 'Encontrá dónde congregarte', pill: '', foto: 'iglesias', accion: 'iglesias', link: '', visible: true },
   { id: 'ofrendar', titulo: 'Ofrendar', sub: 'Ayudá a llevar la carpa', pill: '', foto: 'ofrendar', accion: 'ofrendar', link: '', visible: true },
@@ -542,8 +542,9 @@ function tarjetaSeccion(s, i) {
     selectorFoto(() => 'inicio-' + sanitizarNombre(s.titulo || s.id), (url) => { s.foto = url; marcarFoto(); cambio(); }),
     el('label', { class: 'check-fila' }, visible, ' Mostrar en la app'),
     el('div', { class: 'acciones' },
-      el('button', { class: 'btn sec', type: 'button', text: 'Subir', disabled: i === 0 ? '' : null, on: { click: () => mover(-1) } }),
-      el('button', { class: 'btn sec', type: 'button', text: 'Bajar', on: { click: () => mover(1) } }),
+      // Solo se apaga "Subir" en la primera y "Bajar" en la última (el() con disabled: null igual apagaba el botón).
+      el('button', { class: 'btn sec', type: 'button', text: 'Subir', ...(i === 0 ? { disabled: '' } : {}), on: { click: () => mover(-1) } }),
+      el('button', { class: 'btn sec', type: 'button', text: 'Bajar', ...(i === xs.length - 1 ? { disabled: '' } : {}), on: { click: () => mover(1) } }),
       el('button', { class: 'btn peligro', type: 'button', text: 'Borrar', on: { click: () => { if (confirm(`¿Borrar la sección "${s.titulo || 'sin título'}" de Inicio? Si solo querés que no se vea por un tiempo, destildá "Mostrar en la app".`)) { xs.splice(i, 1); cambio(); pintar(); } } } })));
 }
 
