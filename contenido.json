@@ -952,6 +952,7 @@
   "Encontrá dónde congregarte": "Find a place to worship",
   "Ofrendar": "Give",
   "Ayudá a llevar la carpa": "Help take the tent further",
+  "test": "test",
   "Iglesia Cristiana Evangélica": "Evangelical Christian Church",
   "Miércoles:\n19:30 hs. Reunión de oración y estudio bíblico\nSábados (2dos de cada mes):\nReunión de adolescentes\nSábados (1er y 3er de cada mes):\nReunión de jóvenes\nDomingos\n11:30 hs. Escuela Dominical\n18:00 hs. Reunión de Santa Cena\n19:00 hs. Reunión de predicación": "Wednesday:\n7:30 p.m. Prayer and Bible Study Meeting\nSaturdays (2nd of each month):\nTeen meeting\nSaturdays (1st and 3rd of each month):\nyouth meeting\nSundays\n11:30 a.m. Sunday School\n6:00 p.m. Holy Communion Meeting\n7:00 p.m. preaching meeting",
   "Iglesia Cristiana Evangélica Barros Blancos (ICEBB)": "Barros Blancos Evangelical Christian Church (ICEBB)",
@@ -1056,6 +1057,17 @@
    "accion": "ofrendar",
    "link": "",
    "visible": true
+  },
+  {
+   "id": "seccion-mvtzvs3w",
+   "titulo": "test",
+   "sub": "",
+   "pill": "",
+   "foto": "carpa",
+   "accion": "pagina",
+   "link": "",
+   "pagina": "pag-mvtzvs3w",
+   "visible": true
   }
  ],
  "pestanas": {
@@ -1066,5 +1078,16 @@
   "biblia": "Biblia"
  },
  "textos": {},
- "paginas": []
+ "paginas": [
+  {
+   "id": "pag-mvtzvs3w",
+   "titulo": "test",
+   "bloques": [
+    {
+     "tipo": "titulo",
+     "texto": "test"
+    }
+   ]
+  }
+ ]
 }
