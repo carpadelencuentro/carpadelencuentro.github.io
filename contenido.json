@@ -940,6 +940,17 @@
   "Ya podés ver las 5 noches de la carpa en Salto.": "You can now see the 5 nights of the tent in Salto.",
   "Campañas evangelísticas 2026": "Evangelistic campaigns 2026",
   "Mirá el resumen de las campañas de este año por todo el país.": "Look at the summary of this year's campaigns throughout the country.",
+  "Prédicas": "preachings",
+  "Escuchá o mirá cada noche": "Listen or watch every night",
+  "Carpa Salto 2026": "Jump Tent 2026",
+  "22 al 26 de setiembre": "September 22 to 26",
+  "Eventos": "Events",
+  "Oración": "Prayer",
+  "Podemos orar por vos": "We can pray for you",
+  "Iglesias cerca": "Churches nearby",
+  "Encontrá dónde congregarte": "Find where to congregate",
+  "Ofrendar": "Offer",
+  "Ayudá a llevar la carpa": "Help carry the tent",
   "Iglesia Cristiana Evangélica": "Evangelical Christian Church",
   "Miércoles:\n19:30 hs. Reunión de oración y estudio bíblico\nSábados (2dos de cada mes):\nReunión de adolescentes\nSábados (1er y 3er de cada mes):\nReunión de jóvenes\nDomingos\n11:30 hs. Escuela Dominical\n18:00 hs. Reunión de Santa Cena\n19:00 hs. Reunión de predicación": "Wednesday:\n7:30 p.m. Prayer and Bible Study Meeting\nSaturdays (2nd of each month):\nTeen meeting\nSaturdays (1st and 3rd of each month):\nyouth meeting\nSundays\n11:30 a.m. Sunday School\n6:00 p.m. Holy Communion Meeting\n7:00 p.m. preaching meeting",
   "Iglesia Cristiana Evangélica Barros Blancos (ICEBB)": "Barros Blancos Evangelical Christian Church (ICEBB)",
@@ -991,5 +1002,57 @@
   "Mi esperanza": "my hope",
   "Sábado\n17:30 hs. Cena del Señor\n18:00 hs. Reunión familiar\n\"Encomienda a Jehová tu camino, Y confía en él; y él hará.\" Salmos 37:5\nGoogle Sites\nReport abuse\nPage details\nPage updated\nGoogle Sites\nReport abuse": "Saturday\n5:30 p.m. Lord's Supper\n6:00 p.m. family reunion\n\"Commit your way to the Lord, and trust in him, and he will do it.\" Psalms 37:5\nGoogle Sites\nReport abuse\nPage details\nPage updated\nGoogle Sites\nReport abuse"
  },
- "push_historial": []
+ "push_historial": [],
+ "inicio": [
+  {
+   "id": "predicas",
+   "titulo": "Prédicas",
+   "sub": "Escuchá o mirá cada noche",
+   "pill": "",
+   "foto": "predicas",
+   "accion": "predicas",
+   "link": "",
+   "visible": true
+  },
+  {
+   "id": "eventos",
+   "titulo": "Carpa Salto 2026",
+   "sub": "22 al 26 de setiembre",
+   "pill": "Eventos",
+   "foto": "carpa",
+   "accion": "eventos",
+   "link": "",
+   "visible": true
+  },
+  {
+   "id": "oracion",
+   "titulo": "Oración",
+   "sub": "Podemos orar por vos",
+   "pill": "",
+   "foto": "oracion",
+   "accion": "oracion",
+   "link": "",
+   "visible": true
+  },
+  {
+   "id": "iglesias",
+   "titulo": "Iglesias cerca",
+   "sub": "Encontrá dónde congregarte",
+   "pill": "",
+   "foto": "iglesias",
+   "accion": "iglesias",
+   "link": "",
+   "visible": true
+  },
+  {
+   "id": "ofrendar",
+   "titulo": "Ofrendar",
+   "sub": "Ayudá a llevar la carpa",
+   "pill": "",
+   "foto": "ofrendar",
+   "accion": "ofrendar",
+   "link": "",
+   "visible": true
+  }
+ ]
 }
