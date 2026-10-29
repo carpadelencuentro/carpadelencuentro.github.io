@@ -1003,9 +1003,26 @@
   "Mi esperanza": "My hope",
   "Sábado\n17:30 hs. Cena del Señor\n18:00 hs. Reunión familiar\n\"Encomienda a Jehová tu camino, Y confía en él; y él hará.\" Salmos 37:5\nGoogle Sites\nReport abuse\nPage details\nPage updated\nGoogle Sites\nReport abuse": "Saturday\n5:30 p.m. Lord's Supper\n6:00 p.m. family reunion\n\"Commit your way to the Lord, and trust in him, and he will do it.\" Psalms 37:5\nGoogle Sites\nReport abuse\nPage details\nPage updated\nGoogle Sites\nReport abuse",
   "Inicio": "Home",
-  "Biblia": "Bible"
+  "Biblia": "Bible",
+  "Rosario, Tacuarembó, El Carmen, Rocha y Salto": "Rosario, Tacuarembó, El Carmen, Rocha and Salto",
+  "Colonia, Tacuarembó, Villa del Carmen, Rocha y Maldonado": "Colonia, Tacuarembó, Villa del Carmen, Rocha and Maldonado",
+  "Colonia, Tacuarembó, Ciudad del Carmen, San Carlos y Maldonado": "Colonia, Tacuarembó, Ciudad del Carmen, San Carlos and Maldonado",
+  "Colonia, Villa del Carmen, San Carlos, Chuy y Maldonado": "Colonia, Villa del Carmen, San Carlos, Chuy and Maldonado",
+  "Juan Lacaze, San Carlos, Chuy y Villa del Carmen": "Juan Lacaze, San Carlos, Chuy and Villa del Carmen",
+  "Juan Lacaze, Carmelo, Chuy y Villa del Carmen": "Juan Lacaze, Carmelo, Chuy and Villa del Carmen"
  },
- "push_historial": [],
+ "push_historial": [
+  {
+   "id": "mvu3ncm9-68bf35d68d7c",
+   "fecha": "2026-10-29T22:12:57.485Z",
+   "titulo": "Nueva versión Disponible.",
+   "texto": "Tocá para actualizar",
+   "titulo_en": "New version available.",
+   "texto_en": "Tap to update",
+   "accion": "link",
+   "link": "https://play.google.com/store/apps/details?id=com.corapps.carpadelencuentro"
+  }
+ ],
  "inicio": [
   {
    "id": "eventos",
@@ -1066,5 +1083,71 @@
   "biblia": "Biblia"
  },
  "textos": {},
- "paginas": []
+ "paginas": [],
+ "anteriores": [
+  {
+   "titulo": "Rosario, Tacuarembó, El Carmen, Rocha y Salto",
+   "anio": 2026,
+   "palabras": [
+    "Rosario",
+    "Tacuaremb",
+    "Carmen",
+    "Rocha",
+    "Salto"
+   ]
+  },
+  {
+   "titulo": "Colonia, Tacuarembó, Villa del Carmen, Rocha y Maldonado",
+   "anio": 2025,
+   "palabras": [
+    "Colonia",
+    "Tacuaremb",
+    "Carmen",
+    "Rocha",
+    "Maldonado"
+   ]
+  },
+  {
+   "titulo": "Colonia, Tacuarembó, Ciudad del Carmen, San Carlos y Maldonado",
+   "anio": 2024,
+   "palabras": [
+    "Colonia",
+    "Tacuaremb",
+    "Carmen",
+    "San Carlos",
+    "Maldonado"
+   ]
+  },
+  {
+   "titulo": "Colonia, Villa del Carmen, San Carlos, Chuy y Maldonado",
+   "anio": 2023,
+   "palabras": [
+    "Colonia",
+    "Carmen",
+    "San Carlos",
+    "Chuy",
+    "Maldonado"
+   ]
+  },
+  {
+   "titulo": "Juan Lacaze, San Carlos, Chuy y Villa del Carmen",
+   "anio": 2022,
+   "palabras": [
+    "Juan Lacaze",
+    "San Carlos",
+    "Chuy",
+    "Carmen"
+   ]
+  },
+  {
+   "titulo": "Juan Lacaze, Carmelo, Chuy y Villa del Carmen",
+   "anio": 2021,
+   "palabras": [
+    "Juan Lacaze",
+    "Carmelo",
+    "Chuy",
+    "Carmen"
+   ]
+  }
+ ]
 }
