@@ -1506,7 +1506,7 @@ function pintarAvisoDb() {
 const LIMITE_PEDIDOS = 300;
 const muroVacio = () => ({
   pedidos: null, campanas: null, personas: new Map(), errorPersonas: '', pendientes: new Map(), equipo: 0, hayCuentas: false,
-  error: '', cuando: 0, cargando: false, repetir: false, msg: null, filtroCamp: 'todas', filtroEstado: 'pendientes',
+  error: '', cuando: 0, cargando: false, repetir: false, msg: null, filtroCamp: 'todas', filtroEstado: 'todos',
 });
 let muro = muroVacio(), relojMuro = null, cajaMuro = null, botonMuro = null, filtrosMuro = null, cuentaMuro = null;
 function pararMuro() { clearInterval(relojMuro); relojMuro = null; }
@@ -1541,7 +1541,7 @@ const campanaDe = (id) => (muro.campanas || []).find((c) => c.id === id) || (cam
 
 function pintarMuro(v) {
   const titulo = el('h2', { text: 'Pedidos de oración' });
-  const explica = el('p', { class: 'ayuda', text: 'Los pedidos de oración son privados: la gente los manda desde la app y acá los ves todos, con el nombre y el celular de quien lo mandó (aunque haya elegido "anónimo"). Nadie más los ve. Los que llegan a una campaña quedan pendientes hasta que toques "Mostrar en la campaña": desde ahí los ven solo las personas que pusieron el código de esa campaña. Si no querés publicarlo, tocá "No mostrar" (a quien lo mandó le aparece "Lo recibió el equipo"). Con "Ocultar" sacás uno que ya estaba publicado. Los "solo para el equipo" no se muestran en ningún lado.' });
+  const explica = el('p', { class: 'ayuda', text: 'Los pedidos de oración son privados: la gente los manda desde la app y acá los ves todos, con el nombre y el celular de quien lo mandó (aunque haya elegido "anónimo"). Nadie más los ve. Los que se mandan a una campaña se publican al instante en esa campaña (los ven solo quienes pusieron su código): si alguno no corresponde, tocá "Ocultar" o "Borrar". Los "solo para el equipo" no los ve nadie más, pero podés pasar cualquiera a una campaña con "Pasar a la campaña".' });
   cajaMuro = botonMuro = filtrosMuro = cuentaMuro = null;
   if (!hayDb()) {
     pararMuro();
@@ -1564,7 +1564,7 @@ function pintarMuro(v) {
   cuentaMuro = el('span', { class: 'chip aprox oculto' });
   titulo.append(cuentaMuro);
   const selCamp = el('select', { id: 'filtroCamp' });
-  const selEstado = el('select', { id: 'filtroEstado' }, ...[['pendientes', 'Pendientes'], ['publicados', 'Publicados'], ['rechazados', 'No publicados'], ['todos', 'Todos']].map(([val, t]) => el('option', { value: val, text: t })));
+  const selEstado = el('select', { id: 'filtroEstado' }, ...[['todos', 'Todos'], ['publicados', 'Publicados'], ['rechazados', 'Ocultos']].map(([val, t]) => el('option', { value: val, text: t })));
   const filtrar = () => { muro.pedidos = null; cargarMuro(); pintarListaMuro(); };
   selCamp.addEventListener('change', () => { muro.filtroCamp = selCamp.value; filtrar(); });
   selEstado.addEventListener('change', () => { muro.filtroEstado = selEstado.value; filtrar(); });
@@ -1625,7 +1625,7 @@ async function cargarMuro() {
     const [rp, cs, sinMostrar] = await Promise.all([
       db(rutaPedidos(f)),
       leerTodas('campanas?select=id,nombre,codigo,activa,creada&order=creada.desc,id.asc'),
-      leerTodas('pedidos?select=campana&revisado=eq.false&order=id.asc'),
+      leerTodas('pedidos?select=campana&revisado=eq.false&visible=eq.false&order=id.asc'),
     ]);
     if (!rp.ok) throw await errorDb(rp);
     const xs = await rp.json();
@@ -1728,7 +1728,14 @@ function tarjetaPedido(p) {
   const de = persona ? [nombreReg(persona) || '(sin nombre)', String(persona.celular || '').trim()].filter(Boolean).join(' · ')
     : muro.errorPersonas ? 'no se pudo leer' : 'sin datos de registro (los borraron o todavía no los completó)';
   const botones = [];
-  // Los "solo para el equipo" no tienen dónde mostrarse: solo se pueden borrar.
+  // Los "solo para el equipo" se pueden pasar a una campaña (se publican ahí con el nombre o "Anónimo", como los mandó la persona).
+  const campanasActivas = (muro.campanas || []).filter((c) => c.activa);
+  if (!p.campana && campanasActivas.length) {
+    const sel = el('select', { 'aria-label': 'Campaña', style: 'width:auto;max-width:220px;height:34px;padding:4px 8px;font-size:14px' }, ...campanasActivas.map((c) => el('option', { value: c.id, text: c.nombre })));
+    const pasar = el('button', { class: 'btn chico', type: 'button', text: 'Pasar a la campaña' });
+    pasar.addEventListener('click', () => pasarACampana(p, sel.value, pasar));
+    botones.push(sel, pasar);
+  }
   if (p.campana) {
     const b = p.visible
       ? el('button', { class: 'btn sec chico', type: 'button', text: 'Ocultar' })
@@ -1752,7 +1759,7 @@ function tarjetaPedido(p) {
         ? el('span', { class: 'chip', text: 'Campaña: ' + (c ? c.nombre + (c.activa ? '' : ' (pausada)') : '(sin nombre)') })
         : el('span', { class: 'chip equipo', text: 'Solo para el equipo' }),
       el('span', { class: 'chip gris', text: String(p.cat || 'Otro') }),
-      p.campana ? el('span', { class: p.visible ? 'chip verde' : p.revisado ? 'chip gris' : 'chip aprox', text: p.visible ? 'Publicado' : p.revisado ? 'No publicado' : 'Pendiente' }) : null,
+      p.campana ? el('span', { class: p.visible ? 'chip verde' : p.revisado ? 'chip gris' : 'chip aprox', text: p.visible ? 'Publicado' : p.revisado ? 'Oculto' : 'Pendiente' }) : null,
       p.contestada ? el('span', { class: 'chip verde', text: 'Contestada' }) : null,
       p.idioma === 'en' ? el('span', { class: 'chip gris', text: 'En inglés' }) : null),
     el('p', { class: 'pedido-texto', text: String(p.texto || '') }),
@@ -1764,6 +1771,26 @@ function tarjetaPedido(p) {
 }
 
 // Mostrar u ocultar en su campaña. Se confirma con la fila que devuelve la base (si no deja, devuelve 0 filas).
+// Pasa un pedido "solo para el equipo" a una campaña y lo publica ahí.
+async function pasarACampana(p, campana, boton) {
+  const c = campanaDe(String(campana));
+  if (!c) return;
+  if (!confirm(`¿Pasar este pedido a la campaña "${c.nombre}"? Lo van a ver las personas que pusieron el código de esa campaña, ${p.anonimo ? 'como "Anónimo"' : 'con el nombre de quien lo mandó'}.`)) return;
+  boton.disabled = true;
+  try {
+    const r = await db('pedidos?id=eq.' + encodeURIComponent(String(p.id)) + '&select=id,campana,visible', { method: 'PATCH', headers: { Prefer: 'return=representation' }, body: JSON.stringify({ campana: c.id, visible: true, revisado: true }) });
+    if (!r.ok) throw await errorDb(r);
+    const xs = await r.json().catch(() => null);
+    if (!Array.isArray(xs) || !xs.length || xs[0].campana !== c.id) throw new Error(`La base no dejó cambiarlo: el panel tiene que entrar con el usuario ${SUPA_EMAIL} y hay que haber corrido supabase/setup.sql.`);
+    if (!p.revisado) muro.equipo = Math.max(0, muro.equipo - 1);
+    p.campana = c.id; p.visible = true; p.revisado = true;
+    if (muro.pedidos && muro.filtroCamp === 'equipo') muro.pedidos = muro.pedidos.filter((x) => x.id !== p.id);
+    camp.cuando = 0;
+    muro.msg = nota(true, `Listo: ya está en la campaña "${c.nombre}".`);
+  } catch (e) { muro.msg = nota(false, 'No se pasó: ' + e.message); boton.disabled = false; }
+  pintarListaMuro();
+}
+
 async function cambiarVisible(p, visible, boton) {
   boton.disabled = true;
   const c = campanaDe(String(p.campana));
@@ -1772,7 +1799,7 @@ async function cambiarVisible(p, visible, boton) {
     if (!r.ok) throw await errorDb(r);
     const xs = await r.json().catch(() => null);
     if (!Array.isArray(xs) || !xs.length || xs[0].visible !== visible) throw new Error(`La base no dejó cambiarlo: el panel tiene que entrar con el usuario ${SUPA_EMAIL} y hay que haber corrido supabase/setup.sql.`);
-    const eraPendiente = !p.revisado;
+    const eraPendiente = !p.revisado && !p.visible;
     p.visible = visible; p.revisado = true;
     const k = String(p.campana);
     if (eraPendiente) muro.pendientes.set(k, Math.max(0, (muro.pendientes.get(k) || 0) - 1));
@@ -1981,7 +2008,7 @@ function verPedidosDe(c) {
   const k = camp.cuentas.get(c.id) || cuentasVacias();
   if (camp.lista) muro.campanas = camp.lista.map((x) => ({ ...x }));
   muro.filtroCamp = c.id;
-  muro.filtroEstado = k.pendientes ? 'pendientes' : 'todos';
+  muro.filtroEstado = 'todos';
   muro.pedidos = null; muro.cuando = 0;
   irA('muro');
 }
