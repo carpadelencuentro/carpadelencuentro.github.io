@@ -239,10 +239,50 @@ function campo(etiqueta, obj, clave, opts = {}) {
 
 // Inglés: la app se ve en inglés en los celulares que no están en español.
 // Cada texto se traduce solo y se puede corregir a mano; se guarda en datos.en.
+// Palabras de la app que el traductor automático traduce mal o en minúscula ("preachings"): van fijas, como en la app.
+const TRADUCCIONES_FIJAS = {
+  'Inicio': 'Home', 'Eventos': 'Events', 'Encuentros': 'Events', 'Prédicas': 'Sermons', 'Oración': 'Prayer', 'Biblia': 'Bible',
+  'Iglesias cerca': 'Churches nearby', 'Ofrendar': 'Give', 'Novedades': 'News',
+  'Podemos orar por vos': 'We can pray for you', 'Encontrá dónde congregarte': 'Find a place to worship',
+  'Ayudá a llevar la carpa': 'Help take the tent further', 'Escuchá o mirá cada noche': 'Listen to or watch every night',
+  'Escuchá las charlas más destacadas': 'Listen to the most watched talks',
+};
+// Nombres que no se traducen (el traductor pasaba "Carpa Salto" a "Jump Tent"). Los largos primero.
+const NOMBRES_PROPIOS = ['Carpa del Encuentro', 'Villa del Carmen', 'Ciudad del Carmen', 'El Carmen', 'Juan Lacaze', 'San Carlos', 'Tacuarembó', 'Maldonado', 'Paysandú', 'Montevideo', 'Colonia', 'Durazno', 'Carmelo', 'Rosario', 'Rocha', 'Salto', 'Chuy', 'Carpa'];
+// "la carpa" no es el pez ("carp"): siempre "tent".
+const PALABRAS_FIJAS = [['carpas', 'tents'], ['carpa', 'tent']];
+const conNombre = (t) => NOMBRES_PROPIOS.some((n) => new RegExp(`(?<!\\p{L})${n}(?!\\p{L})`, 'u').test(t));
+// Si el español empieza con mayúscula, el inglés también.
+const comoElOriginal = (es, en) => (/^\p{Lu}/u.test(es) && /^\p{Ll}/u.test(en) ? en.charAt(0).toUpperCase() + en.slice(1) : en);
 async function traducir(t) {
-  const r = await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=es&tl=en&dt=t&q=' + encodeURIComponent(t));
+  const fija = TRADUCCIONES_FIJAS[String(t).trim()];
+  if (fija) return fija;
+  // Los nombres propios viajan como marcas que el traductor no toca, y después se vuelven a poner.
+  const nombres = [];
+  const marcar = (x, es, en) => x.replace(new RegExp(`(?<!\\p{L})${es}(?!\\p{L})`, 'gu'), () => { nombres.push(en); return ` QX${nombres.length - 1}QX `; });
+  const marcado = PALABRAS_FIJAS.reduce((x, [es, en]) => marcar(x, es, en), NOMBRES_PROPIOS.reduce((x, n) => marcar(x, n, n), String(t)));
+  const r = await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=es&tl=en&dt=t&q=' + encodeURIComponent(marcado));
   if (!r.ok) throw new Error('traductor');
-  return (await r.json())[0].map((p) => p[0]).join('');
+  const en = (await r.json())[0].map((p) => p[0]).join('').replace(/\s?QX\s?(\d+)\s?QX\s?/gi, (m, i) => (m.startsWith(' ') ? ' ' : '') + (nombres[+i] ?? '') + (m.endsWith(' ') ? ' ' : ''));
+  return comoElOriginal(t, en.replace(/\s{2,}/g, ' ').trim());
+}
+
+// Una sola vez: corrige las traducciones automáticas que ya estaban guardadas (palabras de la app mal o en
+// minúscula y nombres de lugares traducidos). Queda como cambio sin guardar para que lo confirmes.
+async function repararTraducciones() {
+  if (!datos || datos.config.traducciones_v2) return;
+  let cambiadas = 0;
+  for (const [es, en] of Object.entries(datos.en || {})) {
+    let nuevo = TRADUCCIONES_FIJAS[es] || null;
+    if (!nuevo && conNombre(es)) { try { nuevo = await traducir(es); } catch (e) {} }
+    if (!nuevo) nuevo = comoElOriginal(es, en);
+    if (!datos) return;
+    if (nuevo && nuevo !== en) { datos.en[es] = nuevo; cambiadas++; }
+  }
+  datos.config.traducciones_v2 = true;
+  if (!cambiadas) return;
+  cambio(); pintar();
+  $('#estado').textContent = `Corregimos ${cambiadas} ${cambiadas === 1 ? 'traducción' : 'traducciones'} al inglés: tocá "Guardar cambios" para que se vean en la app.`;
 }
 
 function textosATraducir() {
@@ -2399,6 +2439,7 @@ async function abrirPanel(pass, refresh = null) {
   if (recordar) { clearInterval(relojSesion); guardarRecordado(); }
   else { await olvidarRecordado(); vigilarSesion(); }
   pintarTabs(); pintar();
+  repararTraducciones();
   if (recuperado) { cambio(); $('#estado').textContent = 'Recuperamos tus cambios sin guardar. Tocá "Guardar cambios".'; }
 }
 
