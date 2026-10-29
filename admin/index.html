@@ -64,8 +64,8 @@
   input.check { width:20px; height:20px; padding:0; margin:0; accent-color:var(--azul2); }
   .check-fila { display:flex; gap:8px; align-items:center; margin-top:12px; font-weight:700; cursor:pointer; }
   .editor-grid { display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:18px; align-items:start; }
-  @media (max-width:900px) { .editor-grid { grid-template-columns:1fr; } .previa-col { order:-1; } }
-  .previa-col { position:sticky; top:12px; }
+  .previa-col { position:sticky; top:80px; }
+  @media (max-width:900px) { .editor-grid { grid-template-columns:1fr; } .previa-col { order:-1; position:static; } }
   .previa-cab { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
   .tel { width:290px; max-width:100%; margin:0 auto; border:10px solid #0B1638; border-radius:36px; overflow:hidden; background:#fff; box-shadow:0 18px 40px rgba(11,22,56,.25); display:flex; flex-direction:column; height:600px; }
   .tel-barra { background:#0251B8; color:#fff; display:flex; align-items:center; gap:8px; padding:14px 12px 12px; flex:none; }
@@ -85,6 +85,90 @@
   .tel-flecha { position:absolute; right:10px; bottom:10px; width:28px; height:28px; border-radius:50%; background:#fff; color:#1F3FA8; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:22px; line-height:1; padding-bottom:3px; box-sizing:border-box; }
   .tel-tabs { display:flex; justify-content:space-around; border-top:1px solid #E3E6EC; padding:8px 4px 12px; flex:none; font-size:10px; font-weight:700; color:#5A5F75; }
   .tel-tabs .on { color:#1F3FA8; }
+  /* Vistas previas: el celular entra en la pantalla (arriba la barra azul del panel, abajo la de guardar). */
+  .tel { height:clamp(400px, calc(100vh - 230px), 600px); }
+  .tel.con-selector { height:clamp(380px, calc(100vh - 320px), 600px); }
+  @media (max-width:900px) { .tel, .tel.con-selector { height:560px; } }
+  .tel-cuerpo { position:relative; }
+  .tel-barra b { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .tel-atras { font-size:28px; line-height:20px; font-weight:600; padding:0 4px 4px 0; }
+  .tel-tabs span { flex:1; min-width:0; text-align:center; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; padding:0 2px; }
+  .tel-foco { outline:2px dashed #E0A800; outline-offset:2px; border-radius:6px; }
+  .btn.chico.on { background:var(--tinta); color:#fff; border-color:var(--tinta); }
+  .previa-pantallas { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px; }
+  .nota-previa { font-size:13px; margin:8px 0 0; text-align:center; }
+  /* Maquetas de las pantallas fijas (pestaña Pestañas y textos) */
+  .tm-sec { font-size:15px; font-weight:800; margin:14px 0 4px; overflow-wrap:anywhere; }
+  .tm-sub { display:block; font-size:11.5px; font-weight:500; color:#5A5F75; margin:2px 0 8px; line-height:1.4; overflow-wrap:anywhere; white-space:pre-line; }
+  .tm-subtabs { display:flex; gap:16px; border-bottom:1px solid #E3E6EC; font-size:12px; font-weight:700; color:#5A5F75; margin-bottom:10px; }
+  .tm-subtabs span { padding-bottom:6px; }
+  .tm-subtabs .on { color:#1F3FA8; box-shadow:inset 0 -2px #1F3FA8; }
+  .tm-datos { display:flex; gap:6px; margin:8px 0 4px; }
+  .tm-dato { flex:1; min-width:0; background:#F4F5F8; border-radius:10px; padding:6px 8px; }
+  .tm-soft .tm-dato { background:#fff; }
+  .tm-dato small { display:block; font-size:9.5px; font-weight:700; color:#5A5F75; }
+  .tm-dato b { display:block; font-size:12px; overflow-wrap:anywhere; }
+  .tm-gris { background:#E3E6EC; border-radius:6px; }
+  .tm-fila { display:flex; gap:10px; align-items:center; padding:7px 0; }
+  .tm-mini { width:62px; height:38px; flex:none; border-radius:8px; }
+  .tm-lineas { flex:1; display:flex; flex-direction:column; gap:6px; }
+  .tm-flex { flex:1; min-width:0; }
+  .tm-video { aspect-ratio:16/9; border-radius:12px; margin-bottom:4px; }
+  .tm-soft { background:#F4F5F8; border-radius:14px; padding:12px; margin-bottom:10px; }
+  .tm-soft.tm-fila { padding:10px 12px; }
+  .tm-grande { font-size:18px; font-weight:800; line-height:1.2; overflow-wrap:anywhere; }
+  .tm-tit { display:block; font-size:14px; overflow-wrap:anywhere; }
+  .tm-caja { border:1px solid #E3E6EC; border-radius:14px; padding:10px; display:flex; gap:10px; align-items:center; }
+  .tm-caja b, .tm-fila b { display:block; font-size:12.5px; overflow-wrap:anywhere; }
+  .tm-ico { width:34px; height:34px; border-radius:10px; flex:none; display:flex; align-items:center; justify-content:center; }
+  .tm-ico.verde { background:#E4F2EA; color:#1B6E45; }
+  .tm-ico.azul { background:#16307F; color:#fff; }
+  .tm-chev { color:#8A90A6; font-size:20px; font-weight:700; }
+  .tm-buscar, .tm-input { background:#F4F5F8; border-radius:10px; padding:9px 10px; font-size:11.5px; color:#8A90A6; overflow-wrap:anywhere; }
+  .tm-input { background:#fff; border:1px solid #E3E6EC; }
+  .tm-input.alto { height:56px; margin:8px 0; }
+  .tm-btn { background:#1F3FA8; color:#fff; border-radius:10px; text-align:center; font-weight:800; font-size:12px; padding:9px 12px; }
+  .tm-codigo { display:flex; gap:6px; } .tm-codigo .tm-input { flex:1; }
+  .tm-foto { height:118px; border-radius:14px; background-size:cover; background-position:center; margin-bottom:10px; }
+  .tm-dia { background:#1F3FA8; color:#fff; border-radius:16px; padding:14px; margin-bottom:12px; }
+  .tm-dia small { display:block; text-transform:uppercase; letter-spacing:.06em; font-weight:800; font-size:10.5px; color:#C8D3F5; margin-bottom:12px; overflow-wrap:anywhere; }
+  .tm-dia .tm-gris { background:rgba(255,255,255,.25); }
+  .tm-cita { margin-top:12px; }
+  .tm-toggle { width:34px; height:20px; border-radius:999px; background:#C9CEDB; position:relative; flex:none; }
+  .tm-toggle::after { content:''; position:absolute; left:3px; top:3px; width:14px; height:14px; border-radius:50%; background:#fff; }
+  .wa-previa { margin:12px 0 4px; padding:10px; border:1.5px dashed #C9CEDB; border-radius:12px; background:#ECE5DD; }
+  .wa-previa small { display:block; color:#3F4560; font-weight:700; font-size:10.5px; margin-bottom:6px; }
+  .wa-burbuja { background:#DCF8C6; color:#141A33; border-radius:10px 10px 2px 10px; padding:7px 9px; font-size:11.5px; line-height:1.4; white-space:pre-line; overflow-wrap:anywhere; margin-left:auto; max-width:92%; width:fit-content; }
+  /* Pantallas nuevas (pestaña Pantallas) */
+  .pag-lista { display:grid; grid-template-columns:repeat(auto-fill, minmax(250px, 1fr)); gap:8px; }
+  .pag-item { cursor:pointer; margin:0; padding:12px; }
+  .pag-item:focus-visible { outline:2px solid var(--azul2); outline-offset:2px; }
+  .pag-item.on { border-color:var(--azul2); box-shadow:0 0 0 2px #C8D3F5; }
+  .pag-item .item-cab span:not(.chip):not(.pag-ini) { display:block; overflow-wrap:anywhere; }
+  .pag-titulo { overflow-wrap:anywhere; }
+  .item-cab .pag-ini { width:52px; height:52px; border-radius:10px; background:var(--azul2); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:22px; flex:none; }
+  /* Las pestañas con vista previa del celular usan más ancho en pantallas grandes. */
+  main:has(.editor-grid) { max-width:1120px; }
+  .bloque.foco { border-color:var(--azul2); box-shadow:0 0 0 2px #E9EEFB; }
+  .bloque-cab { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .bloque-cab .acciones { margin:0 0 0 auto; gap:6px; }
+  .tp { margin:0 0 10px; cursor:pointer; }
+  .tp-titulo { font-size:20px; font-weight:800; line-height:1.2; color:#141A33; overflow-wrap:anywhere; }
+  .tp-texto { font-size:13px; line-height:1.5; color:#3F4560; white-space:pre-line; overflow-wrap:anywhere; }
+  .tp-vacio { color:#9AA0B4 !important; font-style:italic; }
+  img.tp-foto { width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:14px; display:block; background:#F4F5F8; }
+  .tp-boton { display:flex; align-items:center; justify-content:center; min-height:42px; padding:9px 12px; border-radius:12px; background:#1F3FA8; color:#fff; font-weight:800; font-size:13.5px; text-align:center; overflow-wrap:anywhere; }
+  .tp-boton.tp-vacio { color:rgba(255,255,255,.75) !important; }
+  .tp-boton.apagado { background:#C9CEDB; color:#3F4560; }
+  .tp-aviso { display:block; margin-top:4px; font-size:11px; font-weight:700; color:#B3261E; text-align:center; }
+  .tp-boton.navega:hover { filter:brightness(1.1); }
+  .tp-video { position:relative; border-radius:14px; overflow:hidden; aspect-ratio:16/9; background:#0B1638; display:flex; align-items:center; justify-content:center; color:#C8D3F5; font-size:12px; font-weight:700; }
+  .tp-video img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .tp-play { position:relative; width:46px; height:46px; border-radius:50%; background:rgba(11,22,56,.72); box-shadow:0 0 0 2px rgba(255,255,255,.85); }
+  .tp-play::after { content:''; position:absolute; left:18px; top:14px; border-left:14px solid #fff; border-top:9px solid transparent; border-bottom:9px solid transparent; }
+  .tp-versiculo { background:#E9EEFB; border-radius:14px; padding:12px 14px; }
+  .tp-versiculo p { margin:0; font-size:13.5px; line-height:1.5; font-weight:600; color:#141A33; white-space:pre-line; overflow-wrap:anywhere; }
+  .tp-versiculo b { display:block; margin-top:6px; font-size:12px; color:#1F3FA8; overflow-wrap:anywhere; }
   .meta { color:var(--gris); font-size:13px; font-weight:600; margin:6px 0 0; display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
   .pedido-texto { margin:8px 0 0; white-space:pre-line; overflow-wrap:anywhere; line-height:1.45; }
   .reg { display:flex; align-items:center; gap:12px; padding:12px 14px; border-bottom:1px solid var(--linea); flex-wrap:wrap; }
@@ -208,14 +292,16 @@ function el(tag, attrs = {}, ...hijos) {
     if (k === 'on') for (const [ev, fn] of Object.entries(v)) e.addEventListener(ev, fn);
     else if (k === 'text') e.textContent = v;
     else if (k === 'value') e.value = v ?? '';
-    else e.setAttribute(k, v);
+    else if (v != null && v !== false) e.setAttribute(k, v); // null = sin ese atributo (por ejemplo, un botón que no está apagado)
   }
   for (const h of hijos.flat()) if (h != null) e.append(h);
   return e;
 }
 
 let version = 0;
-function cambio() { sucio = true; version++; $('#guardar').disabled = false; $('#estado').textContent = 'Hay cambios sin guardar'; $('#estado').className = 'estado'; if (tab === 'inicio') pintarPreviaInicio(); }
+function cambio() { sucio = true; version++; $('#guardar').disabled = false; $('#estado').textContent = 'Hay cambios sin guardar'; $('#estado').className = 'estado'; repintarPrevia(); }
+// La vista previa del celular de la pestaña abierta se actualiza mientras escribís.
+function repintarPrevia() { if (tab === 'inicio') pintarPreviaInicio(); else if (tab === 'textos') pintarPreviaTextos(); else if (tab === 'paginas') pintarPreviaPagina(); }
 
 const esHttps = (u) => { try { const x = new URL(String(u)); return x.protocol === 'https:' && !!x.hostname; } catch (e) { return false; } };
 const MAX_LINEA = 200, MAX_TEXTO = 3000;
@@ -239,6 +325,21 @@ function campo(etiqueta, obj, clave, opts = {}) {
 
 // Inglés: la app se ve en inglés en los celulares que no están en español.
 // Cada texto se traduce solo y se puede corregir a mano; se guarda en datos.en.
+async function traducir(t) {
+  // Los textos de fábrica de la app ya tienen su inglés: se usa ese, así queda igual que en la app.
+  if (Object.prototype.hasOwnProperty.call(INGLES_APP, t)) return INGLES_APP[t];
+  const fija = TRADUCCIONES_FIJAS[String(t).trim()];
+  if (fija) return fija;
+  // Los nombres propios viajan como marcas que el traductor no toca, y después se vuelven a poner.
+  const nombres = [];
+  const marcar = (x, es, en) => x.replace(new RegExp(`(?<!\\p{L})${es}(?!\\p{L})`, 'gu'), () => { nombres.push(en); return ` QX${nombres.length - 1}QX `; });
+  const marcado = PALABRAS_FIJAS.reduce((x, [es, en]) => marcar(x, es, en), NOMBRES_PROPIOS.reduce((x, n) => marcar(x, n, n), String(t)));
+  const r = await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=es&tl=en&dt=t&q=' + encodeURIComponent(marcado));
+  if (!r.ok) throw new Error('traductor');
+  const en = (await r.json())[0].map((p) => p[0]).join('').replace(/\s?QX\s?(\d+)\s?QX\s?/gi, (m, i) => (m.startsWith(' ') ? ' ' : '') + (nombres[+i] ?? '') + (m.endsWith(' ') ? ' ' : ''));
+  return comoElOriginal(t, en.replace(/\s{2,}/g, ' ').trim());
+}
+
 // Palabras de la app que el traductor automático traduce mal o en minúscula ("preachings"): van fijas, como en la app.
 const TRADUCCIONES_FIJAS = {
   'Inicio': 'Home', 'Eventos': 'Events', 'Encuentros': 'Events', 'Prédicas': 'Sermons', 'Oración': 'Prayer', 'Biblia': 'Bible',
@@ -254,18 +355,6 @@ const PALABRAS_FIJAS = [['carpas', 'tents'], ['carpa', 'tent']];
 const conNombre = (t) => NOMBRES_PROPIOS.some((n) => new RegExp(`(?<!\\p{L})${n}(?!\\p{L})`, 'u').test(t));
 // Si el español empieza con mayúscula, el inglés también.
 const comoElOriginal = (es, en) => (/^\p{Lu}/u.test(es) && /^\p{Ll}/u.test(en) ? en.charAt(0).toUpperCase() + en.slice(1) : en);
-async function traducir(t) {
-  const fija = TRADUCCIONES_FIJAS[String(t).trim()];
-  if (fija) return fija;
-  // Los nombres propios viajan como marcas que el traductor no toca, y después se vuelven a poner.
-  const nombres = [];
-  const marcar = (x, es, en) => x.replace(new RegExp(`(?<!\\p{L})${es}(?!\\p{L})`, 'gu'), () => { nombres.push(en); return ` QX${nombres.length - 1}QX `; });
-  const marcado = PALABRAS_FIJAS.reduce((x, [es, en]) => marcar(x, es, en), NOMBRES_PROPIOS.reduce((x, n) => marcar(x, n, n), String(t)));
-  const r = await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=es&tl=en&dt=t&q=' + encodeURIComponent(marcado));
-  if (!r.ok) throw new Error('traductor');
-  const en = (await r.json())[0].map((p) => p[0]).join('').replace(/\s?QX\s?(\d+)\s?QX\s?/gi, (m, i) => (m.startsWith(' ') ? ' ' : '') + (nombres[+i] ?? '') + (m.endsWith(' ') ? ' ' : ''));
-  return comoElOriginal(t, en.replace(/\s{2,}/g, ' ').trim());
-}
 
 // Una sola vez: corrige las traducciones automáticas que ya estaban guardadas (palabras de la app mal o en
 // minúscula y nombres de lugares traducidos). Queda como cambio sin guardar para que lo confirmes.
@@ -273,7 +362,7 @@ async function repararTraducciones() {
   if (!datos || datos.config.traducciones_v2) return;
   let cambiadas = 0;
   for (const [es, en] of Object.entries(datos.en || {})) {
-    let nuevo = TRADUCCIONES_FIJAS[es] || null;
+    let nuevo = (Object.prototype.hasOwnProperty.call(INGLES_APP, es) ? INGLES_APP[es] : null) || TRADUCCIONES_FIJAS[es] || null;
     if (!nuevo && conNombre(es)) { try { nuevo = await traducir(es); } catch (e) {} }
     if (!nuevo) nuevo = comoElOriginal(es, en);
     if (!datos) return;
@@ -292,6 +381,11 @@ function textosATraducir() {
   (Array.isArray(datos.inicio) ? datos.inicio : []).forEach((s) => { add(s.titulo); add(s.sub); add(s.pill); });
   ['proximo_titulo', 'proximo_fecha', 'proximo_lugar'].forEach((k) => add(datos.config[k]));
   datos.iglesias.forEach((c) => { add(c.nombre); add(c.reuniones); });
+  // Pestañas, textos de las pantallas fijas y las pantallas nuevas (títulos, textos, botones, versículos y citas).
+  Object.values(datos.pestanas && typeof datos.pestanas === 'object' ? datos.pestanas : {}).forEach(add);
+  // El mensaje de WhatsApp para anotarse va siempre en español: no se traduce.
+  Object.entries(datos.textos && typeof datos.textos === 'object' ? datos.textos : {}).forEach(([k, t]) => { if (k !== 'eventos.anotarse_mensaje') add(t); });
+  (Array.isArray(datos.paginas) ? datos.paginas : []).forEach((p) => { add(p.titulo); (Array.isArray(p.bloques) ? p.bloques : []).forEach((b) => { add(b.texto); add(b.cita); }); });
   return [...new Set(xs)];
 }
 
@@ -313,7 +407,9 @@ function campoEn(etiqueta, obj, clave, opts = {}) {
   const en = opts.multilinea ? el('textarea', { id, class: 'en' }) : el('input', { id, class: 'en' });
   en.maxLength = opts.multilinea ? MAX_TEXTO : MAX_LINEA * 2;
   en.value = valorEn();
-  en.placeholder = 'Se traduce solo cuando escribís en español';
+  // placeholderEn: lo que muestra la app en inglés mientras el campo en español está vacío (texto de fábrica).
+  const enVacio = opts.placeholderEn || 'Se traduce solo cuando escribís en español';
+  en.placeholder = enVacio;
   en.addEventListener('input', () => {
     if (opts.lineas) { const es = lineas(), xs = en.value.split('\n'); es.forEach((l, i) => { if (xs[i] != null) datos.en[l] = xs[i].trim(); }); }
     else if (obj[clave]) datos.en[obj[clave]] = en.value;
@@ -325,8 +421,9 @@ function campoEn(etiqueta, obj, clave, opts = {}) {
     timer = setTimeout(async () => {
       const faltan = (opts.lineas ? lineas() : [String(obj[clave] ?? '')]).filter((t) => t.trim() && !datos.en[t]);
       if (faltan.length) en.placeholder = 'Traduciendo...';
-      try { for (const t of faltan) datos.en[t] = await traducir(t); } catch (e) { en.placeholder = 'No se pudo traducir: escribilo a mano'; }
+      try { for (const t of faltan) datos.en[t] = await traducir(t); en.placeholder = enVacio; } catch (e) { en.placeholder = 'No se pudo traducir: escribilo a mano'; }
       en.value = valorEn();
+      if (faltan.length) repintarPrevia();
     }, 700);
   };
   const caja = campo(etiqueta, obj, clave, { ...opts, alCambiar: () => { if (opts.alCambiar) opts.alCambiar(); programar(); } });
@@ -494,8 +591,10 @@ const FOTOS_APP = [
 const ACCIONES_INICIO = [
   ['eventos', 'Ir a Eventos'], ['predicas', 'Ir a Prédicas'], ['oracion', 'Ir a Oración'], ['biblia', 'Ir a Biblia'],
   ['iglesias', 'Abrir Iglesias cerca'], ['ofrendar', 'Abrir Ofrendar'], ['conocer', 'Abrir Conocer más'],
-  ['link', 'Abrir un link (https)'], ['nada', 'Nada (solo se muestra)'],
+  ['pagina', 'Abrir una pantalla'], ['link', 'Abrir un link (https)'], ['nada', 'Nada (solo se muestra)'],
 ];
+// Los botones de las pantallas nuevas pueden hacer lo mismo, y además abrir WhatsApp u otra pantalla.
+const ACCIONES_BOTON = ACCIONES_INICIO.flatMap(([k, t]) => k === 'pagina' ? [['whatsapp', 'Abrir WhatsApp'], ['pagina', 'Abrir otra pantalla']] : k === 'nada' ? [['nada', 'Nada (el botón no hace nada)']] : [[k, t]]);
 const SUBIDA = '__subida';
 const srcInicio = (f) => vistasPrevias.get(f) || (esHttps(f) ? f : `../fotos/inicio/${encodeURIComponent(FOTOS_APP.some(([k]) => k === f) ? f : 'carpa')}.jpg`);
 
@@ -518,28 +617,75 @@ function pintarInicio(v) {
 
 // Vista previa: el celular con la pantalla de Inicio tal como la va a ver la gente (en español o en inglés).
 let previaIngles = false;
-function pintarPreviaInicio() {
-  const caja = $('#previaInicio');
-  if (!caja || !datos) return;
-  const t = (x) => (previaIngles && x && datos.en[x]) || x || '';
-  const tarjetas = seccionesInicio().filter((s) => s.visible !== false).map((s, i) => {
+
+// Texto como lo muestra la app: en inglés, si es un texto de fábrica gana el inglés que trae la app (la app mira
+// primero el suyo, lib/idioma.dart); si no, lo traducido en el panel (datos.en).
+function enApp(x) {
+  if (!x) return '';
+  if (!previaIngles) return x;
+  return INGLES_APP[x] || (datos.en && datos.en[x]) || x;
+}
+
+const cabPrevia = (repintar) => el('div', { class: 'previa-cab' }, el('b', { text: 'Vista previa' }),
+  el('button', { class: 'btn sec chico', type: 'button', text: previaIngles ? 'Ver en español' : 'Ver en inglés', on: { click: () => { previaIngles = !previaIngles; repintar(); } } }));
+
+// El celular: barra azul de arriba (con logo, o con flecha para volver), lo de adentro y la barra de pestañas.
+// foco: la clave que se está editando, para marcarla (por ejemplo 'pestana.eventos').
+function telefono({ titulo, atras = false, activa = 0, cuerpo = [], foco = '', claveTitulo = '' }) {
+  const t = el('b', { text: titulo, class: claveTitulo && foco === claveTitulo ? 'tel-foco' : null });
+  return el('div', { class: 'tel' },
+    el('div', { class: 'tel-barra' }, atras ? el('span', { class: 'tel-atras', 'aria-hidden': 'true', text: '‹' }) : el('img', { src: '../img/logo.png', alt: '' }), t),
+    el('div', { class: 'tel-cuerpo' }, ...cuerpo),
+    el('div', { class: 'tel-tabs' }, ...PESTANAS_BASE.map(([k], i) => el('span', { class: ((i === activa ? 'on' : '') + (foco === 'pestana.' + k ? ' tel-foco' : '')).trim() || null, text: enApp(nombrePestana(k)) }))));
+}
+
+// Como en la app: si el nombre de una pestaña no entra, se achica la letra en vez de cortarlo.
+function encajarPestanas(raiz) {
+  raiz.querySelectorAll('.tel-tabs span').forEach((s) => {
+    s.style.fontSize = '';
+    const lugar = s.clientWidth - 4, largo = s.scrollWidth - 4;
+    if (lugar > 0 && largo > lugar) s.style.fontSize = Math.max(6, (10 * lugar) / largo).toFixed(2) + 'px';
+  });
+}
+
+// Si la tarjeta no lleva a ningún lado (o la pantalla que abría ya no existe), la app no le pone la flechita.
+const llevaAAlgo = (s) => !!s.accion && s.accion !== 'nada' && !(s.accion === 'pagina' && !paginaDe(s.pagina));
+
+function tarjetasInicioPrevia() {
+  return seccionesInicio().filter((s) => s.visible !== false).map((s, i) => {
     const foto = el('div', { class: 'tel-foto' });
     foto.style.backgroundImage = `url("${srcInicio(s.foto).replace(/"/g, '%22')}")`;
     return el('div', { class: 'tel-card' + (i === 0 ? ' grande' : '') }, foto, el('div', { class: 'tel-scrim' }),
-      s.pill ? el('span', { class: 'tel-pill', text: t(s.pill) }) : null,
-      el('div', { class: 'tel-textos' }, el('b', { text: t(s.titulo) }), el('span', { text: t(s.sub) })),
-      s.accion && s.accion !== 'nada' ? el('span', { class: 'tel-flecha', text: '›' }) : null);
+      s.pill ? el('span', { class: 'tel-pill', text: enApp(s.pill) }) : null,
+      el('div', { class: 'tel-textos' }, el('b', { text: enApp(s.titulo) }), el('span', { text: enApp(s.sub) })),
+      llevaAAlgo(s) ? el('span', { class: 'tel-flecha', text: '›' }) : null);
   });
-  const tabs = previaIngles ? ['Home', 'Events', 'Sermons', 'Prayer', 'Bible'] : ['Inicio', 'Eventos', 'Prédicas', 'Oración', 'Biblia'];
-  caja.replaceChildren(
-    el('div', { class: 'previa-cab' }, el('b', { text: 'Vista previa' }),
-      el('button', { class: 'btn sec chico', type: 'button', text: previaIngles ? 'Ver en español' : 'Ver en inglés', on: { click: () => { previaIngles = !previaIngles; pintarPreviaInicio(); } } })),
-    el('div', { class: 'tel' },
-      el('div', { class: 'tel-barra' }, el('img', { src: '../img/logo.png', alt: '' }), el('b', { text: 'Carpa del Encuentro' })),
-      el('div', { class: 'tel-cuerpo' },
-        el('p', { class: 'tel-lema', text: previaIngles ? 'Bringing hope in Jesus Christ' : 'Llevando esperanza en Jesucristo' }),
-        ...(tarjetas.length ? tarjetas : [el('p', { class: 'ayuda', text: 'No hay ninguna sección para mostrar.' })])),
-      el('div', { class: 'tel-tabs' }, ...tabs.map((x, i) => el('span', { class: i === 0 ? 'on' : '', text: x })))));
+}
+
+function pintarPreviaInicio() {
+  const caja = $('#previaInicio');
+  if (!caja || !datos) return;
+  const tarjetas = tarjetasInicioPrevia();
+  caja.replaceChildren(cabPrevia(pintarPreviaInicio),
+    telefono({ titulo: tituloInicio(), activa: 0, cuerpo: [
+      el('p', { class: 'tel-lema', text: enApp(valorTexto('inicio.lema')) }),
+      ...(tarjetas.length ? tarjetas : [el('p', { class: 'ayuda', text: 'No hay ninguna sección para mostrar.' })])] }));
+  encajarPestanas(caja);
+}
+
+// Lista para elegir una pantalla nueva (en una sección de Inicio o en un botón). Devuelve el select y cómo volver a llenarlo.
+function selectorPagina(obj, lista, alCambiar) {
+  const sel = el('select', {});
+  const llenar = () => {
+    const hay = lista.some((p) => p.id === obj.pagina);
+    sel.replaceChildren(
+      ...(hay ? [] : [el('option', { value: '', text: lista.length ? 'Elegí una pantalla' : 'Todavía no hay pantallas para elegir' })]),
+      ...lista.map((p) => el('option', { value: p.id, text: p.titulo || '(sin título)' })));
+    sel.value = hay ? obj.pagina : '';
+  };
+  llenar();
+  sel.addEventListener('change', () => { obj.pagina = sel.value; llenar(); if (alCambiar) alCambiar(); cambio(); });
+  return { sel, llenar };
 }
 
 function tarjetaSeccion(s, i) {
@@ -565,7 +711,22 @@ function tarjetaSeccion(s, i) {
   const selAccion = el('select', {}, ...ACCIONES_INICIO.map(([k, t]) => el('option', { value: k, text: t })));
   selAccion.value = ACCIONES_INICIO.some(([k]) => k === s.accion) ? s.accion : 'nada';
   const cajaLink = el('div', { class: selAccion.value === 'link' ? '' : 'oculto' }, campo('Link', s, 'link', { placeholder: 'https://...', https: true, max: 300 }));
-  selAccion.addEventListener('change', () => { s.accion = selAccion.value; cajaLink.classList.toggle('oculto', s.accion !== 'link'); cambio(); });
+  // Abrir una de las pantallas nuevas (pestaña Pantallas).
+  const avisoPag = el('p', { class: 'ayuda error oculto', style: 'margin:6px 0 0' });
+  const mostrarPag = () => {
+    cajaPag.classList.toggle('oculto', s.accion !== 'pagina');
+    const falta = s.accion === 'pagina' && !paginaDe(s.pagina);
+    avisoPag.textContent = paginas().length ? 'Elegí qué pantalla abre: si no, la tarjeta no hace nada.' : 'Todavía no hay pantallas: creá una en la pestaña Pantallas.';
+    avisoPag.classList.toggle('oculto', !falta);
+  };
+  const elegirPag = selectorPagina(s, paginas(), mostrarPag);
+  const cajaPag = el('div', {}, el('label', { text: 'Pantalla que abre' }), elegirPag.sel, avisoPag);
+  mostrarPag();
+  selAccion.addEventListener('change', () => {
+    s.accion = selAccion.value;
+    if (s.accion === 'pagina' && !paginaDe(s.pagina) && paginas().length) { s.pagina = paginas()[0].id; elegirPag.llenar(); }
+    cajaLink.classList.toggle('oculto', s.accion !== 'link'); mostrarPag(); cambio();
+  });
 
   const visible = el('input', { type: 'checkbox', class: 'check' });
   visible.checked = s.visible !== false;
@@ -578,7 +739,7 @@ function tarjetaSeccion(s, i) {
     campoEn('Texto de abajo', s, 'sub', { max: 90 }),
     campoEn('Etiqueta arriba (opcional, por ejemplo: Eventos)', s, 'pill', { max: 24 }),
     el('div', { class: 'fila' }, el('div', {}, el('label', { text: 'Foto' }), selFoto), el('div', {}, el('label', { text: 'Al tocarla' }), selAccion)),
-    cajaLink,
+    cajaLink, cajaPag,
     selectorFoto(() => 'inicio-' + sanitizarNombre(s.titulo || s.id), (url) => { s.foto = url; marcarFoto(); cambio(); }),
     el('label', { class: 'check-fila' }, visible, ' Mostrar en la app'),
     el('div', { class: 'acciones' },
@@ -596,10 +757,13 @@ function nuevaSeccion() {
     { clave: 'foto', etiqueta: 'Foto (después podés subir una desde la PC)', opciones: FOTOS_APP },
     { clave: 'accion', etiqueta: 'Al tocarla', opciones: ACCIONES_INICIO },
     { clave: 'link', etiqueta: 'Link', placeholder: 'https://...', max: 300, visibleSi: (i) => i.accion.value === 'link' },
+    { clave: 'pagina', etiqueta: 'Pantalla que abre', opciones: paginas().length ? paginas().map((p) => [p.id, p.titulo || '(sin título)']) : [['', 'Todavía no hay pantallas: creá una en la pestaña Pantallas']], visibleSi: (i) => i.accion.value === 'pagina' },
   ], (v) => {
     if (!v.titulo) return 'Escribí el título.';
     if (v.accion === 'link' && !esHttps(v.link)) return 'El link tiene que empezar con https://';
+    if (v.accion === 'pagina' && !paginaDe(v.pagina)) return 'Primero creá la pantalla en la pestaña Pantallas.';
     const s = { id: 'seccion-' + Date.now().toString(36), titulo: v.titulo, sub: v.sub, pill: v.pill, foto: v.foto, accion: v.accion, link: v.accion === 'link' ? v.link : '', visible: true };
+    if (v.accion === 'pagina') s.pagina = v.pagina;
     seccionesInicio().push(s);
     cambio(); pintar();
     $('#estado').textContent = 'Sección agregada al final: subila de lugar si querés y tocá Guardar cambios';
@@ -607,8 +771,598 @@ function nuevaSeccion() {
   });
 }
 
+// ---------- Pestañas y textos: los nombres de las pestañas de abajo y los textos fijos de las pantallas de la app ----------
+// Van en contenido.json como "pestanas" y "textos". Si un texto falta o está vacío, la app usa el de fábrica.
+const esObjeto = (x) => !!x && typeof x === 'object' && !Array.isArray(x);
+const PESTANAS_BASE = [['inicio', 'Inicio'], ['eventos', 'Eventos'], ['predicas', 'Prédicas'], ['oracion', 'Oración'], ['biblia', 'Biblia']];
+const MAX_PESTANA = 16;
+// Por pantalla: [clave, etiqueta, texto de fábrica, opciones]. "pantalla" es la maqueta que se muestra al editarlos.
+const TEXTOS_APP = [
+  { pantalla: 'inicio', nombre: 'Inicio', campos: [
+    ['inicio.lema', 'Frase de arriba de las tarjetas', 'Llevando esperanza en Jesucristo'],
+  ] },
+  { pantalla: 'eventos', nombre: 'Eventos', campos: [
+    ['eventos.titulo', 'Nombre del evento (tarjeta grande y Programa)', 'Carpa Salto 2026'],
+    ['eventos.fechas_largas', 'Fechas (debajo del nombre)', 'Martes 22 a sábado 26 de setiembre'],
+    ['eventos.fechas', 'Fechas (cuadrito)', '22 al 26 set'],
+    ['eventos.hora', 'Hora (cuadrito)', '20:00'],
+    ['eventos.entrada', 'Entrada (cuadrito)', 'Gratis'],
+    ['eventos.noches_titulo', 'Título de los videos de las noches', 'Las noches en video'],
+  ] },
+  { pantalla: 'programa', nombre: 'Eventos › Programa', ayuda: 'Es la pantalla que se abre al tocar la tarjeta grande del evento.', campos: [
+    ['eventos.lema', 'Frase del evento', '"Preparate para tu encuentro con Jesucristo"'],
+    ['eventos.anotarse_titulo', 'Título para anotarse', '¿Querés anotarte en este evento?'],
+    ['eventos.anotarse_texto', 'Texto para anotarse (debajo del título)', 'Escribinos al 091 800 800'],
+    ['eventos.anotarse_mensaje', 'Mensaje de WhatsApp al anotarse', 'Hola, quiero anotarme en Carpa Salto 2026. Les escribo desde la app.', { multilinea: true, max: 300, soloEs: true, ayuda: 'Es el mensaje que aparece ya escrito en WhatsApp cuando alguien toca para anotarse. Va siempre en español (lo lee el equipo), aunque la app esté en inglés.' }],
+  ] },
+  { pantalla: 'predicas', nombre: 'Prédicas', campos: [
+    ['predicas.destacadas_titulo', 'Título de las destacadas', 'Destacadas'],
+    ['predicas.destacadas_sub', 'Texto debajo de las destacadas', 'Los videos más vistos del canal.'],
+    ['predicas.recientes_titulo', 'Título de las más recientes', 'Más recientes'],
+  ] },
+  { pantalla: 'oracion', nombre: 'Oración', campos: [
+    ['oracion.form_titulo', 'Título del formulario de pedidos', 'Contanos tu pedido'],
+    ['oracion.campanas_titulo', 'Título de las campañas de oración', 'Campañas de oración'],
+    ['oracion.campanas_texto', 'Texto de las campañas de oración', 'Si la Carpa te pasó un código, ponelo acá para ver los motivos de oración de esa campaña y sumar los tuyos.', { multilinea: true }],
+  ] },
+  { pantalla: 'biblia', nombre: 'Biblia', campos: [
+    ['biblia.titulo_dia', 'Título del versículo del día (la app lo pone en mayúsculas)', 'Versículo del día'],
+    ['biblia.avisar_titulo', 'Título para recibir el versículo cada mañana', 'Avisarme el versículo'],
+    ['biblia.leer_titulo', 'Título para leer el capítulo', 'Leer el capítulo completo'],
+  ] },
+];
+const TEXTOS_FABRICA = Object.fromEntries(TEXTOS_APP.flatMap((g) => g.campos.map(([k, , f]) => [k, f])));
+const ETIQUETAS_TEXTOS = Object.fromEntries(TEXTOS_APP.flatMap((g) => g.campos.map(([k, e]) => [k, e])));
+const maxTexto = (k) => (k === 'eventos.anotarse_mensaje' ? 300 : 200);
+
+// El inglés que ya trae la app para sus textos de fábrica (lib/idioma.dart). Se usa en las vistas previas y, al traducir,
+// para que un texto de fábrica quede en inglés igual que en la app (y no con lo que diga el traductor).
+const INGLES_APP = {
+  'Inicio': 'Home', 'Eventos': 'Events', 'Prédicas': 'Sermons', 'Oración': 'Prayer', 'Biblia': 'Bible',
+  'Llevando esperanza en Jesucristo': 'Bringing hope in Jesus Christ',
+  'Carpa Salto 2026': 'Salto Tent 2026', 'Martes 22 a sábado 26 de setiembre': 'Tuesday 22 to Saturday 26 September',
+  '22 al 26 set': 'Sep 22–26', 'Gratis': 'Free', 'Fechas': 'Dates', 'Hora': 'Time', 'Entrada': 'Entry',
+  '"Preparate para tu encuentro con Jesucristo"': '"Get ready for your encounter with Jesus Christ"',
+  'Las noches en video': 'The nights on video', '¿Querés anotarte en este evento?': 'Would you like to sign up for this event?',
+  'Escribinos al 091 800 800': 'Message us at +598 91 800 800',
+  'Destacadas': 'Featured', 'Los videos más vistos del canal.': 'The most watched videos on the channel.', 'Más recientes': 'Most recent',
+  'Contanos tu pedido': 'Share your prayer request', 'Campañas de oración': 'Prayer campaigns',
+  'Si la Carpa te pasó un código, ponelo acá para ver los motivos de oración de esa campaña y sumar los tuyos.': 'If the Carpa gave you a code, enter it here to see that campaign’s prayer requests and add your own.',
+  'Versículo del día': 'Verse of the day', 'VERSÍCULO DEL DÍA': 'VERSE OF THE DAY',
+  'Programa': 'Schedule', 'Salto 2026': 'Salto 2026', 'Anteriores': 'Past', 'Buscá una prédica': 'Search for a sermon',
+  'Por ejemplo: por la salud de mi mamá': 'For example: for my mom’s health', 'Enviar': 'Send', 'Código': 'Code', 'Entrar': 'Join',
+  'Avisarme el versículo': 'Send me the verse', 'Cada mañana a las 8:00': 'Every morning at 8:00 AM', 'Leer el capítulo completo': 'Read the whole chapter',
+};
+
+function pestanas() { if (!esObjeto(datos.pestanas)) datos.pestanas = Object.fromEntries(PESTANAS_BASE); return datos.pestanas; }
+function textosApp() { if (!esObjeto(datos.textos)) datos.textos = {}; return datos.textos; }
+const nombrePestana = (k) => { const v = pestanas()[k]; return typeof v === 'string' && v.trim() ? v : (PESTANAS_BASE.find(([x]) => x === k) || [, ''])[1]; };
+const valorTexto = (k) => { const v = textosApp()[k]; return typeof v === 'string' && v.trim() ? v : TEXTOS_FABRICA[k] || ''; };
+// Como en la app: con el nombre de fábrica, arriba de Inicio dice "Carpa del Encuentro"; si le cambiaron el nombre, va ese.
+const tituloInicio = () => (nombrePestana('inicio').trim() === 'Inicio' ? 'Carpa del Encuentro' : enApp(nombrePestana('inicio').trim()));
+
+let pantallaTextos = 'inicio', textoFoco = '';
+const PANTALLAS_PREVIA = [['inicio', 'Inicio'], ['eventos', 'Eventos'], ['programa', 'Programa'], ['predicas', 'Prédicas'], ['oracion', 'Oración'], ['biblia', 'Biblia']];
+
+function pintarTextos(v) {
+  const pe = pestanas(), tx = textosApp();
+  // Al entrar a un campo, la vista previa muestra su pantalla y marca ese texto.
+  const conFoco = (caja, pantalla, clave) => {
+    caja.addEventListener('focusin', () => { if (pantallaTextos !== pantalla || textoFoco !== clave) { pantallaTextos = pantalla; textoFoco = clave; pintarPreviaTextos(); } });
+    return caja;
+  };
+  // Vacío = de fábrica: se saca la clave y la app usa su texto.
+  const deFabrica = (obj, k) => () => { if (!String(obj[k] ?? '').trim()) delete obj[k]; };
+  const cajaPestanas = el('div', { class: 'card' },
+    el('h3', { text: 'Pestañas de abajo' }),
+    el('p', { class: 'ayuda', text: `El nombre de cada botón de la barra de abajo de la app. En Eventos, Prédicas, Oración y Biblia también es el título de arriba de la pantalla. En Inicio, con el nombre de fábrica arriba dice "Carpa del Encuentro"; si le ponés otro, arriba va ese. Máximo ${MAX_PESTANA} letras; si lo dejás vacío, vuelve el de fábrica.` }),
+    el('div', { class: 'fila' }, ...PESTANAS_BASE.map(([k, def]) => conFoco(campoEn(def, pe, k, { max: MAX_PESTANA, placeholder: def, placeholderEn: INGLES_APP[def], alCambiar: deFabrica(pe, k) }), k, 'pestana.' + k))));
+  const cajas = TEXTOS_APP.map((g) => el('div', { class: 'card' },
+    el('h3', { text: 'Pantalla ' + g.nombre }),
+    g.ayuda ? el('p', { class: 'ayuda', text: g.ayuda }) : null,
+    // soloEs: la app lo usa siempre en español (no lleva inglés).
+    ...g.campos.map(([k, etiqueta, fabrica, o = {}]) => conFoco((o.soloEs ? campo : campoEn)(etiqueta, tx, k, { max: o.max || 200, multilinea: !!o.multilinea, placeholder: fabrica, placeholderEn: INGLES_APP[fabrica], ayuda: o.ayuda, alCambiar: deFabrica(tx, k) }), g.pantalla, k))));
+  v.replaceChildren(
+    el('h2', { text: 'Pestañas y textos' }),
+    el('p', { class: 'ayuda', text: 'Cambiá los nombres de las pestañas de abajo y los textos fijos de cada pantalla de la app. Si dejás un campo vacío, la app usa el texto de fábrica (el que se ve en gris). En la vista previa del celular ves cómo queda mientras escribís; al tocar "Guardar cambios" se ve al instante en todos los celulares.' }),
+    el('div', { class: 'editor-grid' }, el('div', {}, cajaPestanas, ...cajas), el('div', { id: 'previaTextos', class: 'previa-col' })));
+  pintarPreviaTextos();
+}
+
+// Piezas de las maquetas. Lo gris es lo que la app carga sola (videos, versículo del día).
+const gris = (ancho, alto = 8) => { const d = el('div', { class: 'tm-gris' }); d.style.width = ancho; d.style.height = alto + 'px'; return d; };
+const filaVideo = () => el('div', { class: 'tm-fila' }, el('div', { class: 'tm-gris tm-mini' }), el('div', { class: 'tm-lineas' }, gris('92%'), gris('55%')));
+const fondoFoto = (clase, foto) => { const d = el('div', { class: clase }); d.style.backgroundImage = `url("${srcInicio(foto).replace(/"/g, '%22')}")`; return d; };
+function icono(clase, trazo) {
+  const s = el('span', { class: 'tm-ico ' + clase, 'aria-hidden': 'true' });
+  // Dibujo fijo, armado nodo por nodo (nada de innerHTML).
+  const NS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(NS, 'svg'), path = document.createElementNS(NS, 'path');
+  for (const [k, v] of Object.entries({ viewBox: '0 0 24 24', width: '18', height: '18', fill: 'none', stroke: 'currentColor', 'stroke-width': '2', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' })) svg.setAttribute(k, v);
+  path.setAttribute('d', trazo);
+  svg.append(path);
+  s.append(svg);
+  return s;
+}
+const TRAZO_CHAT = 'M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z';
+const TRAZO_LIBRO = 'M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14zM20 17v4H6.5A2.5 2.5 0 0 1 4 19.5';
+const datosEvento = (t) => el('div', { class: 'tm-datos' }, ...[['Fechas', 'eventos.fechas'], ['Hora', 'eventos.hora'], ['Entrada', 'eventos.entrada']].map(([n, k]) => el('div', { class: 'tm-dato' }, el('small', { text: enApp(n) }), t(k, 'b'))));
+
+// Maqueta de cada pantalla fija con sus textos editables. titulo: si no viene, es el nombre de la pestaña.
+const MAQUETAS = {
+  inicio: (t) => { const xs = tarjetasInicioPrevia(); return { titulo: tituloInicio(), claveTitulo: nombrePestana('inicio') === 'Inicio' ? '' : 'pestana.inicio', cuerpo: [t('inicio.lema', 'p', 'tel-lema'), ...(xs.length ? xs : [el('p', { class: 'ayuda', text: 'No hay ninguna sección para mostrar.' })])] }; },
+  eventos: (t) => ({ gris: true, cuerpo: [
+    el('div', { class: 'tm-subtabs' }, el('span', { class: 'on', text: enApp('Salto 2026') }), el('span', { text: enApp('Anteriores') })),
+    el('div', { class: 'tel-card grande' }, fondoFoto('tel-foto', 'carpa'), el('div', { class: 'tel-scrim' }),
+      el('div', { class: 'tel-textos' }, t('eventos.titulo', 'b'), t('eventos.fechas_largas')), el('span', { class: 'tel-flecha', text: '›' })),
+    datosEvento(t),
+    t('eventos.noches_titulo', 'div', 'tm-sec'),
+    filaVideo(), filaVideo(), filaVideo()] }),
+  programa: (t) => ({ titulo: enApp('Programa'), atras: true, cuerpo: [
+    el('div', { class: 'tm-soft' }, t('eventos.titulo', 'div', 'tm-grande'), t('eventos.lema', 'p', 'tm-sub'), datosEvento(t)),
+    el('div', { class: 'tm-caja' }, icono('verde', TRAZO_CHAT), el('div', { class: 'tm-flex' }, t('eventos.anotarse_titulo', 'b'), t('eventos.anotarse_texto', 'span', 'tm-sub')), el('span', { class: 'tm-chev', text: '›' })),
+    // No es parte de la pantalla: muestra el mensaje que queda escrito en WhatsApp al tocar para anotarse.
+    // Va siempre en español, también en la vista en inglés (como en la app).
+    el('div', { class: 'wa-previa' }, el('small', { text: 'Al tocarlo se abre WhatsApp con este mensaje (siempre en español):' }),
+      el('div', { class: 'wa-burbuja' + (textoFoco === 'eventos.anotarse_mensaje' ? ' tel-foco' : ''), text: valorTexto('eventos.anotarse_mensaje') }))] }),
+  predicas: (t) => ({ gris: true, cuerpo: [
+    el('div', { class: 'tm-buscar', text: enApp('Buscá una prédica') }),
+    t('predicas.destacadas_titulo', 'div', 'tm-sec'), t('predicas.destacadas_sub', 'p', 'tm-sub'),
+    el('div', { class: 'tm-gris tm-video' }), filaVideo(), filaVideo(),
+    t('predicas.recientes_titulo', 'div', 'tm-sec'), filaVideo(), filaVideo()] }),
+  oracion: (t) => ({ cuerpo: [
+    fondoFoto('tm-foto', 'oracion'),
+    el('div', { class: 'tm-soft' }, t('oracion.form_titulo', 'b', 'tm-tit'), el('div', { class: 'tm-input alto', text: enApp('Por ejemplo: por la salud de mi mamá') }), el('div', { class: 'tm-btn', text: enApp('Enviar') })),
+    t('oracion.campanas_titulo', 'div', 'tm-sec'), t('oracion.campanas_texto', 'p', 'tm-sub'),
+    el('div', { class: 'tm-codigo' }, el('div', { class: 'tm-input', text: enApp('Código') }), el('div', { class: 'tm-btn', text: enApp('Entrar') }))] }),
+  biblia: (t) => ({ gris: true, cuerpo: [
+    el('div', { class: 'tm-dia' }, t('biblia.titulo_dia', 'small'), el('div', { class: 'tm-lineas' }, gris('96%', 10), gris('90%', 10), gris('70%', 10)), el('div', { class: 'tm-cita' }, gris('40%', 9))),
+    el('div', { class: 'tm-soft tm-fila' }, el('div', { class: 'tm-flex' }, t('biblia.avisar_titulo', 'b'), el('span', { class: 'tm-sub', text: enApp('Cada mañana a las 8:00') })), el('span', { class: 'tm-toggle' })),
+    el('div', { class: 'tm-fila' }, icono('azul', TRAZO_LIBRO), t('biblia.leer_titulo', 'b', 'tm-flex'), el('span', { class: 'tm-chev', text: '›' }))] }),
+};
+
+function pintarPreviaTextos() {
+  const caja = $('#previaTextos');
+  if (!caja || !datos) return;
+  const p = MAQUETAS[pantallaTextos] ? pantallaTextos : 'inicio';
+  const viejo = caja.querySelector('.tel-cuerpo');
+  const scroll = viejo && caja.dataset.pantalla === p ? viejo.scrollTop : 0;
+  // Un texto editable de la pantalla, marcado si es el que estás editando.
+  const t = (k, tag = 'span', clase = '') => el(tag, { class: (clase + (textoFoco === k ? ' tel-foco' : '')).trim() || null, text: enApp(valorTexto(k)) });
+  const vista = MAQUETAS[p](t);
+  const indice = { inicio: 0, eventos: 1, programa: 1, predicas: 2, oracion: 3, biblia: 4 }[p];
+  const clave = PESTANAS_BASE[indice][0];
+  const tel = telefono({ titulo: vista.titulo ?? enApp(nombrePestana(clave)), atras: !!vista.atras, activa: indice, cuerpo: vista.cuerpo, foco: textoFoco, claveTitulo: vista.titulo == null ? 'pestana.' + clave : vista.claveTitulo || '' });
+  tel.classList.add('con-selector');
+  caja.dataset.pantalla = p;
+  caja.replaceChildren(cabPrevia(pintarPreviaTextos),
+    el('div', { class: 'previa-pantallas', role: 'group', 'aria-label': 'Pantalla de la vista previa' },
+      ...PANTALLAS_PREVIA.map(([k, n]) => el('button', { type: 'button', class: 'btn sec chico' + (k === p ? ' on' : ''), 'aria-pressed': k === p ? 'true' : 'false', text: n, on: { click: () => { pantallaTextos = k; pintarPreviaTextos(); } } }))),
+    tel,
+    ...(vista.gris ? [el('p', { class: 'ayuda nota-previa', text: 'Lo gris lo carga la app sola (videos y versículo del día).' })] : []));
+  encajarPestanas(caja);
+  const cuerpo = tel.querySelector('.tel-cuerpo');
+  cuerpo.scrollTop = scroll;
+  const foco = cuerpo.querySelector('.tel-foco');
+  if (foco) asegurarVisible(cuerpo, foco);
+}
+
+// Mueve lo de adentro del celular para que se vea lo que estás editando.
+function asegurarVisible(cont, x) {
+  const arriba = x.offsetTop, abajo = arriba + x.offsetHeight;
+  if (arriba < cont.scrollTop) cont.scrollTop = Math.max(0, arriba - 8);
+  else if (abajo > cont.scrollTop + cont.clientHeight) cont.scrollTop = abajo - cont.clientHeight + 8;
+}
+
+// ---------- Pantallas nuevas: se arman con bloques y se abren desde una sección de Inicio o desde un botón ----------
+// Van en contenido.json como "paginas": [{ id, titulo, bloques: [...] }] (el formato acordado con la app).
+const TIPOS_BLOQUE = [['titulo', 'Título'], ['texto', 'Texto'], ['foto', 'Foto'], ['boton', 'Botón'], ['video', 'Video'], ['versiculo', 'Versículo']];
+const MAX_BLOQUES = 40, MAX_TITULO_PAGINA = 60, MAX_CITA = 80;
+const LARGO_BLOQUE = { titulo: 80, texto: 1500, boton: 40, versiculo: 1500 };
+const nombreBloque = (t) => (TIPOS_BLOQUE.find(([k]) => k === t) || [, 'Bloque'])[1];
+const bloqueNuevo = (tipo) => ({ titulo: { tipo, texto: '' }, texto: { tipo, texto: '' }, foto: { tipo, foto: 'carpa' }, boton: { tipo, texto: '', accion: 'whatsapp' }, video: { tipo, video: '' }, versiculo: { tipo, texto: '', cita: '' } })[tipo];
+// Quedan solo los números, sin el 00 de llamada internacional, y un celular uruguayo (09...) pasa a 598...
+// Igual que la app (_numeroWa en lib/contenido.dart), que con un número que no sirve abre el de la Carpa.
+const numeroWhatsapp = (t) => { let d = String(t ?? '').replace(/\D/g, ''); if (d.startsWith('00')) d = d.slice(2); return /^09\d{7}$/.test(d) ? '598' + d.slice(1) : d; };
+const numeroBien = (d) => /^[1-9]\d{7,14}$/.test(d);
+let paginaSel = null, bloqueFoco = -1;
+
+function paginas() { if (!Array.isArray(datos.paginas)) datos.paginas = []; return datos.paginas; }
+const paginaDe = (id) => (id && paginas().find((p) => p.id === id)) || null;
+
+// Quién abre una pantalla: secciones de Inicio y botones de las pantallas.
+function quienAbre(id) {
+  const xs = [];
+  (Array.isArray(datos.inicio) ? datos.inicio : []).forEach((s) => { if (s.accion === 'pagina' && s.pagina === id) xs.push({ texto: `la sección "${s.titulo || 'sin título'}" de Inicio`, obj: s }); });
+  paginas().forEach((p) => (p.bloques || []).forEach((b) => { if (b.tipo === 'boton' && b.accion === 'pagina' && b.pagina === id) xs.push({ texto: `el botón "${b.texto || 'sin texto'}" de la pantalla "${p.titulo || 'sin título'}"`, obj: b, pagina: p }); }));
+  return xs;
+}
+// Sin contar los botones de la misma pantalla (esos no sirven para llegar a ella).
+const quienLlega = (pg) => quienAbre(pg.id).filter((q) => q.pagina !== pg);
+
+function pintarPaginas(v) {
+  const xs = paginas();
+  if (!paginaDe(paginaSel)) { paginaSel = xs.length ? xs[0].id : null; bloqueFoco = -1; }
+  const pg = paginaDe(paginaSel);
+  v.replaceChildren(
+    el('h2', { text: 'Pantallas' }),
+    el('p', { class: 'ayuda', text: 'Armá pantallas nuevas para la app con títulos, textos, fotos, botones, videos y versículos. La gente llega a una pantalla desde una sección de Inicio ("Al tocarla" → "Abrir una pantalla") o desde un botón de otra pantalla. En la vista previa ves cómo queda en el celular mientras escribís; al tocar "Guardar cambios" se ve al instante en todos los celulares.' }),
+    el('div', { class: 'acciones', style: 'margin:0 0 12px' }, el('button', { class: 'btn', type: 'button', text: '+ Nueva pantalla', on: { click: nuevaPagina } })),
+    xs.length ? el('div', { class: 'pag-lista' }, ...xs.map(itemPagina))
+      : el('div', { class: 'card suave' }, el('b', { text: 'Todavía no hay pantallas.' }), el('p', { class: 'ayuda', style: 'margin:6px 0 0', text: 'Tocá "+ Nueva pantalla" para armar la primera: por ejemplo, un campamento, un retiro o "Quiénes somos".' })),
+    ...(pg ? [el('div', { class: 'editor-grid', style: 'margin-top:16px' }, editorPagina(pg), el('div', { id: 'previaPagina', class: 'previa-col' }))] : []));
+  pintarPreviaPagina();
+}
+
+function itemPagina(p) {
+  const quien = quienLlega(p);
+  const foto = (p.bloques || []).find((b) => b.tipo === 'foto');
+  let mini;
+  if (foto) {
+    mini = el('img', { alt: '' });
+    mini.addEventListener('error', () => { if (!mini.src.endsWith('/logo.jpg')) mini.src = '../logo.jpg'; });
+    mini.src = srcInicio(foto.foto);
+  } else mini = el('span', { class: 'pag-ini', 'aria-hidden': 'true', text: String(p.titulo || '').trim().charAt(0).toUpperCase() || '?' });
+  const abrir = () => { if (paginaSel !== p.id) { paginaSel = p.id; bloqueFoco = -1; pintar(); } };
+  return el('div', { class: 'card pag-item' + (p.id === paginaSel ? ' on' : ''), 'data-pag': p.id, role: 'button', tabindex: '0', 'aria-pressed': p.id === paginaSel ? 'true' : 'false',
+    on: { click: abrir, keydown: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrir(); } } } },
+    el('div', { class: 'item-cab' }, mini,
+      el('div', { style: 'min-width:0' }, el('b', { class: 'pag-titulo', text: p.titulo || '(sin título)' }),
+        el('span', { text: plural((p.bloques || []).length, 'bloque', 'bloques') + ' · ' + (quien.length ? 'La abre ' + quien.map((q) => q.texto).join(', ') : 'Todavía no la abre nada') })),
+      quien.length ? null : el('span', { class: 'chip aprox', text: 'Sin acceso' })));
+}
+
+function editorPagina(pg) {
+  const quien = quienLlega(pg);
+  const lleno = pg.bloques.length >= MAX_BLOQUES;
+  const agregar = (tipo) => {
+    if (pg.bloques.length >= MAX_BLOQUES) return;
+    pg.bloques.push(bloqueNuevo(tipo));
+    bloqueFoco = pg.bloques.length - 1;
+    cambio(); pintar();
+    const nuevo = document.querySelector(`.bloque[data-bloque="${bloqueFoco}"]`);
+    if (!nuevo) return;
+    nuevo.scrollIntoView({ block: 'center' });
+    const i = nuevo.querySelector('input:not([type=file]), textarea, select');
+    if (i) i.focus({ preventScroll: true });
+  };
+  const sumarAInicio = () => {
+    seccionesInicio().push({ id: 'seccion-' + Date.now().toString(36), titulo: pg.titulo || 'Nueva sección', sub: '', pill: '', foto: 'carpa', accion: 'pagina', link: '', pagina: pg.id, visible: true });
+    cambio(); pintar();
+    $('#estado').textContent = 'Sección sumada al final de Inicio: cambiale la foto o los textos en la pestaña Inicio y tocá Guardar cambios';
+  };
+  const acceso = quien.length
+    ? el('p', { class: 'ayuda', style: 'margin:8px 0 0', text: 'La abre ' + quien.map((q) => q.texto).join(', ') + '.' })
+    : el('div', { class: 'card alerta', style: 'margin:12px 0 0' },
+      el('b', { text: 'Todavía nadie puede llegar a esta pantalla.' }),
+      el('p', { class: 'ayuda', style: 'margin:6px 0 0', text: 'Elegila en una sección de Inicio ("Al tocarla" → "Abrir una pantalla") o en un botón de otra pantalla. O sumá al final de Inicio una sección que la abra:' }),
+      el('div', { class: 'acciones', style: 'margin-top:8px' }, el('button', { class: 'btn sec chico', type: 'button', text: '+ Sección en Inicio que la abra', on: { click: sumarAInicio } })));
+  return el('div', {},
+    el('div', { class: 'card' },
+      campoEn('Título de la pantalla (se ve en la barra de arriba)', pg, 'titulo', { max: MAX_TITULO_PAGINA, alCambiar: () => {
+        const b = document.querySelector(`.pag-item[data-pag="${CSS.escape(pg.id)}"] .pag-titulo`);
+        if (b) b.textContent = pg.titulo || '(sin título)';
+      } }),
+      acceso),
+    ...pg.bloques.map((b, j) => tarjetaBloque(pg, b, j)),
+    el('div', { class: 'card suave' },
+      el('b', { text: 'Agregar bloque' }),
+      el('div', { class: 'acciones', style: 'margin-top:8px' }, ...TIPOS_BLOQUE.map(([t, n]) => el('button', { class: 'btn sec chico', type: 'button', text: '+ ' + n, disabled: lleno ? '' : null, on: { click: () => agregar(t) } }))),
+      lleno ? el('p', { class: 'ayuda', style: 'margin:8px 0 0', text: `Llegaste al máximo de ${MAX_BLOQUES} bloques por pantalla.` }) : null),
+    el('div', { class: 'acciones' }, el('button', { class: 'btn peligro', type: 'button', text: 'Borrar esta pantalla', on: { click: () => borrarPagina(pg) } })));
+}
+
+const marcarBloqueFoco = () => document.querySelectorAll('.bloque').forEach((c) => c.classList.toggle('foco', +c.dataset.bloque === bloqueFoco));
+
+function tarjetaBloque(pg, b, j) {
+  const xs = pg.bloques;
+  const mover = (d) => { const k = j + d; if (k < 0 || k >= xs.length) return; [xs[j], xs[k]] = [xs[k], xs[j]]; bloqueFoco = k; cambio(); pintar(); };
+  const tieneAlgo = () => !!(String(b.texto || '').trim() || String(b.cita || '').trim() || b.video || (b.tipo === 'foto' && esHttps(b.foto)));
+  const borrar = () => { if (tieneAlgo() && !confirm(`¿Borrar este bloque (${nombreBloque(b.tipo)})?`)) return; xs.splice(j, 1); bloqueFoco = -1; cambio(); pintar(); };
+  const card = el('div', { class: 'card bloque' + (j === bloqueFoco ? ' foco' : ''), 'data-bloque': j },
+    el('div', { class: 'bloque-cab' },
+      el('span', { class: 'chip', text: `${j + 1}. ${nombreBloque(b.tipo)}` }),
+      el('div', { class: 'acciones' },
+        el('button', { class: 'btn sec chico', type: 'button', text: 'Subir', 'aria-label': `Subir el bloque ${j + 1}`, disabled: j === 0 ? '' : null, on: { click: () => mover(-1) } }),
+        el('button', { class: 'btn sec chico', type: 'button', text: 'Bajar', 'aria-label': `Bajar el bloque ${j + 1}`, disabled: j === xs.length - 1 ? '' : null, on: { click: () => mover(1) } }),
+        el('button', { class: 'btn peligro chico', type: 'button', text: 'Borrar', 'aria-label': `Borrar el bloque ${j + 1}`, on: { click: borrar } }))),
+    ...camposBloque(pg, b));
+  card.addEventListener('focusin', () => { if (bloqueFoco !== j) { bloqueFoco = j; marcarBloqueFoco(); pintarPreviaPagina(); } });
+  return card;
+}
+
+function camposBloque(pg, b) {
+  if (b.tipo === 'titulo') return [campoEn('Título', b, 'texto', { max: LARGO_BLOQUE.titulo })];
+  if (b.tipo === 'texto') return [campoEn('Texto', b, 'texto', { multilinea: true, max: LARGO_BLOQUE.texto, ayuda: 'Con Enter separás los párrafos.' })];
+  if (b.tipo === 'versiculo') return [
+    campoEn('Versículo', b, 'texto', { multilinea: true, max: LARGO_BLOQUE.versiculo, placeholder: 'Porque de tal manera amó Dios al mundo...' }),
+    campoEn('Cita', b, 'cita', { max: MAX_CITA, placeholder: 'Juan 3:16' })];
+  if (b.tipo === 'foto') return camposFoto(pg, b);
+  if (b.tipo === 'video') return camposVideo(b);
+  if (b.tipo === 'boton') return camposBoton(pg, b);
+  return [el('p', { class: 'ayuda error', text: 'La app no conoce este tipo de bloque: borralo.' })];
+}
+
+// Foto: una de las que vienen en la app, una subida desde la PC o un link https.
+function camposFoto(pg, b) {
+  const img = el('img', { alt: '', class: 'mini-seccion' });
+  img.addEventListener('error', () => { if (!img.src.endsWith('/logo.jpg')) img.src = '../logo.jpg'; });
+  const id = nuevoId();
+  const sel = el('select', { id }, ...FOTOS_APP.map(([k, t]) => el('option', { value: k, text: t })));
+  const subida = el('option', { value: SUBIDA, text: 'Foto subida' });
+  const marcar = () => {
+    if (esHttps(b.foto)) { if (!subida.isConnected) sel.append(subida); sel.value = SUBIDA; }
+    else { subida.remove(); sel.value = FOTOS_APP.some(([k]) => k === b.foto) ? b.foto : 'carpa'; }
+    img.src = srcInicio(b.foto);
+  };
+  sel.addEventListener('change', () => { if (sel.value !== SUBIDA) { b.foto = sel.value; marcar(); cambio(); } });
+  marcar();
+  return [
+    el('div', { class: 'seccion-cab', style: 'margin-top:10px' }, img, el('div', { style: 'flex:1;min-width:0' }, el('label', { for: id, text: 'Foto', style: 'margin-top:0' }), sel)),
+    selectorFoto(() => 'pantalla-' + sanitizarNombre(pg.titulo || pg.id), (url) => { b.foto = url; marcar(); cambio(); })];
+}
+
+// Video: se pega el link de YouTube y se guarda solo su id (11 letras).
+function camposVideo(b) {
+  const vid = { v: b.video ? 'https://youtu.be/' + b.video : '' };
+  const mini = el('img', { alt: '', class: 'mini-seccion oculto' });
+  const aviso = el('p', { class: 'ayuda error oculto', style: 'margin:6px 0 0', text: 'No reconozco ese link de YouTube. Copiá el link del video y pegalo entero.' });
+  const tomar = () => {
+    const id = idVideo(vid.v);
+    b.video = id;
+    aviso.classList.toggle('oculto', !vid.v.trim() || !!id);
+    mini.classList.toggle('oculto', !id);
+    if (id) mini.src = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+  };
+  tomar();
+  return [campo('Link del video de YouTube', vid, 'v', { placeholder: 'https://youtu.be/...', max: 300, alCambiar: tomar }), aviso, el('div', { style: 'margin-top:8px' }, mini)];
+}
+
+// Botón: texto y a dónde lleva (una pantalla de la app, WhatsApp, otra pantalla nueva o un link).
+function camposBoton(pg, b) {
+  const otras = paginas().filter((p) => p.id !== pg.id);
+  const idAccion = nuevoId();
+  const selAccion = el('select', { id: idAccion }, ...ACCIONES_BOTON.map(([k, t]) => el('option', { value: k, text: t })));
+  selAccion.value = ACCIONES_BOTON.some(([k]) => k === b.accion) ? b.accion : 'nada';
+  const cajaLink = el('div', {}, campo('Link que abre', b, 'link', { placeholder: 'https://...', https: true, max: 300 }));
+  const num = { v: b.numero || '' };
+  const avisoNum = el('p', { class: 'ayuda', style: 'margin:6px 0 0' });
+  const revisarNum = () => {
+    const d = numeroWhatsapp(num.v);
+    if (d) b.numero = d; else delete b.numero;
+    const malo = !!d && !numeroBien(d);
+    avisoNum.className = 'ayuda' + (malo ? ' error' : '');
+    avisoNum.textContent = !d ? 'Vacío: abre el WhatsApp de la Carpa (091 800 800).' : malo ? 'Tiene que tener entre 8 y 15 números, con el código de país (598 para Uruguay).' : `Abre WhatsApp con el +${d}.`;
+  };
+  revisarNum();
+  const cajaNum = el('div', {}, campo('Número de WhatsApp (opcional)', num, 'v', { placeholder: '598 91 800 800', max: 24, alCambiar: revisarNum }), avisoNum);
+  const avisoPag = el('p', { class: 'ayuda error oculto', style: 'margin:6px 0 0' });
+  const elegir = selectorPagina(b, otras, () => mostrar());
+  const cajaPag = el('div', {}, el('label', { text: 'Pantalla que abre' }), elegir.sel, avisoPag);
+  const avisoNada = el('p', { class: 'ayuda error', style: 'margin:6px 0 0', text: 'Este botón no hace nada: elegí a dónde lleva.' });
+  const mostrar = () => {
+    const a = b.accion;
+    cajaLink.classList.toggle('oculto', a !== 'link');
+    cajaNum.classList.toggle('oculto', a !== 'whatsapp');
+    cajaPag.classList.toggle('oculto', a !== 'pagina');
+    avisoPag.textContent = otras.length ? 'Elegí qué pantalla abre: si no, el botón no hace nada.' : 'No hay otra pantalla para abrir: creá una con "+ Nueva pantalla".';
+    avisoPag.classList.toggle('oculto', !(a === 'pagina' && !otras.some((p) => p.id === b.pagina)));
+    avisoNada.classList.toggle('oculto', a !== 'nada' && ACCIONES_BOTON.some(([k]) => k === a));
+  };
+  selAccion.addEventListener('change', () => {
+    b.accion = selAccion.value;
+    if (b.accion === 'pagina' && !otras.some((p) => p.id === b.pagina) && otras.length) { b.pagina = otras[0].id; elegir.llenar(); }
+    mostrar(); cambio();
+  });
+  mostrar();
+  return [
+    campoEn('Texto del botón', b, 'texto', { max: LARGO_BLOQUE.boton, placeholder: 'Escribinos por WhatsApp' }),
+    el('label', { for: idAccion, text: 'Al tocarlo' }), selAccion, avisoNada,
+    cajaLink, cajaNum, cajaPag];
+}
+
+function nuevaPagina() {
+  abrirDialogo('Nueva pantalla', [
+    { clave: 'titulo', etiqueta: 'Título', max: MAX_TITULO_PAGINA, placeholder: 'Campamento de jóvenes' },
+    { clave: 'inicio', etiqueta: '¿Cómo llega la gente a esta pantalla?', opciones: [['si', 'Con una sección nueva al final de Inicio'], ['no', 'La conecto después (desde Inicio o un botón)']] },
+  ], (v) => {
+    if (!v.titulo) return 'Escribí el título.';
+    const pg = { id: 'pag-' + Date.now().toString(36), titulo: v.titulo, bloques: [{ tipo: 'titulo', texto: v.titulo }] };
+    paginas().push(pg);
+    if (v.inicio === 'si') seccionesInicio().push({ id: 'seccion-' + Date.now().toString(36), titulo: v.titulo, sub: '', pill: '', foto: 'carpa', accion: 'pagina', link: '', pagina: pg.id, visible: true });
+    paginaSel = pg.id; bloqueFoco = -1;
+    cambio(); pintar();
+    $('#estado').textContent = v.inicio === 'si' ? 'Pantalla creada y sumada al final de Inicio: agregale bloques y tocá Guardar cambios' : 'Pantalla creada: agregale bloques y tocá Guardar cambios';
+    traducirNuevos([v.titulo]);
+  });
+}
+
+function borrarPagina(pg) {
+  const quien = quienLlega(pg);
+  const cuantos = quien.length === 1;
+  const aviso = quien.length
+    ? `\n\nLa ${cuantos ? 'abre' : 'abren'}: ${quien.map((q) => q.texto).join('; ')}. ${cuantos ? 'Va a quedar sin acción (no hace nada)' : 'Van a quedar sin acción (no hacen nada)'} hasta que ${cuantos ? 'le' : 'les'} elijas otra cosa.`
+    : '';
+  if (!confirm(`¿Borrar la pantalla "${pg.titulo || 'sin título'}"?${aviso}`)) return;
+  quien.forEach((q) => { q.obj.accion = 'nada'; delete q.obj.pagina; });
+  const i = paginas().indexOf(pg);
+  if (i >= 0) paginas().splice(i, 1);
+  paginaSel = null; bloqueFoco = -1;
+  cambio(); pintar();
+}
+
+// A dónde lleva un botón, para mostrarlo en la vista previa.
+function destinoBoton(b) {
+  if (b.accion === 'pagina') { const p = paginaDe(b.pagina); return p ? { ok: true, texto: `Abre la pantalla "${p.titulo}" (tocalo para ir)` } : { ok: false, texto: 'No abre nada: elegí la pantalla' }; }
+  if (b.accion === 'link') return esHttps(b.link) ? { ok: true, texto: 'Abre ' + b.link } : { ok: false, texto: 'Falta el link' };
+  const a = ACCIONES_BOTON.find(([k]) => k === b.accion);
+  return a && a[0] !== 'nada' ? { ok: true, texto: a[1] } : { ok: false, texto: 'No hace nada' };
+}
+
+// Cada bloque como se ve en la app. Si está vacío, se muestra en gris lo que falta.
+function bloquePrevia(b) {
+  const hay = (x) => !!(x && String(x).trim());
+  if (b.tipo === 'titulo') return el('div', { class: 'tp-titulo' + (hay(b.texto) ? '' : ' tp-vacio'), text: hay(b.texto) ? enApp(b.texto) : 'Título' });
+  if (b.tipo === 'texto') return el('p', { class: 'tp-texto' + (hay(b.texto) ? '' : ' tp-vacio'), text: hay(b.texto) ? enApp(b.texto) : 'Escribí el texto' });
+  if (b.tipo === 'foto') {
+    const i = el('img', { alt: '', class: 'tp-foto' });
+    i.addEventListener('error', () => { if (!i.src.endsWith('/logo.jpg')) i.src = '../logo.jpg'; });
+    i.src = srcInicio(b.foto);
+    return i;
+  }
+  if (b.tipo === 'video') {
+    if (!/^[\w-]{11}$/.test(b.video || '')) return el('div', { class: 'tp-video' }, el('span', { text: 'Pegá el link del video' }));
+    const i = el('img', { alt: '' });
+    i.src = `https://i.ytimg.com/vi/${b.video}/hqdefault.jpg`;
+    return el('div', { class: 'tp-video', title: 'Abre el video en YouTube' }, i, el('span', { class: 'tp-play', 'aria-hidden': 'true' }));
+  }
+  // Como en la app: entre comillas, salvo que ya empiece con comillas.
+  const comillas = (es, x) => (/^["“«]/.test(es) ? x : `“${x}”`);
+  if (b.tipo === 'versiculo') return el('div', { class: 'tp-versiculo' },
+    el('p', { class: hay(b.texto) ? null : 'tp-vacio', text: hay(b.texto) ? comillas(b.texto.trim(), enApp(b.texto)) : 'Escribí el versículo' }),
+    hay(b.cita) ? el('b', { text: enApp(b.cita) }) : null);
+  if (b.tipo === 'boton') {
+    const destino = destinoBoton(b);
+    const btn = el('div', { class: 'tp-boton' + (destino.ok ? '' : ' apagado') + (hay(b.texto) ? '' : ' tp-vacio'), title: destino.texto, text: hay(b.texto) ? enApp(b.texto) : 'Texto del botón' });
+    if (b.accion === 'pagina' && paginaDe(b.pagina)) {
+      const ir = (e) => { e.stopPropagation(); paginaSel = b.pagina; bloqueFoco = -1; pintar(); };
+      btn.classList.add('navega'); btn.setAttribute('role', 'button'); btn.tabIndex = 0;
+      btn.addEventListener('click', ir);
+      btn.addEventListener('keydown', (e) => { if (e.key === 'Enter') ir(e); });
+    }
+    // La app no muestra un botón que no lleva a ningún lado: acá se ve apagado, con el aviso, para poder arreglarlo.
+    if (!destino.ok) return el('div', {}, btn, el('small', { class: 'tp-aviso', text: 'No se ve en la app (' + destino.texto.charAt(0).toLowerCase() + destino.texto.slice(1) + ').' }));
+    return btn;
+  }
+  return el('div');
+}
+
+function pintarPreviaPagina() {
+  const caja = $('#previaPagina');
+  if (!caja || !datos) return;
+  const pg = paginaDe(paginaSel);
+  if (!pg) { caja.replaceChildren(); return; }
+  const viejo = caja.querySelector('.tel-cuerpo');
+  const scroll = viejo && caja.dataset.pag === pg.id ? viejo.scrollTop : 0;
+  // Tocar un bloque en el celular lleva a su editor.
+  const bloques = pg.bloques.map((b, j) => {
+    const n = bloquePrevia(b);
+    n.classList.add('tp');
+    if (j === bloqueFoco) n.classList.add('tel-foco');
+    n.addEventListener('click', () => {
+      bloqueFoco = j; marcarBloqueFoco(); pintarPreviaPagina();
+      const card = document.querySelector(`.bloque[data-bloque="${j}"]`);
+      if (card) card.scrollIntoView({ block: 'center' });
+    });
+    return n;
+  });
+  const navega = pg.bloques.some((b) => b.tipo === 'boton' && b.accion === 'pagina' && paginaDe(b.pagina));
+  const tel = telefono({ titulo: pg.titulo && pg.titulo.trim() ? enApp(pg.titulo) : '(sin título)', atras: true, activa: 0,
+    cuerpo: bloques.length ? bloques : [el('p', { class: 'tp-texto tp-vacio', text: 'Agregale bloques a la pantalla.' })] });
+  caja.dataset.pag = pg.id;
+  caja.replaceChildren(cabPrevia(pintarPreviaPagina), tel,
+    el('p', { class: 'ayuda nota-previa', text: navega ? 'Tocá un bloque para editarlo, o un botón que abre otra pantalla para ir a esa.' : 'Tocá un bloque para editarlo.' }));
+  encajarPestanas(caja);
+  const cuerpo = tel.querySelector('.tel-cuerpo');
+  cuerpo.scrollTop = scroll;
+  const foco = cuerpo.querySelector('.tel-foco');
+  if (foco) asegurarVisible(cuerpo, foco);
+}
+
+// Al cargar: pestañas, textos y pantallas con la forma acordada con la app (si faltan o vienen rotos, se arreglan).
+function normalizarPantallas() {
+  const str = (x) => (typeof x === 'string' ? x : '');
+  const pe = esObjeto(datos.pestanas) ? datos.pestanas : {};
+  datos.pestanas = Object.fromEntries(PESTANAS_BASE.map(([k, def]) => [k, str(pe[k]).trim() ? pe[k] : def]));
+  datos.textos = Object.fromEntries(Object.entries(esObjeto(datos.textos) ? datos.textos : {}).filter(([, x]) => typeof x === 'string' && x.trim()));
+  const ids = new Set();
+  datos.paginas = (Array.isArray(datos.paginas) ? datos.paginas : []).filter(esObjeto).map((p, i) => {
+    let id = str(p.id).trim();
+    if (!/^[\w-]{1,80}$/.test(id) || ids.has(id)) id = `pag-${Date.now().toString(36)}${i}`;
+    ids.add(id);
+    const bloques = (Array.isArray(p.bloques) ? p.bloques : []).filter((b) => esObjeto(b) && TIPOS_BLOQUE.some(([t]) => t === b.tipo)).map((b) => {
+      const n = { tipo: b.tipo };
+      if (b.tipo === 'foto') n.foto = esHttps(b.foto) || FOTOS_APP.some(([k]) => k === b.foto) ? b.foto : 'carpa';
+      else if (b.tipo === 'video') n.video = str(b.video);
+      else n.texto = str(b.texto);
+      if (b.tipo === 'versiculo') n.cita = str(b.cita);
+      if (b.tipo === 'boton') {
+        n.accion = ACCIONES_BOTON.some(([k]) => k === b.accion) ? b.accion : 'nada';
+        if (typeof b.link === 'string') n.link = b.link;
+        if (typeof b.numero === 'string' || typeof b.numero === 'number') n.numero = String(b.numero);
+        if (typeof b.pagina === 'string') n.pagina = b.pagina;
+      }
+      return n;
+    });
+    return { id, titulo: str(p.titulo), bloques };
+  });
+}
+
+// Saca los espacios de las puntas; si ese texto ya tenía su inglés, lo pasa al texto recortado.
+function recortar(obj, k) {
+  const v = typeof obj[k] === 'string' ? obj[k] : '', t = v.trim();
+  if (t !== v && datos.en && datos.en[v] && !datos.en[t]) datos.en[t] = datos.en[v];
+  obj[k] = t;
+}
+
+// Revisa pestañas, textos y pantallas antes de guardar. Devuelve el problema o '' si está todo bien.
+function revisarPantallas() {
+  const pe = pestanas();
+  for (const k of Object.keys(pe)) if (!PESTANAS_BASE.some(([x]) => x === k)) delete pe[k];
+  for (const [k, def] of PESTANAS_BASE) {
+    recortar(pe, k);
+    if (!pe[k]) pe[k] = def;
+    if (pe[k].length > MAX_PESTANA) return `El nombre de la pestaña "${pe[k]}" es demasiado largo (máximo ${MAX_PESTANA} letras).`;
+  }
+  const tx = textosApp();
+  for (const k of Object.keys(tx)) {
+    recortar(tx, k);
+    if (!tx[k]) { delete tx[k]; continue; }
+    if (tx[k].length > maxTexto(k)) return `El texto "${ETIQUETAS_TEXTOS[k] || k}" es demasiado largo (máximo ${maxTexto(k)} letras).`;
+  }
+  const xs = paginas(), ids = new Set();
+  for (const pg of xs) {
+    if (typeof pg.id !== 'string' || !pg.id || ids.has(pg.id)) return 'Hay dos pantallas con el mismo código. Recargá la página y probá de nuevo.';
+    ids.add(pg.id);
+  }
+  for (const pg of xs) {
+    recortar(pg, 'titulo');
+    if (!pg.titulo) return 'Hay una pantalla sin título (pestaña Pantallas).';
+    const nombre = `la pantalla "${pg.titulo}"`;
+    if (pg.titulo.length > MAX_TITULO_PAGINA) return `El título de ${nombre} es demasiado largo (máximo ${MAX_TITULO_PAGINA} letras).`;
+    if (!Array.isArray(pg.bloques) || !pg.bloques.length) return `En ${nombre} no hay nada: agregale al menos un bloque.`;
+    if (pg.bloques.length > MAX_BLOQUES) return `${nombre[0].toUpperCase() + nombre.slice(1)} tiene más de ${MAX_BLOQUES} bloques.`;
+    for (const [j, b] of pg.bloques.entries()) {
+      const donde = `En ${nombre}, el bloque ${j + 1} (${nombreBloque(b.tipo)})`;
+      if (!TIPOS_BLOQUE.some(([t]) => t === b.tipo)) return `En ${nombre} hay un bloque que la app no conoce: borralo.`;
+      if (b.tipo in LARGO_BLOQUE) {
+        recortar(b, 'texto');
+        if (!b.texto) return `${donde} está vacío.`;
+        if (b.texto.length > LARGO_BLOQUE[b.tipo]) return `${donde} tiene un texto demasiado largo (máximo ${LARGO_BLOQUE[b.tipo]} letras).`;
+      }
+      if (b.tipo === 'versiculo') { recortar(b, 'cita'); if (b.cita.length > MAX_CITA) return `${donde} tiene una cita demasiado larga (máximo ${MAX_CITA} letras).`; }
+      if (b.tipo === 'foto' && !(esHttps(b.foto) || FOTOS_APP.some(([k]) => k === b.foto))) return `${donde} tiene una foto que la app no puede usar.`;
+      if (b.tipo === 'video' && !/^[\w-]{11}$/.test(String(b.video || ''))) return `${donde} no tiene un link de YouTube que reconozca.`;
+      if (b.tipo === 'boton') {
+        if (!ACCIONES_BOTON.some(([k]) => k === b.accion)) b.accion = 'nada';
+        if (b.accion === 'link') { b.link = String(b.link || '').trim(); if (!esHttps(b.link)) return `${donde} lleva a un link que no empieza con https://`; } else delete b.link;
+        if (b.accion === 'whatsapp') {
+          const d = numeroWhatsapp(b.numero);
+          if (!d) delete b.numero;
+          else if (!numeroBien(d)) return `${donde} tiene un número de WhatsApp que no sirve: tiene que tener entre 8 y 15 números, con el código de país (598 para Uruguay).`;
+          else b.numero = d;
+        } else delete b.numero;
+        // Si la pantalla que abría ya no está, el botón queda sin acción.
+        if (b.accion === 'pagina' && !ids.has(b.pagina)) b.accion = 'nada';
+        if (b.accion !== 'pagina') delete b.pagina;
+      }
+    }
+  }
+  return '';
+}
+
 const TABS = [
-  ['inicio', 'Inicio'], ['novedades', 'Novedades'], ['push', 'Notificaciones push'], ['registrados', 'Registrados'], ['campanas', 'Campañas'], ['muro', 'Pedidos de oración'], ['vivo', 'En vivo y encuentro'], ['brou', 'Cuenta BROU'],
+  ['inicio', 'Inicio'], ['textos', 'Pestañas y textos'], ['paginas', 'Pantallas'], ['novedades', 'Novedades'], ['push', 'Notificaciones push'], ['registrados', 'Registrados'], ['campanas', 'Campañas'], ['muro', 'Pedidos de oración'], ['vivo', 'En vivo y encuentro'], ['brou', 'Cuenta BROU'],
   ['iglesias', 'Iglesias'], ['app', 'Actualización'], ['seguridad', 'Seguridad'],
 ];
 
@@ -672,6 +1426,8 @@ function pintar() {
         campo('Link de iPhone', cfg, 'actualizar_url_ios', { placeholder: 'https://apps.apple.com/app/id...', https: true, max: 300 })));
   } else if (tab === 'iglesias') pintarIglesias(v);
   else if (tab === 'inicio') pintarInicio(v);
+  else if (tab === 'textos') pintarTextos(v);
+  else if (tab === 'paginas') pintarPaginas(v);
   else if (tab === 'push') pintarPush(v);
   else if (tab === 'muro') pintarMuro(v);
   else if (tab === 'campanas') pintarCampanas(v);
@@ -2194,6 +2950,7 @@ async function cargar() {
   datos = JSON.parse(textoGh);
   datos.config = datos.config || {}; datos.en = datos.en || {}; datos.noticias = datos.noticias || []; datos.iglesias = datos.iglesias || []; datos.misioneros = datos.misioneros || [];
   datos.push_historial = Array.isArray(datos.push_historial) ? datos.push_historial.filter((h) => h && typeof h === 'object') : [];
+  normalizarPantallas();
 }
 
 // Revisa lo que se va a guardar: links https, ids de YouTube y largos.
@@ -2213,6 +2970,9 @@ function revisar() {
       if (!String(s.titulo || '').trim()) return 'Hay una sección de Inicio sin título.';
       if (!(esHttps(s.foto) || FOTOS_APP.some(([k]) => k === s.foto))) return `La sección "${s.titulo}" tiene una foto que la app no puede usar.`;
       if (!ACCIONES_INICIO.some(([k]) => k === s.accion)) s.accion = 'nada';
+      // Si la pantalla que abría ya no está, la tarjeta queda sin acción (y la app no le pone flechita).
+      if (s.accion === 'pagina' && !paginaDe(s.pagina)) s.accion = 'nada';
+      if (s.accion !== 'pagina') delete s.pagina;
       if (s.accion === 'link' && !esHttps(s.link)) return `La sección "${s.titulo}" lleva a un link que no empieza con https://`;
       if (String(s.titulo).length > 60 || String(s.sub || '').length > 90 || String(s.pill || '').length > 24) return `La sección "${s.titulo}" tiene un texto demasiado largo.`;
     }
@@ -2226,7 +2986,7 @@ function revisar() {
   for (const h of datos.push_historial) {
     if (!avisoBien(h)) return `El aviso enviado "${String(h.titulo || '').slice(0, 40)}" tiene datos que la app no puede usar (por ejemplo, un link sin https://). Quitalo en la pestaña Notificaciones push.`;
   }
-  return '';
+  return revisarPantallas();
 }
 
 let guardando = false;
