@@ -1064,9 +1064,8 @@
    "sub": "",
    "pill": "",
    "foto": "carpa",
-   "accion": "pagina",
+   "accion": "nada",
    "link": "",
-   "pagina": "pag-mvtzvs3w",
    "visible": true
   }
  ],
@@ -1078,16 +1077,5 @@
   "biblia": "Biblia"
  },
  "textos": {},
- "paginas": [
-  {
-   "id": "pag-mvtzvs3w",
-   "titulo": "test",
-   "bloques": [
-    {
-     "tipo": "titulo",
-     "texto": "test"
-    }
-   ]
-  }
- ]
+ "paginas": []
 }
