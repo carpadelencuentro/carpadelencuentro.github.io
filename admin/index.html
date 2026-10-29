@@ -2673,7 +2673,8 @@ function pintarListaMuro() {
 // Todo lo del pedido lo escribe la persona desde la app: se muestra siempre como texto (textContent), nunca como HTML.
 function tarjetaPedido(p) {
   const c = p.campana ? campanaDe(String(p.campana)) : null;
-  const publico = p.anonimo || !String(p.nombre || '').trim() ? 'Anónimo' : String(p.nombre).trim();
+  // Igual que en la app: "Anónimo" si lo eligió, "Usuario" si no puso sus datos.
+  const publico = p.anonimo ? 'Anónimo' : String(p.nombre || '').trim() || 'Usuario';
   const oraron = Math.max(0, Number(p.oraron) || 0);
   const testimonio = String(p.testimonio || '').trim();
   const persona = muro.personas.get(String(p.autor));
