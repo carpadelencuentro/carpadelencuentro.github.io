@@ -60,6 +60,11 @@
   .chip.gris { background:var(--suave); color:#3F4560; }
   .meta { color:var(--gris); font-size:13px; font-weight:600; margin:6px 0 0; display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
   .pedido-texto { margin:8px 0 0; white-space:pre-line; overflow-wrap:anywhere; line-height:1.45; }
+  .reg { display:flex; align-items:center; gap:12px; padding:12px 14px; border-bottom:1px solid var(--linea); flex-wrap:wrap; }
+  .reg:last-child { border-bottom:0; }
+  .reg-datos { flex:1; min-width:180px; }
+  .reg-nombre { font-weight:800; overflow-wrap:anywhere; }
+  .reg-wa { display:inline-flex; align-items:center; text-decoration:none; }
   .testimonio { margin-top:8px; padding:10px 12px; border-radius:12px; background:#F1FAF4; color:#1E3B2B; white-space:pre-line; overflow-wrap:anywhere; }
   #modal { position:fixed; inset:0; background:rgba(11,22,56,.55); display:none; align-items:center; justify-content:center; z-index:1000; padding:16px; }
   #modal .caja { background:#fff; border-radius:18px; width:min(720px,100%); padding:14px; }
@@ -373,7 +378,7 @@ function imgFoto(f, carpeta, clase) {
 }
 
 const TABS = [
-  ['novedades', 'Novedades'], ['push', 'Notificaciones push'], ['muro', 'Muro de oración'], ['vivo', 'En vivo y encuentro'], ['brou', 'Cuenta BROU'],
+  ['novedades', 'Novedades'], ['push', 'Notificaciones push'], ['registrados', 'Registrados'], ['muro', 'Muro de oración'], ['vivo', 'En vivo y encuentro'], ['brou', 'Cuenta BROU'],
   ['iglesias', 'Iglesias'], ['app', 'Actualización'], ['seguridad', 'Seguridad'],
 ];
 
@@ -426,8 +431,7 @@ function pintar() {
       el('p', { class: 'ayuda', text: 'Se muestra en Ofrendar. Mientras el número esté vacío, la app dice que se publica pronto.' }),
       el('div', { class: 'card' },
         el('div', { class: 'fila' }, campo('Titular', cfg, 'brou_titular', { max: 120 }), campo('Número de cuenta', cfg, 'brou_cuenta', { max: 60 })),
-        el('div', { class: 'fila' }, campo('Moneda', cfg, 'brou_moneda', { max: 60 }), campo('Sucursal (opcional)', cfg, 'brou_sucursal', { max: 120 }))),
-      el('p', { class: 'ayuda', text: 'Las cuentas de cada misionero se cargan en la pestaña Misioneros.' }));
+        el('div', { class: 'fila' }, campo('Moneda', cfg, 'brou_moneda', { max: 60 }), campo('Sucursal (opcional)', cfg, 'brou_sucursal', { max: 120 }))));
   } else if (tab === 'app') {
     v.replaceChildren(
       el('h2', { text: 'Actualización de la app' }),
@@ -439,6 +443,7 @@ function pintar() {
   } else if (tab === 'iglesias') pintarIglesias(v);
   else if (tab === 'push') pintarPush(v);
   else if (tab === 'muro') pintarMuro(v);
+  else if (tab === 'registrados') pintarRegistrados(v);
   else if (tab === 'seguridad') pintarSeguridad(v);
 }
 
@@ -1366,6 +1371,121 @@ async function borrarPedido(p, boton) {
   pintarListaMuro();
 }
 
+// ---------- Registrados (nombre, apellido y celular que pone cada persona para entrar a la app) ----------
+const regVacio = () => ({ filas: null, error: '', cuando: 0, cargando: false, msg: null, buscar: '' });
+let reg = regVacio(), cajaReg = null, botonesReg = [];
+
+function pintarRegistrados(v) {
+  const titulo = el('h2', { text: 'Registrados' });
+  const explica = el('p', { class: 'ayuda', text: 'Para entrar a la app cada persona tiene que poner su nombre, apellido y celular. Acá ves la lista: los más nuevos arriba. Si alguien corrige sus datos en Mi perfil, se actualiza su misma fila.' });
+  cajaReg = null; botonesReg = [];
+  if (!hayDb()) { v.replaceChildren(titulo, explica, el('div', { class: 'card alerta' }, el('b', { text: 'Falta activar la base en línea (se hace una sola vez)' }), pasosSupabase())); return; }
+  const mal = problemaConfig();
+  if (mal) { v.replaceChildren(titulo, el('div', { class: 'card alerta' }, el('b', { text: 'La base en línea está mal configurada en el panel' }), el('p', { class: 'ayuda', style: 'margin:6px 0 0', text: mal }))); return; }
+  // La lista solo la puede leer el usuario del panel: sin esa sesión la base no devuelve nada.
+  if (!supa) { v.replaceChildren(titulo, explica, el('div', { class: 'card alerta' }, el('b', { text: 'Para ver la lista falta conectar el usuario del panel' }), el('p', { class: 'ayuda', style: 'margin:6px 0 0', text: supaProblema || 'Salí del panel y volvé a entrar.' }))); return; }
+  const actualizar = el('button', { class: 'btn sec', type: 'button', text: 'Actualizar', on: { click: () => cargarRegistrados() } });
+  const descargar = el('button', { class: 'btn sec', type: 'button', text: 'Descargar lista (Excel)', on: { click: descargarRegistrados } });
+  botonesReg = [actualizar, descargar];
+  const buscar = el('input', { type: 'search', placeholder: 'Buscar por nombre, apellido o celular', value: reg.buscar, 'aria-label': 'Buscar', on: { input: (e) => { reg.buscar = e.target.value; pintarListaReg(); } } });
+  cajaReg = el('div');
+  v.replaceChildren(titulo, explica, el('div', { class: 'acciones', style: 'margin:0 0 12px' }, actualizar, descargar), buscar, el('div', { style: 'height:12px' }), cajaReg);
+  pintarListaReg();
+  if (!reg.cargando && Date.now() - reg.cuando > 5000) cargarRegistrados();
+}
+
+async function cargarRegistrados() {
+  if (reg.cargando || !hayDb()) return;
+  reg.cargando = true;
+  pintarListaReg();
+  try {
+    // Supabase devuelve hasta 1000 filas por consulta: se piden de a 1000 hasta traer todas.
+    const todas = [];
+    for (let desde = 0; ; desde += 1000) {
+      const r = await db(`registros?select=id,nombre,apellido,pais,celular,plataforma,creado&order=creado.desc,id.asc&limit=1000&offset=${desde}`);
+      if (!r.ok) throw await errorDb(r);
+      const xs = await r.json();
+      const filas = (Array.isArray(xs) ? xs : []).filter((x) => x && typeof x === 'object' && x.id != null);
+      todas.push(...filas);
+      if (filas.length < 1000) break;
+    }
+    reg.filas = todas;
+    reg.error = '';
+  } catch (e) { reg.error = e.message; }
+  finally { reg.cuando = Date.now(); reg.cargando = false; pintarListaReg(); }
+}
+
+const nombreReg = (x) => `${String(x.nombre || '').trim()} ${String(x.apellido || '').trim()}`.trim();
+const soloNumeros = (s) => String(s || '').replace(/\D/g, '');
+
+function filtrarReg() {
+  const q = reg.buscar.trim().toLowerCase(), qn = soloNumeros(q);
+  if (!reg.filas || !q) return reg.filas || [];
+  return reg.filas.filter((x) => nombreReg(x).toLowerCase().includes(q) || (qn.length >= 3 && soloNumeros(x.celular).includes(qn)));
+}
+
+// Todo lo escribe la persona desde la app: se muestra siempre como texto, nunca como HTML.
+function filaRegistro(x) {
+  const num = soloNumeros(x.celular);
+  const borrar = el('button', { class: 'btn peligro chico', type: 'button', text: 'Borrar' });
+  borrar.addEventListener('click', () => borrarRegistro(x, borrar));
+  return el('div', { class: 'reg' },
+    el('div', { class: 'reg-datos' },
+      el('div', { class: 'reg-nombre', text: nombreReg(x) || '(sin nombre)' }),
+      el('div', { class: 'meta', style: 'margin:2px 0 0' },
+        el('span', { text: String(x.celular || '') }),
+        x.pais && x.pais !== 'UY' ? el('span', { class: 'chip gris', text: String(x.pais) }) : null,
+        el('span', { text: '· ' + fechaLinda(x.creado) }))),
+    el('div', { class: 'acciones', style: 'margin:0' },
+      num.length >= 6 ? el('a', { class: 'btn sec chico reg-wa', href: 'https://wa.me/' + num, target: '_blank', rel: 'noopener noreferrer', text: 'WhatsApp' }) : null,
+      borrar));
+}
+
+function pintarListaReg() {
+  for (const b of botonesReg) b.disabled = reg.cargando;
+  if (!cajaReg || !cajaReg.isConnected) return;
+  const hijos = [];
+  const total = reg.filas ? reg.filas.length : 0;
+  const hora = reg.cuando ? new Date(reg.cuando).toLocaleTimeString('es-UY', { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }) : '';
+  const lista = filtrarReg();
+  hijos.push(el('p', { class: 'ayuda', 'aria-live': 'polite', text: reg.cargando ? 'Actualizando...' : reg.filas
+    ? `${total === 1 ? '1 persona registrada' : total + ' personas registradas'}` + (reg.buscar.trim() ? ` · ${lista.length} con esa búsqueda` : '') + ` · actualizado a las ${hora}.`
+    : '' }));
+  if (notaVigente(reg.msg)) hijos.push(el('p', { class: 'ayuda ' + (reg.msg.ok ? 'ok' : 'error'), text: reg.msg.texto }));
+  if (reg.error) hijos.push(el('p', { class: 'ayuda error', text: reg.error }));
+  if (reg.filas) {
+    if (!lista.length) hijos.push(el('p', { class: 'ayuda', text: total ? 'Nadie coincide con esa búsqueda.' : 'Todavía no se registró nadie.' }));
+    else hijos.push(el('div', { class: 'card', style: 'padding:0' }, ...lista.map(filaRegistro)));
+  }
+  cajaReg.replaceChildren(...hijos);
+}
+
+async function borrarRegistro(x, boton) {
+  if (!confirm(`¿Borrar los datos de ${nombreReg(x) || 'esta persona'} (${x.celular || 'sin celular'})? No se puede deshacer. Si vuelve a cambiar sus datos en la app, aparece de nuevo.`)) return;
+  boton.disabled = true;
+  try {
+    await dbBorrar('registros', x.id);
+    if (reg.filas) reg.filas = reg.filas.filter((y) => y.id !== x.id);
+    reg.msg = nota(true, 'Listo, se borraron sus datos.');
+  } catch (e) { reg.msg = nota(false, 'No se borró: ' + e.message); boton.disabled = false; }
+  pintarListaReg();
+}
+
+// Planilla para Excel (separada con ; como lo abre Excel en español). Lo que empieza con = + - @ se
+// marca como texto para que Excel no lo tome como una fórmula.
+function descargarRegistrados() {
+  if (!reg.filas || !reg.filas.length) { reg.msg = nota(false, 'Todavía no hay nadie para descargar.'); pintarListaReg(); return; }
+  const celda = (s) => { let t = String(s ?? '').replace(/[\r\n\t]+/g, ' ').trim(); if (/^[=+\-@]/.test(t)) t = "'" + t; return '"' + t.replace(/"/g, '""') + '"'; };
+  const celular = (s) => '="' + String(s || '').replace(/[^\d+ ]/g, '') + '"';
+  const fecha = (iso) => { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleString('es-UY', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }); };
+  const filas = [['Nombre', 'Apellido', 'Celular', 'País', 'Celular de', 'Se registró'].map(celda).join(';')];
+  for (const x of reg.filas) filas.push([celda(x.nombre), celda(x.apellido), celular(x.celular), celda(x.pais), celda(x.plataforma === 'ios' ? 'iPhone' : x.plataforma === 'android' ? 'Android' : ''), celda(fecha(x.creado))].join(';'));
+  const blob = new Blob(['﻿' + filas.join('\r\n')], { type: 'text/csv;charset=utf-8' });
+  const a = el('a', { href: URL.createObjectURL(blob), download: `registrados-carpa-${new Date().toISOString().slice(0, 10)}.csv` });
+  document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+}
+
 // ---------- Cifrado ----------
 // clave.json (público) guarda {v:2, iter, sal, iv, datos}: AES-GCM-256 con clave PBKDF2-SHA256 de la contraseña.
 // Adentro va {github, firebase}. El formato viejo (sin "v", 310000 vueltas, solo el token) se acepta y se migra.
@@ -1582,7 +1702,7 @@ function vigilarSesion() {
 function cerrarSesion() {
   if (sucio && datos) pendiente = { datos, sha };
   secretos = null; accesoFcm = null; datos = null; sha = null; sucio = false; formatoViejo = false;
-  pararMuro(); salirDb(); muro = muroVacio(); avisosDb = avisosVacio(); pintarAvisoDb();
+  pararMuro(); salirDb(); muro = muroVacio(); reg = regVacio(); avisosDb = avisosVacio(); pintarAvisoDb();
   clearInterval(relojSesion);
   $('#avisoSesion').classList.add('oculto'); $('#modal').style.display = 'none'; alListo = null;
   $('#panel').classList.add('oculto'); $('#barra').classList.add('oculto'); $('#salir').classList.add('oculto');
@@ -1597,7 +1717,7 @@ function cerrarSesion() {
 
 async function abrirPanel(pass) {
   // GitHub y la base en línea a la vez. Si la base falla, el panel abre igual y avisa qué falta.
-  muro = muroVacio(); avisosDb = avisosVacio();
+  muro = muroVacio(); reg = regVacio(); avisosDb = avisosVacio();
   try { await Promise.all([cargar(), entrarDb(pass)]); } catch (e) { salirDb(); throw e; }
   if (supa) {
     migracion = migrarAvisos();
