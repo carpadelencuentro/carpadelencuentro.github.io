@@ -179,6 +179,7 @@
   .testimonio { margin-top:8px; padding:10px 12px; border-radius:12px; background:#F1FAF4; color:#1E3B2B; white-space:pre-line; overflow-wrap:anywhere; }
   .codigo-camp { font-family:ui-monospace,Consolas,'Courier New',monospace; font-size:32px; font-weight:800; letter-spacing:.12em; color:var(--azul2); margin:6px 0 0; overflow-wrap:anywhere; user-select:all; }
   .chip.equipo { background:#EFE7FB; color:#5B3A99; }
+  .chip.reportado { background:#FDE4E4; color:#A12020; }
   .de { margin:8px 0 0; padding:8px 12px; border-radius:12px; background:var(--suave); font-size:14px; overflow-wrap:anywhere; }
   .de small { display:block; color:var(--gris); font-weight:600; font-size:12px; margin-top:2px; }
   h2 .chip { vertical-align:middle; margin-left:6px; }
@@ -2507,7 +2508,7 @@ function pintarMuro(v) {
   cuentaMuro = el('span', { class: 'chip aprox oculto' });
   titulo.append(cuentaMuro);
   const selCamp = el('select', { id: 'filtroCamp' });
-  const selEstado = el('select', { id: 'filtroEstado' }, ...[['todos', 'Todos'], ['publicados', 'Publicados'], ['rechazados', 'Ocultos']].map(([val, t]) => el('option', { value: val, text: t })));
+  const selEstado = el('select', { id: 'filtroEstado' }, ...[['todos', 'Todos'], ['publicados', 'Publicados'], ['rechazados', 'Ocultos'], ['reportados', 'Reportados']].map(([val, t]) => el('option', { value: val, text: t })));
   const filtrar = () => { muro.pedidos = null; cargarMuro(); pintarListaMuro(); };
   selCamp.addEventListener('change', () => { muro.filtroCamp = selCamp.value; filtrar(); });
   selEstado.addEventListener('change', () => { muro.filtroEstado = selEstado.value; filtrar(); });
@@ -2540,6 +2541,10 @@ function rutaPedidos(f) {
     if (f.estado === 'pendientes') q.push('revisado=eq.false');
     else if (f.estado === 'publicados') q.push('visible=eq.true');
     else if (f.estado === 'rechazados') q.push('visible=eq.false', 'revisado=eq.true');
+    else if (f.estado === 'reportados') {
+      const ids = [...(muro.reportes || new Map()).keys()].filter((x) => /^[0-9a-f-]{36}$/i.test(x)).slice(0, 150);
+      q.push(ids.length ? 'id=in.(' + ids.join(',') + ')' : 'id=is.null');
+    }
   }
   return 'pedidos?' + q.join('&');
 }
@@ -2565,11 +2570,15 @@ async function cargarMuro() {
   const f = { camp: m.filtroCamp, estado: m.filtroEstado };
   pintarListaMuro();
   try {
-    const [rp, cs, sinMostrar] = await Promise.all([
+    const [rp, cs, sinMostrar, reportes] = await Promise.all([
       db(rutaPedidos(f)),
       leerTodas('campanas?select=id,nombre,codigo,activa,creada&order=creada.desc,id.asc'),
       leerTodas('pedidos?select=campana&revisado=eq.false&visible=eq.false&order=id.asc'),
+      // Cuántas veces reportaron cada motivo (si todavía no se corrió la parte 10 de setup.sql, no hay).
+      leerTodas('reportes?select=pedido&order=pedido.asc').catch(() => []),
     ]);
+    m.reportes = new Map();
+    for (const x of reportes) if (x.pedido != null) m.reportes.set(String(x.pedido), (m.reportes.get(String(x.pedido)) || 0) + 1);
     if (!rp.ok) throw await errorDb(rp);
     const xs = await rp.json();
     const pedidos = (Array.isArray(xs) ? xs : []).filter((p) => p && typeof p === 'object' && p.id != null);
@@ -2630,6 +2639,7 @@ function textoVacioMuro() {
   if (muro.filtroCamp === 'equipo') return 'No hay pedidos solo para el equipo.';
   if (muro.filtroEstado === 'pendientes') return 'No hay pedidos pendientes' + enCamp + '.';
   if (muro.filtroEstado === 'publicados') return 'No hay pedidos publicados' + enCamp + '.';
+  if (muro.filtroEstado === 'reportados') return 'No hay pedidos reportados' + enCamp + '.';
   return 'Todavía no llegó ningún pedido' + enCamp + '.';
 }
 
@@ -2667,6 +2677,7 @@ function tarjetaPedido(p) {
   const oraron = Math.max(0, Number(p.oraron) || 0);
   const testimonio = String(p.testimonio || '').trim();
   const persona = muro.personas.get(String(p.autor));
+  const reportes = muro.reportes ? muro.reportes.get(String(p.id)) || 0 : 0;
   const num = persona ? soloNumeros(persona.celular) : '';
   const de = persona ? [nombreReg(persona) || '(sin nombre)', String(persona.celular || '').trim()].filter(Boolean).join(' · ')
     : muro.errorPersonas ? 'no se pudo leer' : 'sin datos de registro (los borraron o todavía no los completó)';
@@ -2704,6 +2715,7 @@ function tarjetaPedido(p) {
       el('span', { class: 'chip gris', text: String(p.cat || 'Otro') }),
       p.campana ? el('span', { class: p.visible ? 'chip verde' : p.revisado ? 'chip gris' : 'chip aprox', text: p.visible ? 'Publicado' : p.revisado ? 'Oculto' : 'Pendiente' }) : null,
       p.contestada ? el('span', { class: 'chip verde', text: 'Contestada' }) : null,
+      reportes ? el('span', { class: 'chip reportado', text: reportes === 1 ? 'Reportado 1 vez' : 'Reportado ' + reportes + ' veces' }) : null,
       p.idioma === 'en' ? el('span', { class: 'chip gris', text: 'En inglés' }) : null),
     el('p', { class: 'pedido-texto', text: String(p.texto || '') }),
     el('p', { class: 'meta', text: [(p.campana ? 'Se ve como: ' : 'Nombre: ') + publico, fechaLinda(p.fecha), p.campana && (p.visible || oraron) ? plural(oraron, 'persona oró', 'personas oraron') : ''].filter(Boolean).join(' · ') }),
@@ -2747,7 +2759,12 @@ async function cambiarVisible(p, visible, boton) {
     const k = String(p.campana);
     if (eraPendiente) muro.pendientes.set(k, Math.max(0, (muro.pendientes.get(k) || 0) - 1));
     // Si con el filtro de estado ya no corresponde, sale de la lista.
-    const sigue = { todos: true, pendientes: false, publicados: visible, rechazados: !visible }[muro.filtroEstado];
+    // Si el panel lo vuelve a mostrar, los reportes quedan revisados (se borran y no se vuelve a ocultar solo).
+    if (visible && muro.reportes && muro.reportes.has(String(p.id))) {
+      const rr = await db('reportes?pedido=eq.' + encodeURIComponent(String(p.id)), { method: 'DELETE' }).catch(() => null);
+      if (rr && rr.ok) muro.reportes.delete(String(p.id));
+    }
+    const sigue = { todos: true, pendientes: false, publicados: visible, rechazados: !visible, reportados: true }[muro.filtroEstado];
     if (muro.pedidos && !sigue) muro.pedidos = muro.pedidos.filter((x) => x.id !== p.id);
     camp.cuando = 0;
     const nombre = c ? `"${c.nombre}"` : '';
