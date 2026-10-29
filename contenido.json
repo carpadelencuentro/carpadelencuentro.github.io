@@ -11,7 +11,8 @@
   "proximo_lugar": "",
   "version_app": "",
   "actualizar_url": "https://play.google.com/store/apps/details?id=com.corapps.carpadelencuentro",
-  "actualizar_url_ios": ""
+  "actualizar_url_ios": "",
+  "traducciones_v2": true
  },
  "noticias": [
   {
@@ -936,21 +937,21 @@
   }
  ],
  "en": {
-  "Prédicas de Salto 2026": "Salto 2026 Sermons",
-  "Ya podés ver las 5 noches de la carpa en Salto.": "You can now see the 5 nights of the tent in Salto.",
+  "Prédicas de Salto 2026": "Sermons from Salto 2026",
+  "Ya podés ver las 5 noches de la carpa en Salto.": "You can now see the 5 nights of tent in Salto.",
   "Campañas evangelísticas 2026": "Evangelistic campaigns 2026",
   "Mirá el resumen de las campañas de este año por todo el país.": "Look at the summary of this year's campaigns throughout the country.",
-  "Carpa Salto 2026": "Jump Tent 2026",
+  "Carpa Salto 2026": "Salto Tent 2026",
   "22 al 26 de setiembre": "September 22 to 26",
   "Eventos": "Events",
-  "Prédicas": "preachings",
-  "Escuchá o mirá cada noche": "Listen or watch every night",
+  "Prédicas": "Sermons",
+  "Escuchá o mirá cada noche": "Listen to or watch every night",
   "Oración": "Prayer",
   "Podemos orar por vos": "We can pray for you",
   "Iglesias cerca": "Churches nearby",
-  "Encontrá dónde congregarte": "Find where to congregate",
-  "Ofrendar": "Offer",
-  "Ayudá a llevar la carpa": "Help carry the tent",
+  "Encontrá dónde congregarte": "Find a place to worship",
+  "Ofrendar": "Give",
+  "Ayudá a llevar la carpa": "Help take the tent further",
   "Iglesia Cristiana Evangélica": "Evangelical Christian Church",
   "Miércoles:\n19:30 hs. Reunión de oración y estudio bíblico\nSábados (2dos de cada mes):\nReunión de adolescentes\nSábados (1er y 3er de cada mes):\nReunión de jóvenes\nDomingos\n11:30 hs. Escuela Dominical\n18:00 hs. Reunión de Santa Cena\n19:00 hs. Reunión de predicación": "Wednesday:\n7:30 p.m. Prayer and Bible Study Meeting\nSaturdays (2nd of each month):\nTeen meeting\nSaturdays (1st and 3rd of each month):\nyouth meeting\nSundays\n11:30 a.m. Sunday School\n6:00 p.m. Holy Communion Meeting\n7:00 p.m. preaching meeting",
   "Iglesia Cristiana Evangélica Barros Blancos (ICEBB)": "Barros Blancos Evangelical Christian Church (ICEBB)",
@@ -987,9 +988,9 @@
   "Domingo\n10:30 hs. Escuela Dominical\n17:30 hs. Cena del Señor\n19:00 hs. Predicación del evangelio\nMartes\n20:00 hs. Oración y Estudio\nJueves\n19:30 hs. Reunión de adolescentes\nSábado\n19:30 hs. Reunión de familia (1er sábado del mes)\n17:00 hs. Reunión de damas (2do sábado del mes)": "Sunday\n10:30 a.m. Sunday School\n5:30 p.m. Lord's Supper\n7:00 p.m. Gospel preaching\nTuesday\n8:00 p.m. Prayer and Study\nThursday\n7:30 p.m. Teen meeting\nSaturday\n7:30 p.m. Family reunion (1st Saturday of the month)\n5:00 p.m. Ladies meeting (2nd Saturday of the month)",
   "Domingo\n10:00 hs. Cena del Señor y Reunión general\nSábado\n16:00 hs. Escuela Bíblica\nMiércoles\n20:00 hs. Reunión de Oración": "Sunday\n10:00 a.m. Lord's Supper and General Meeting\nSaturday\n4:00 p.m. Bible School\nWednesday\n8:00 p.m. Prayer Meeting",
   "Iglesia Cristiana de Rocha": "Rocha Christian Church",
-  "Martes\n20:00 hs. Reunión de Oración\nViernes\n20:00 hs. Reunión de Estudio Bíblico\nSábados\n18:00 hs. Reunión de Adolescentes\n20:30 hs. Reunión de Jóvenes\nDomingo\n10:15 hs. Culto Familiar\n19:00 hs. Reunión Central y Cena del Señor\nAntoniopolis - Campamento Alfa\nReferentes:\nRoberto Puñales; Sehila Pereyra\nHijos: Eliza\nChristopher Baum; Regina Baum\nHijos: Rafael, Eloisa, Felipe y Eleana\nDirección del Salón:\nRocha y calle 8 - Antoniópolis (La Paloma), Rocha\nContacto: 091 443 266\nReuniones:\nMiercoles\n18:30 hs. Estudio Bíblico\nViernes\n20:00 hs. Reunión de Adolescentes\nDomingo\n15:30 hs. Culto Familiar": "Tuesday\n8:00 p.m. Prayer Meeting\nFriday\n8:00 p.m. Bible Study Meeting\nSaturdays\n6:00 p.m. Teen Meeting\n8:30 p.m. Youth Meeting\nSunday\n10:15 a.m. Family Worship\n7:00 p.m. Central Meeting and Lord's Supper\nAntoniopolis - Camp Alpha\nReferences:\nRoberto Puñales; Sehila Pereyra\nChildren: Eliza\nChristopher Baum; Regina Baum\nChildren: Rafael, Eloisa, Felipe and Eleana\nHall Address:\nRocha and 8th street - Antoniópolis (La Paloma), Rocha\nContact: 091 443 266\nMeetings:\nWednesday\n6:30 p.m. Bible Study\nFriday\n8:00 p.m. Teen Meeting\nSunday\n3:30 p.m. Family Worship",
+  "Martes\n20:00 hs. Reunión de Oración\nViernes\n20:00 hs. Reunión de Estudio Bíblico\nSábados\n18:00 hs. Reunión de Adolescentes\n20:30 hs. Reunión de Jóvenes\nDomingo\n10:15 hs. Culto Familiar\n19:00 hs. Reunión Central y Cena del Señor\nAntoniopolis - Campamento Alfa\nReferentes:\nRoberto Puñales; Sehila Pereyra\nHijos: Eliza\nChristopher Baum; Regina Baum\nHijos: Rafael, Eloisa, Felipe y Eleana\nDirección del Salón:\nRocha y calle 8 - Antoniópolis (La Paloma), Rocha\nContacto: 091 443 266\nReuniones:\nMiercoles\n18:30 hs. Estudio Bíblico\nViernes\n20:00 hs. Reunión de Adolescentes\nDomingo\n15:30 hs. Culto Familiar": "Tuesday\n8:00 p.m. Prayer Meeting\nFriday\n8:00 p.m. Bible Study Meeting\nSaturdays\n6:00 p.m. Teen Meeting\n8:30 p.m. Youth Meeting\nSunday\n10:15 a.m. Family Worship\n7:00 p.m. Central Meeting and Lord's Supper\nAntoniopolis - Camp Alpha\nReferences:\nRoberto Puñales; Sehila Pereyra\nChildren: Eliza\nChristopher Baum; Regina Baum\nChildren: Rafael, Eloisa, Felipe and Eleana\nHall Address: Rocha and 8th street - Antoniópolis (La Paloma), Rocha Contact: 091 443 266\nMeetings:\nWednesday\n6:30 p.m. Bible Study\nFriday\n8:00 p.m. Teen Meeting\nSunday\n3:30 p.m. Family Worship",
   "Miércoles\n16:00 hs. Estudio bíblico - Damas\nJueves\n19:30 hs. Reunión de Oración\nSábado\n10:30 hs. Escuela Bíblica\n18:30 hs. Reunión de jovenes\nDomingo\n9:30 hs. Cena del Señor\n10:30 hs Reunión Familiar\nEn construcción...": "Wednesday\n4:00 p.m. Bible Study - Ladies\nThursday\n7:30 p.m. Prayer Meeting\nSaturday\n10:30 a.m. Bible School\n6:30 p.m. youth meeting\nSunday\n9:30 a.m. Lord's Supper\n10:30 a.m. Family Reunion\nUnder construction...",
-  "Fraternidad Cristiana Salto": "Salto Christian Fellowship",
+  "Fraternidad Cristiana Salto": "Salto Christian Fraternity",
   "Miércoles\n19:30 hs. Reunión de Oración y estudio Bíblico\nSábado\n16:00 hs. Actividad con Niños\n18:00 hs. Adolescentes y jóvenes\nDomingo\n9:45 am. Cena del Señor - Reunión General": "Wednesday\n7:30 p.m. Prayer Meeting and Bible Study\nSaturday\n4:00 p.m. Activity with Children\n6:00 p.m. Adolescents and young people\nSunday\n9:45 am. Lord's Supper - General Meeting",
   "Iglesia Cristiana en San Carlos": "Christian Church in San Carlos",
   "Jueves\n20:00 hs. Reunión de estudio y oración.\nSábado\n11:00 hs. Clases bíblicas con niños\n18:00 hs. Reunión de adolescentes.\nDomingo\n09:00 hs. Reunión general.": "Thursday\n8:00 p.m. Study and prayer meeting.\nSaturday\n11:00 a.m. Bible classes with children\n6:00 p.m. Teen meeting.\nSunday\n09:00 a.m. General meeting.",
@@ -999,8 +1000,11 @@
   "Iglesia Cristiana Evangélica (Barrio la cruz)": "Evangelical Christian Church (La Cruz neighborhood)",
   "Miércoles\n19:30 hs. Reunión de Oración y estudio Bíblico .\nSábados\n16:00 hs. Actividad con Niños\n19:00 hs. Adolescentes y jóvenes\nDomingo\n17:00 hs. Cena del Señor\n18:00pm* - Reunión General\n*En verano 10:00am": "Wednesday\n7:30 p.m. Prayer Meeting and Bible Study.\nSaturdays\n4:00 p.m. Activity with Children\n7:00 p.m. Adolescents and young people\nSunday\n5:00 p.m. Lord's Supper\n18:00pm* - General Meeting\n*In summer 10:00am",
   "Salón Evangélico": "Evangelical Hall",
-  "Mi esperanza": "my hope",
-  "Sábado\n17:30 hs. Cena del Señor\n18:00 hs. Reunión familiar\n\"Encomienda a Jehová tu camino, Y confía en él; y él hará.\" Salmos 37:5\nGoogle Sites\nReport abuse\nPage details\nPage updated\nGoogle Sites\nReport abuse": "Saturday\n5:30 p.m. Lord's Supper\n6:00 p.m. family reunion\n\"Commit your way to the Lord, and trust in him, and he will do it.\" Psalms 37:5\nGoogle Sites\nReport abuse\nPage details\nPage updated\nGoogle Sites\nReport abuse"
+  "Mi esperanza": "My hope",
+  "Sábado\n17:30 hs. Cena del Señor\n18:00 hs. Reunión familiar\n\"Encomienda a Jehová tu camino, Y confía en él; y él hará.\" Salmos 37:5\nGoogle Sites\nReport abuse\nPage details\nPage updated\nGoogle Sites\nReport abuse": "Saturday\n5:30 p.m. Lord's Supper\n6:00 p.m. family reunion\n\"Commit your way to the Lord, and trust in him, and he will do it.\" Psalms 37:5\nGoogle Sites\nReport abuse\nPage details\nPage updated\nGoogle Sites\nReport abuse",
+  "Inicio": "Home",
+  "Biblia": "Bible",
+  "Llevando esperanza en Jesucristo": "Bringing hope in Jesus Christ"
  },
  "push_historial": [],
  "inicio": [
@@ -1054,5 +1058,16 @@
    "link": "",
    "visible": true
   }
- ]
+ ],
+ "pestanas": {
+  "inicio": "Inicio",
+  "eventos": "Eventos",
+  "predicas": "Prédicas",
+  "oracion": "Oración",
+  "biblia": "Biblia"
+ },
+ "textos": {
+  "inicio.lema": "Llevando esperanza en Jesucristo"
+ },
+ "paginas": []
 }
