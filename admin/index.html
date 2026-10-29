@@ -383,8 +383,10 @@ function textosATraducir() {
   datos.iglesias.forEach((c) => { add(c.nombre); add(c.reuniones); });
   // Pestañas, textos de las pantallas fijas y las pantallas nuevas (títulos, textos, botones, versículos y citas).
   Object.values(datos.pestanas && typeof datos.pestanas === 'object' ? datos.pestanas : {}).forEach(add);
-  // El mensaje de WhatsApp para anotarse va siempre en español: no se traduce.
-  Object.entries(datos.textos && typeof datos.textos === 'object' ? datos.textos : {}).forEach(([k, t]) => { if (k !== 'eventos.anotarse_mensaje') add(t); });
+  // El mensaje de WhatsApp para anotarse va siempre en español, y la foto y las palabras de los videos del evento no se muestran: no se traducen.
+  Object.entries(datos.textos && typeof datos.textos === 'object' ? datos.textos : {}).forEach(([k, t]) => { if (!TEXTOS_SIN_INGLES.has(k)) add(t); });
+  // Anteriores: las ciudades de cada año (las palabras de búsqueda no se traducen).
+  (Array.isArray(datos.anteriores) ? datos.anteriores : []).forEach((a) => { if (a && typeof a === 'object') add(a.titulo); });
   (Array.isArray(datos.paginas) ? datos.paginas : []).forEach((p) => { add(p.titulo); (Array.isArray(p.bloques) ? p.bloques : []).forEach((b) => { add(b.texto); add(b.cita); }); });
   return [...new Set(xs)];
 }
@@ -776,12 +778,15 @@ function nuevaSeccion() {
 const esObjeto = (x) => !!x && typeof x === 'object' && !Array.isArray(x);
 const PESTANAS_BASE = [['inicio', 'Inicio'], ['eventos', 'Eventos'], ['predicas', 'Prédicas'], ['oracion', 'Oración'], ['biblia', 'Biblia']];
 const MAX_PESTANA = 16;
+// Evento actual y Anteriores (pestaña Eventos de la app). Los mismos topes que usa la app (lib/contenido.dart).
+const MAX_PESTANA_EVENTO = 20, MAX_VIDEOS_EVENTO = 300, MAX_FOTO_EVENTO = 500, MAX_ANTERIORES = 30, MAX_CIUDADES = 120, MAX_PALABRAS = 300;
 // Por pantalla: [clave, etiqueta, texto de fábrica, opciones]. "pantalla" es la maqueta que se muestra al editarlos.
 const TEXTOS_APP = [
   { pantalla: 'inicio', nombre: 'Inicio', campos: [
     ['inicio.lema', 'Frase de arriba de las tarjetas', 'Llevando esperanza en Jesucristo'],
   ] },
-  { pantalla: 'eventos', nombre: 'Eventos', campos: [
+  { pantalla: 'eventos', nombre: 'Eventos', ayuda: 'Es el evento actual: la primera sub-pestaña de Eventos. Para pasar a la próxima campaña cambiale el nombre, la foto, los textos y las palabras de sus videos; y sumá la que terminó en Anteriores (más abajo). Entre una campaña y otra podés ocultarlo para que se vea solo Anteriores.', campos: [
+    ['eventos.pestana', 'Nombre de la sub-pestaña (al lado de Anteriores)', 'Salto 2026', { max: MAX_PESTANA_EVENTO }],
     ['eventos.titulo', 'Nombre del evento (tarjeta grande y Programa)', 'Carpa Salto 2026'],
     ['eventos.fechas_largas', 'Fechas (debajo del nombre)', 'Martes 22 a sábado 26 de setiembre'],
     ['eventos.fechas', 'Fechas (cuadrito)', '22 al 26 set'],
@@ -803,7 +808,7 @@ const TEXTOS_APP = [
   { pantalla: 'oracion', nombre: 'Oración', campos: [
     ['oracion.form_titulo', 'Título del formulario de pedidos', 'Contanos tu pedido'],
     ['oracion.campanas_titulo', 'Título de las campañas de oración', 'Campañas de oración'],
-    ['oracion.campanas_texto', 'Texto de las campañas de oración', 'Si la Carpa te pasó un código, ponelo acá para ver los motivos de oración de esa campaña y sumar los tuyos.', { multilinea: true }],
+    ['oracion.campanas_texto', 'Texto de las campañas de oración', 'Si alguien te pasó un código, ponelo acá para ver los motivos de oración de esa campaña y sumar los tuyos.', { multilinea: true }],
   ] },
   { pantalla: 'biblia', nombre: 'Biblia', campos: [
     ['biblia.titulo_dia', 'Título del versículo del día (la app lo pone en mayúsculas)', 'Versículo del día'],
@@ -811,9 +816,12 @@ const TEXTOS_APP = [
     ['biblia.leer_titulo', 'Título para leer el capítulo', 'Leer el capítulo completo'],
   ] },
 ];
-const TEXTOS_FABRICA = Object.fromEntries(TEXTOS_APP.flatMap((g) => g.campos.map(([k, , f]) => [k, f])));
-const ETIQUETAS_TEXTOS = Object.fromEntries(TEXTOS_APP.flatMap((g) => g.campos.map(([k, e]) => [k, e])));
-const maxTexto = (k) => (k === 'eventos.anotarse_mensaje' ? 300 : 200);
+// eventos.foto, eventos.videos y eventos.oculto se editan aparte (extrasEvento): no son textos que se vean.
+const TEXTOS_FABRICA = { ...Object.fromEntries(TEXTOS_APP.flatMap((g) => g.campos.map(([k, , f]) => [k, f]))), 'eventos.foto': 'carpa' };
+const ETIQUETAS_TEXTOS = { ...Object.fromEntries(TEXTOS_APP.flatMap((g) => g.campos.map(([k, e]) => [k, e]))), 'eventos.foto': 'Foto del evento', 'eventos.videos': 'Videos del evento' };
+const maxTexto = (k) => ({ 'eventos.anotarse_mensaje': 300, 'eventos.pestana': MAX_PESTANA_EVENTO, 'eventos.videos': MAX_VIDEOS_EVENTO, 'eventos.foto': MAX_FOTO_EVENTO })[k] || 200;
+// No se traducen: el mensaje de WhatsApp va siempre en español, y la foto, las palabras de búsqueda y el "si" de ocultar no se leen en la app.
+const TEXTOS_SIN_INGLES = new Set(['eventos.anotarse_mensaje', 'eventos.foto', 'eventos.videos', 'eventos.oculto']);
 
 // El inglés que ya trae la app para sus textos de fábrica (lib/idioma.dart). Se usa en las vistas previas y, al traducir,
 // para que un texto de fábrica quede en inglés igual que en la app (y no con lo que diga el traductor).
@@ -827,11 +835,18 @@ const INGLES_APP = {
   'Escribinos al 091 800 800': 'Message us at +598 91 800 800',
   'Destacadas': 'Featured', 'Los videos más vistos del canal.': 'The most watched videos on the channel.', 'Más recientes': 'Most recent',
   'Contanos tu pedido': 'Share your prayer request', 'Campañas de oración': 'Prayer campaigns',
-  'Si la Carpa te pasó un código, ponelo acá para ver los motivos de oración de esa campaña y sumar los tuyos.': 'If the Carpa gave you a code, enter it here to see that campaign’s prayer requests and add your own.',
+  'Si alguien te pasó un código, ponelo acá para ver los motivos de oración de esa campaña y sumar los tuyos.': 'If someone gave you a code, enter it here to see that campaign’s prayer requests and add your own.',
   'Versículo del día': 'Verse of the day', 'VERSÍCULO DEL DÍA': 'VERSE OF THE DAY',
   'Programa': 'Schedule', 'Salto 2026': 'Salto 2026', 'Anteriores': 'Past', 'Buscá una prédica': 'Search for a sermon',
   'Por ejemplo: por la salud de mi mamá': 'For example: for my mom’s health', 'Enviar': 'Send', 'Código': 'Code', 'Entrar': 'Join',
   'Avisarme el versículo': 'Send me the verse', 'Cada mañana a las 8:00': 'Every morning at 8:00 AM', 'Leer el capítulo completo': 'Read the whole chapter',
+  'Tocá un año para ver sus videos.': 'Tap a year to see its videos.',
+  'Rosario, Tacuarembó, El Carmen, Rocha y Salto': 'Rosario, Tacuarembó, El Carmen, Rocha and Salto',
+  'Colonia, Tacuarembó, Villa del Carmen, Rocha y Maldonado': 'Colonia, Tacuarembó, Villa del Carmen, Rocha and Maldonado',
+  'Colonia, Tacuarembó, Ciudad del Carmen, San Carlos y Maldonado': 'Colonia, Tacuarembó, Ciudad del Carmen, San Carlos and Maldonado',
+  'Colonia, Villa del Carmen, San Carlos, Chuy y Maldonado': 'Colonia, Villa del Carmen, San Carlos, Chuy and Maldonado',
+  'Juan Lacaze, San Carlos, Chuy y Villa del Carmen': 'Juan Lacaze, San Carlos, Chuy and Villa del Carmen',
+  'Juan Lacaze, Carmelo, Chuy y Villa del Carmen': 'Juan Lacaze, Carmelo, Chuy and Villa del Carmen',
 };
 
 function pestanas() { if (!esObjeto(datos.pestanas)) datos.pestanas = Object.fromEntries(PESTANAS_BASE); return datos.pestanas; }
@@ -842,7 +857,7 @@ const valorTexto = (k) => { const v = textosApp()[k]; return typeof v === 'strin
 const tituloInicio = () => (nombrePestana('inicio').trim() === 'Inicio' ? 'Carpa del Encuentro' : enApp(nombrePestana('inicio').trim()));
 
 let pantallaTextos = 'inicio', textoFoco = '';
-const PANTALLAS_PREVIA = [['inicio', 'Inicio'], ['eventos', 'Eventos'], ['programa', 'Programa'], ['predicas', 'Prédicas'], ['oracion', 'Oración'], ['biblia', 'Biblia']];
+const PANTALLAS_PREVIA = [['inicio', 'Inicio'], ['eventos', 'Eventos'], ['anteriores', 'Anteriores'], ['programa', 'Programa'], ['predicas', 'Prédicas'], ['oracion', 'Oración'], ['biblia', 'Biblia']];
 
 function pintarTextos(v) {
   const pe = pestanas(), tx = textosApp();
@@ -857,16 +872,171 @@ function pintarTextos(v) {
     el('h3', { text: 'Pestañas de abajo' }),
     el('p', { class: 'ayuda', text: `El nombre de cada botón de la barra de abajo de la app. En Eventos, Prédicas, Oración y Biblia también es el título de arriba de la pantalla. En Inicio, con el nombre de fábrica arriba dice "Carpa del Encuentro"; si le ponés otro, arriba va ese. Máximo ${MAX_PESTANA} letras; si lo dejás vacío, vuelve el de fábrica.` }),
     el('div', { class: 'fila' }, ...PESTANAS_BASE.map(([k, def]) => conFoco(campoEn(def, pe, k, { max: MAX_PESTANA, placeholder: def, placeholderEn: INGLES_APP[def], alCambiar: deFabrica(pe, k) }), k, 'pestana.' + k))));
-  const cajas = TEXTOS_APP.map((g) => el('div', { class: 'card' },
-    el('h3', { text: 'Pantalla ' + g.nombre }),
-    g.ayuda ? el('p', { class: 'ayuda', text: g.ayuda }) : null,
-    // soloEs: la app lo usa siempre en español (no lleva inglés).
-    ...g.campos.map(([k, etiqueta, fabrica, o = {}]) => conFoco((o.soloEs ? campo : campoEn)(etiqueta, tx, k, { max: o.max || 200, multilinea: !!o.multilinea, placeholder: fabrica, placeholderEn: INGLES_APP[fabrica], ayuda: o.ayuda, alCambiar: deFabrica(tx, k) }), g.pantalla, k))));
+  const cajas = TEXTOS_APP.flatMap((g) => {
+    const caja = el('div', { class: 'card' },
+      el('h3', { text: 'Pantalla ' + g.nombre }),
+      g.ayuda ? el('p', { class: 'ayuda', text: g.ayuda }) : null,
+      // soloEs: la app lo usa siempre en español (no lleva inglés).
+      ...g.campos.map(([k, etiqueta, fabrica, o = {}]) => conFoco((o.soloEs ? campo : campoEn)(etiqueta, tx, k, { max: o.max || 200, multilinea: !!o.multilinea, placeholder: fabrica, placeholderEn: INGLES_APP[fabrica], ayuda: o.ayuda, alCambiar: deFabrica(tx, k) }), g.pantalla, k)),
+      g.pantalla === 'eventos' ? extrasEvento(tx, conFoco, deFabrica) : null);
+    // Después del evento actual, los años de Anteriores.
+    return g.pantalla === 'eventos' ? [caja, cajaAnteriores(conFoco)] : [caja];
+  });
   v.replaceChildren(
     el('h2', { text: 'Pestañas y textos' }),
     el('p', { class: 'ayuda', text: 'Cambiá los nombres de las pestañas de abajo y los textos fijos de cada pantalla de la app. Si dejás un campo vacío, la app usa el texto de fábrica (el que se ve en gris). En la vista previa del celular ves cómo queda mientras escribís; al tocar "Guardar cambios" se ve al instante en todos los celulares.' }),
     el('div', { class: 'editor-grid' }, el('div', {}, cajaPestanas, ...cajas), el('div', { id: 'previaTextos', class: 'previa-col' })));
   pintarPreviaTextos();
+}
+
+// Evento actual: la foto de la tarjeta, las palabras para elegir sus videos y si se muestra o no.
+// Van en "textos" como eventos.foto, eventos.videos y eventos.oculto (vacío = como viene de fábrica).
+function extrasEvento(tx, conFoco, deFabrica) {
+  // Foto: una de la app o una subida (link https), igual que las secciones de Inicio. La de la carpa es la de fábrica.
+  const img = el('img', { alt: '', class: 'mini-seccion' });
+  img.addEventListener('error', () => { if (!img.src.endsWith('/logo.jpg')) img.src = '../logo.jpg'; });
+  const idFoto = nuevoId();
+  const sel = el('select', { id: idFoto }, ...FOTOS_APP.map(([k, t]) => el('option', { value: k, text: t })));
+  const subida = el('option', { value: SUBIDA, text: 'Foto subida' });
+  const marcar = () => {
+    const f = valorTexto('eventos.foto');
+    if (esHttps(f)) { if (!subida.isConnected) sel.append(subida); sel.value = SUBIDA; }
+    else { subida.remove(); sel.value = FOTOS_APP.some(([k]) => k === f) ? f : 'carpa'; }
+    img.src = srcInicio(f);
+  };
+  const ponerFoto = (f) => { if (f === 'carpa') delete tx['eventos.foto']; else tx['eventos.foto'] = f; marcar(); cambio(); };
+  sel.addEventListener('change', () => { if (sel.value !== SUBIDA) ponerFoto(sel.value); });
+  marcar();
+  const cajaFoto = el('div', {},
+    el('div', { class: 'seccion-cab', style: 'margin-top:14px' }, img, el('div', { style: 'flex:1;min-width:0' }, el('label', { for: idFoto, text: 'Foto de la tarjeta del evento', style: 'margin-top:0' }), sel)),
+    selectorFoto(() => 'evento-' + sanitizarNombre(valorTexto('eventos.titulo')), ponerFoto));
+
+  const cajaVideos = campo('Videos del evento (palabras de sus títulos)', tx, 'eventos.videos', {
+    max: MAX_VIDEOS_EVENTO, placeholder: 'Vacío = las noches de Salto 2026', alCambiar: deFabrica(tx, 'eventos.videos'),
+    ayuda: 'Palabras que aparecen en el título de los videos de YouTube de este evento, separadas por coma. Ej.: Paysandú. Vacío = las noches de Salto 2026. No importan mayúsculas ni tildes. Si la ciudad ya tuvo campaña otros años, sumá el año (ej.: Paysandú, 2027) y van solo los videos publicados ese año. Mientras no haya ninguno, la app dice que van a aparecer cuando se transmitan.' });
+
+  const oculto = el('input', { type: 'checkbox', class: 'check' });
+  oculto.checked = valorTexto('eventos.oculto') === 'si';
+  oculto.addEventListener('change', () => {
+    if (oculto.checked) tx['eventos.oculto'] = 'si'; else delete tx['eventos.oculto'];
+    pantallaTextos = 'eventos'; textoFoco = 'eventos.oculto';
+    cambio();
+  });
+  const cajaOculto = el('div', {},
+    el('label', { class: 'check-fila' }, oculto, ' Ocultar el evento actual (mostrar solo Anteriores)'),
+    el('p', { class: 'ayuda', style: 'margin:6px 0 0', text: 'Por ejemplo, entre una campaña y la siguiente. La tarjeta de Inicio se cambia aparte, en la pestaña Inicio.' }));
+  return [conFoco(cajaFoto, 'eventos', 'eventos.foto'), conFoco(cajaVideos, 'eventos', 'eventos.videos'), conFoco(cajaOculto, 'eventos', 'eventos.oculto')];
+}
+
+// ---------- Anteriores: los años de campañas pasadas (sub-pestaña Anteriores de Eventos) ----------
+// Van en contenido.json como "anteriores": [{ titulo, anio, palabras: [...] }]. Si falta o está vacía, la app usa
+// la lista de fábrica (la misma de acá, lib/contenido.dart anterioresBase). Las palabras se buscan en el título de
+// los videos de ese año, sin importar mayúsculas ni tildes.
+const ANTERIORES_BASE = [
+  { titulo: 'Rosario, Tacuarembó, El Carmen, Rocha y Salto', anio: 2026, palabras: ['Rosario', 'Tacuaremb', 'Carmen', 'Rocha', 'Salto'] },
+  { titulo: 'Colonia, Tacuarembó, Villa del Carmen, Rocha y Maldonado', anio: 2025, palabras: ['Colonia', 'Tacuaremb', 'Carmen', 'Rocha', 'Maldonado'] },
+  { titulo: 'Colonia, Tacuarembó, Ciudad del Carmen, San Carlos y Maldonado', anio: 2024, palabras: ['Colonia', 'Tacuaremb', 'Carmen', 'San Carlos', 'Maldonado'] },
+  { titulo: 'Colonia, Villa del Carmen, San Carlos, Chuy y Maldonado', anio: 2023, palabras: ['Colonia', 'Carmen', 'San Carlos', 'Chuy', 'Maldonado'] },
+  { titulo: 'Juan Lacaze, San Carlos, Chuy y Villa del Carmen', anio: 2022, palabras: ['Juan Lacaze', 'San Carlos', 'Chuy', 'Carmen'] },
+  { titulo: 'Juan Lacaze, Carmelo, Chuy y Villa del Carmen', anio: 2021, palabras: ['Juan Lacaze', 'Carmelo', 'Chuy', 'Carmen'] },
+];
+const copiaAnteriores = () => ANTERIORES_BASE.map((a) => ({ ...a, palabras: [...a.palabras] }));
+const separarPalabras = (x) => (Array.isArray(x) ? x : String(x ?? '').split(',')).map((p) => (typeof p === 'string' || typeof p === 'number' ? String(p).trim() : '')).filter(Boolean);
+function anteriores() { if (!Array.isArray(datos.anteriores)) datos.anteriores = copiaAnteriores(); return datos.anteriores; }
+
+// Al cargar: si todavía no hay lista, arranca con la de fábrica; si hay, quedan solo años con datos que se puedan editar.
+function normalizarAnteriores() {
+  if (!Array.isArray(datos.anteriores)) { datos.anteriores = copiaAnteriores(); return; }
+  datos.anteriores = datos.anteriores.filter(esObjeto).map((a) => {
+    const n = Number(a.anio);
+    return { titulo: typeof a.titulo === 'string' ? a.titulo : '', anio: Number.isFinite(n) ? n : '', palabras: separarPalabras(a.palabras) };
+  }).filter((a) => a.titulo.trim() || a.anio !== ''); // sin ciudades ni año no hay nada que editar
+}
+
+function cajaAnteriores(conFoco) {
+  const xs = anteriores(), lleno = xs.length >= MAX_ANTERIORES;
+  return el('div', { class: 'card' },
+    el('h3', { text: 'Pantalla Eventos › Anteriores' }),
+    el('p', { class: 'ayuda', text: 'Los años de campañas pasadas, en este orden. Al tocar uno, la app muestra los videos del canal publicados ese año cuyo título tiene alguna de sus palabras. Cuando termine el evento actual, agregá su año acá.' }),
+    el('div', { class: 'acciones', style: 'margin:0 0 12px' }, el('button', { class: 'btn', type: 'button', text: '+ Agregar año', ...(lleno ? { disabled: '' } : {}), on: { click: nuevoAnio } })),
+    lleno ? el('p', { class: 'ayuda', text: `Ya hay ${MAX_ANTERIORES} años, que es el máximo: borrá alguno para agregar otro.` }) : null,
+    xs.length ? null : el('p', { class: 'ayuda error', text: 'No queda ningún año: la app va a mostrar la lista de siempre (2021 a 2026).' }),
+    ...xs.map((a, i) => conFoco(tarjetaAnio(a, i), 'anteriores', 'anterior.' + i)));
+}
+
+function tarjetaAnio(a, i) {
+  const xs = datos.anteriores;
+  const titulo = el('b', {});
+  const ponerTitulo = () => { titulo.textContent = `${Number.isFinite(a.anio) ? a.anio : '(sin año)'} · ${a.titulo || '(sin ciudades)'}`; };
+  ponerTitulo();
+  // Las palabras se escriben separadas por coma y se guardan como lista.
+  const pal = { get t() { return separarPalabras(a.palabras).join(', '); }, set t(v) { a.palabras = separarPalabras(v); } };
+  const cajaAnio = campo('Año', a, 'anio', { tipo: 'number', numero: true, alCambiar: ponerTitulo });
+  const inputAnio = cajaAnio.querySelector('input');
+  inputAnio.min = '2000'; inputAnio.max = '2100'; inputAnio.step = '1';
+  const mover = (d) => { const j = i + d; if (j < 0 || j >= xs.length) return; [xs[i], xs[j]] = [xs[j], xs[i]]; textoFoco = 'anterior.' + j; cambio(); pintar(); };
+  const borrar = () => { if (!confirm(`¿Borrar ${a.titulo || 'este año'} (${a.anio}) de Anteriores?`)) return; xs.splice(i, 1); textoFoco = ''; cambio(); pintar(); };
+  return el('div', { class: 'card', style: 'background:var(--suave);border-color:transparent' },
+    el('div', { class: 'bloque-cab' }, titulo,
+      el('div', { class: 'acciones' },
+        el('button', { class: 'btn sec chico', type: 'button', text: 'Subir', 'aria-label': `Subir ${a.anio}`, disabled: i === 0 ? '' : null, on: { click: () => mover(-1) } }),
+        el('button', { class: 'btn sec chico', type: 'button', text: 'Bajar', 'aria-label': `Bajar ${a.anio}`, disabled: i === xs.length - 1 ? '' : null, on: { click: () => mover(1) } }),
+        el('button', { class: 'btn peligro chico', type: 'button', text: 'Borrar', 'aria-label': `Borrar ${a.anio}`, on: { click: borrar } }))),
+    campoEn('Ciudades (como se ven en la app)', a, 'titulo', { max: MAX_CIUDADES, alCambiar: ponerTitulo, placeholderEn: INGLES_APP[a.titulo] }),
+    el('div', { class: 'fila' }, cajaAnio,
+      campo('Palabras de los títulos de YouTube', pal, 't', { max: MAX_PALABRAS, placeholder: 'Rocha, Salto' })),
+    el('p', { class: 'ayuda', style: 'margin:6px 0 0', text: 'Palabras separadas por coma. No importan mayúsculas ni tildes, y alcanza con un pedazo (Tacuaremb encuentra TACUAREMBÓ y Tacuarembo).' }));
+}
+
+function nuevoAnio() {
+  const xs = anteriores();
+  if (xs.length >= MAX_ANTERIORES) return;
+  abrirDialogo('Agregar año a Anteriores', [
+    { clave: 'anio', etiqueta: 'Año', tipo: 'number', valor: String(new Date().getFullYear()) },
+    { clave: 'titulo', etiqueta: 'Ciudades (como se ven en la app)', max: MAX_CIUDADES, placeholder: 'Paysandú, Rocha y Salto' },
+    { clave: 'palabras', etiqueta: 'Palabras de los títulos de YouTube, separadas por coma', max: MAX_PALABRAS, placeholder: 'Paysandú, Rocha, Salto', ayuda: 'La app muestra los videos del canal publicados ese año cuyo título tiene alguna de estas palabras (no importan mayúsculas ni tildes).' },
+  ], (v) => {
+    const anio = Number(v.anio);
+    if (!Number.isInteger(anio) || anio < 2000 || anio > 2100) return 'Poné un año entre 2000 y 2100.';
+    if (!v.titulo) return 'Escribí las ciudades.';
+    const palabras = separarPalabras(v.palabras);
+    if (!palabras.length) return 'Escribí al menos una palabra para encontrar sus videos.';
+    // Va en su lugar según el año (los más nuevos arriba); después se puede mover.
+    const j = xs.findIndex((x) => !(Number(x.anio) >= anio));
+    const k = j < 0 ? xs.length : j;
+    xs.splice(k, 0, { titulo: v.titulo, anio, palabras });
+    pantallaTextos = 'anteriores'; textoFoco = 'anterior.' + k;
+    cambio(); pintar();
+    $('#estado').textContent = `Año ${anio} agregado a Anteriores: tocá "Guardar cambios" para que aparezca en la app`;
+    traducirNuevos([v.titulo]);
+  });
+}
+
+// Revisa el evento actual y Anteriores antes de guardar. Devuelve el problema o '' si está todo bien.
+function revisarEventos() {
+  const tx = textosApp();
+  const foto = tx['eventos.foto'];
+  if (foto != null && foto !== 'carpa' && !(esHttps(foto) || FOTOS_APP.some(([k]) => k === foto))) return 'La foto del evento (pestaña Pestañas y textos) no es una que la app pueda usar: elegí una de la lista o subila de nuevo.';
+  if (foto === 'carpa') delete tx['eventos.foto'];
+  if (tx['eventos.oculto'] != null && tx['eventos.oculto'] !== 'si') delete tx['eventos.oculto'];
+  if (tx['eventos.videos'] != null) {
+    const ps = separarPalabras(tx['eventos.videos']);
+    if (ps.length) tx['eventos.videos'] = ps.join(', '); else delete tx['eventos.videos'];
+  }
+  const xs = anteriores();
+  if (xs.length > MAX_ANTERIORES) return `En Anteriores puede haber hasta ${MAX_ANTERIORES} años: borrá alguno.`;
+  for (const a of xs) {
+    const n = Number(a.anio);
+    if (!Number.isInteger(n) || n < 2000 || n > 2100) return a.titulo ? `En Anteriores, "${a.titulo}" tiene un año que no está entre 2000 y 2100.` : 'En Anteriores hay un año que no está entre 2000 y 2100.';
+    a.anio = n;
+    recortar(a, 'titulo');
+    if (!a.titulo) return `En Anteriores, el año ${n} no tiene las ciudades.`;
+    if (a.titulo.length > MAX_CIUDADES) return `En Anteriores, las ciudades de ${n} son demasiado largas (máximo ${MAX_CIUDADES} letras).`;
+    a.palabras = separarPalabras(a.palabras);
+    if (!a.palabras.length) return `En Anteriores, el año ${n} no tiene palabras para encontrar sus videos.`;
+    if (a.palabras.join(', ').length > MAX_PALABRAS) return `En Anteriores, las palabras de ${n} son demasiadas (máximo ${MAX_PALABRAS} letras).`;
+  }
+  return '';
 }
 
 // Piezas de las maquetas. Lo gris es lo que la app carga sola (videos, versículo del día).
@@ -886,18 +1056,35 @@ function icono(clase, trazo) {
 }
 const TRAZO_CHAT = 'M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z';
 const TRAZO_LIBRO = 'M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14zM20 17v4H6.5A2.5 2.5 0 0 1 4 19.5';
+const TRAZO_CARPA = 'M3 20 12 4l9 16H3zM12 4v16';
+const eventoOculto = () => valorTexto('eventos.oculto') === 'si';
+// Las sub-pestañas de Eventos: el evento actual (si no está oculto) y Anteriores. enEvento: cuál está elegida.
+const subtabsEventos = (t, enEvento) => el('div', { class: 'tm-subtabs' + (textoFoco === 'eventos.oculto' ? ' tel-foco' : '') },
+  eventoOculto() ? null : t('eventos.pestana', 'span', enEvento ? 'on' : ''),
+  el('span', { class: enEvento && !eventoOculto() ? null : 'on', text: enApp('Anteriores') }));
 const datosEvento = (t) => el('div', { class: 'tm-datos' }, ...[['Fechas', 'eventos.fechas'], ['Hora', 'eventos.hora'], ['Entrada', 'eventos.entrada']].map(([n, k]) => el('div', { class: 'tm-dato' }, el('small', { text: enApp(n) }), t(k, 'b'))));
 
 // Maqueta de cada pantalla fija con sus textos editables. titulo: si no viene, es el nombre de la pestaña.
 const MAQUETAS = {
   inicio: (t) => { const xs = tarjetasInicioPrevia(); return { titulo: tituloInicio(), claveTitulo: nombrePestana('inicio') === 'Inicio' ? '' : 'pestana.inicio', cuerpo: [t('inicio.lema', 'p', 'tel-lema'), ...(xs.length ? xs : [el('p', { class: 'ayuda', text: 'No hay ninguna sección para mostrar.' })])] }; },
-  eventos: (t) => ({ gris: true, cuerpo: [
-    el('div', { class: 'tm-subtabs' }, el('span', { class: 'on', text: enApp('Salto 2026') }), el('span', { text: enApp('Anteriores') })),
-    el('div', { class: 'tel-card grande' }, fondoFoto('tel-foto', 'carpa'), el('div', { class: 'tel-scrim' }),
+  // Si el evento actual está oculto, la app muestra solo Anteriores.
+  eventos: (t) => (eventoOculto() ? MAQUETAS.anteriores(t) : { gris: true, cuerpo: [
+    subtabsEventos(t, true),
+    el('div', { class: 'tel-card grande' + (textoFoco === 'eventos.foto' ? ' tel-foco' : '') }, fondoFoto('tel-foto', valorTexto('eventos.foto')), el('div', { class: 'tel-scrim' }),
       el('div', { class: 'tel-textos' }, t('eventos.titulo', 'b'), t('eventos.fechas_largas')), el('span', { class: 'tel-flecha', text: '›' })),
     datosEvento(t),
     t('eventos.noches_titulo', 'div', 'tm-sec'),
-    filaVideo(), filaVideo(), filaVideo()] }),
+    el('div', { class: textoFoco === 'eventos.videos' ? 'tel-foco' : null }, filaVideo(), filaVideo(), filaVideo())] }),
+  anteriores: (t) => {
+    // Con la lista vacía, la app usa la de fábrica.
+    const xs = anteriores().length ? anteriores() : ANTERIORES_BASE;
+    return { cuerpo: [
+      subtabsEventos(t, false),
+      el('p', { class: 'tm-sub', text: enApp('Tocá un año para ver sus videos.') }),
+      ...xs.map((a, i) => el('div', { class: 'tm-fila' + (textoFoco === 'anterior.' + i ? ' tel-foco' : '') }, icono('azul', TRAZO_CARPA),
+        el('div', { class: 'tm-flex' }, el('b', { text: enApp(String(a.titulo || '')) }), el('span', { class: 'tm-sub', style: 'margin:0', text: Number.isFinite(a.anio) ? String(a.anio) : '' })),
+        el('span', { class: 'tm-chev', text: '›' })))] };
+  },
   programa: (t) => ({ titulo: enApp('Programa'), atras: true, cuerpo: [
     el('div', { class: 'tm-soft' }, t('eventos.titulo', 'div', 'tm-grande'), t('eventos.lema', 'p', 'tm-sub'), datosEvento(t)),
     el('div', { class: 'tm-caja' }, icono('verde', TRAZO_CHAT), el('div', { class: 'tm-flex' }, t('eventos.anotarse_titulo', 'b'), t('eventos.anotarse_texto', 'span', 'tm-sub')), el('span', { class: 'tm-chev', text: '›' })),
@@ -930,7 +1117,7 @@ function pintarPreviaTextos() {
   // Un texto editable de la pantalla, marcado si es el que estás editando.
   const t = (k, tag = 'span', clase = '') => el(tag, { class: (clase + (textoFoco === k ? ' tel-foco' : '')).trim() || null, text: enApp(valorTexto(k)) });
   const vista = MAQUETAS[p](t);
-  const indice = { inicio: 0, eventos: 1, programa: 1, predicas: 2, oracion: 3, biblia: 4 }[p];
+  const indice = { inicio: 0, eventos: 1, anteriores: 1, programa: 1, predicas: 2, oracion: 3, biblia: 4 }[p];
   const clave = PESTANAS_BASE[indice][0];
   const tel = telefono({ titulo: vista.titulo ?? enApp(nombrePestana(clave)), atras: !!vista.atras, activa: indice, cuerpo: vista.cuerpo, foco: textoFoco, claveTitulo: vista.titulo == null ? 'pestana.' + clave : vista.claveTitulo || '' });
   tel.classList.add('con-selector');
@@ -2951,6 +3138,7 @@ async function cargar() {
   datos.config = datos.config || {}; datos.en = datos.en || {}; datos.noticias = datos.noticias || []; datos.iglesias = datos.iglesias || []; datos.misioneros = datos.misioneros || [];
   datos.push_historial = Array.isArray(datos.push_historial) ? datos.push_historial.filter((h) => h && typeof h === 'object') : [];
   normalizarPantallas();
+  normalizarAnteriores();
 }
 
 // Revisa lo que se va a guardar: links https, ids de YouTube y largos.
@@ -2986,7 +3174,8 @@ function revisar() {
   for (const h of datos.push_historial) {
     if (!avisoBien(h)) return `El aviso enviado "${String(h.titulo || '').slice(0, 40)}" tiene datos que la app no puede usar (por ejemplo, un link sin https://). Quitalo en la pestaña Notificaciones push.`;
   }
-  return revisarPantallas();
+  // Primero pestañas, textos y pantallas (recorta y saca lo vacío); después el evento actual y Anteriores.
+  return revisarPantallas() || revisarEventos();
 }
 
 let guardando = false;
