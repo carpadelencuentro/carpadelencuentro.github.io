@@ -180,6 +180,12 @@
   .codigo-camp { font-family:ui-monospace,Consolas,'Courier New',monospace; font-size:32px; font-weight:800; letter-spacing:.12em; color:var(--azul2); margin:6px 0 0; overflow-wrap:anywhere; user-select:all; }
   .chip.equipo { background:#EFE7FB; color:#5B3A99; }
   .chip.reportado { background:#FDE4E4; color:#A12020; }
+  .grilla-galeria { display:grid; grid-template-columns:repeat(auto-fill, minmax(110px, 1fr)); gap:6px; margin-top:10px; }
+  .foto-galeria { position:relative; aspect-ratio:1; border-radius:10px; overflow:hidden; background:var(--suave); }
+  .foto-galeria img { width:100%; height:100%; object-fit:cover; display:block; }
+  .foto-galeria .quitar-foto { position:absolute; top:4px; right:4px; width:28px; height:28px; border-radius:50%; border:0; background:rgba(0,0,0,.6); color:#fff; font-size:18px; line-height:28px; cursor:pointer; }
+  .foto-galeria .portada { position:absolute; left:4px; bottom:4px; font-size:12px; padding:2px 8px; border-radius:999px; border:0; background:rgba(0,0,0,.6); color:#fff; }
+  .foto-galeria button.portada { cursor:pointer; opacity:.8; }
   .de { margin:8px 0 0; padding:8px 12px; border-radius:12px; background:var(--suave); font-size:14px; overflow-wrap:anywhere; }
   .de small { display:block; color:var(--gris); font-weight:600; font-size:12px; margin-top:2px; }
   h2 .chip { vertical-align:middle; margin-left:6px; }
@@ -582,6 +588,7 @@ const SECCIONES_BASE = [
   { id: 'predicas', titulo: 'Prédicas', sub: 'Escuchá las charlas más destacadas', pill: '', foto: 'predicas', accion: 'predicas', link: '', visible: true },
   { id: 'oracion', titulo: 'Oración', sub: 'Podemos orar por vos', pill: '', foto: 'oracion', accion: 'oracion', link: '', visible: true },
   { id: 'iglesias', titulo: 'Iglesias cerca', sub: 'Encontrá dónde congregarte', pill: '', foto: 'iglesias', accion: 'iglesias', link: '', visible: true },
+  { id: 'galeria', titulo: 'Galería de fotos', sub: 'Mirá las fotos de cada carpa', pill: '', foto: 'carpa_afuera', accion: 'galeria', link: '', visible: true },
   { id: 'ofrendar', titulo: 'Ofrendar', sub: 'Ayudá a llevar la carpa', pill: '', foto: 'ofrendar', accion: 'ofrendar', link: '', visible: true },
 ];
 // Fotos que ya vienen dentro de la app (lib/contenido.dart, fotosInicio). Sus copias para ver acá están en fotos/inicio/.
@@ -593,7 +600,7 @@ const FOTOS_APP = [
 ];
 const ACCIONES_INICIO = [
   ['eventos', 'Ir a Eventos'], ['predicas', 'Ir a Prédicas'], ['oracion', 'Ir a Oración'], ['biblia', 'Ir a Biblia'],
-  ['iglesias', 'Abrir Iglesias cerca'], ['ofrendar', 'Abrir Ofrendar'], ['conocer', 'Abrir Conocer más'],
+  ['iglesias', 'Abrir Iglesias cerca'], ['ofrendar', 'Abrir Ofrendar'], ['galeria', 'Abrir Galería de fotos'], ['conocer', 'Abrir Conocer más'],
   ['pagina', 'Abrir una pantalla'], ['link', 'Abrir un link (https)'], ['nada', 'Nada (solo se muestra)'],
 ];
 // Los botones de las pantallas nuevas pueden hacer lo mismo, y además abrir WhatsApp u otra pantalla.
@@ -603,6 +610,15 @@ const srcInicio = (f) => vistasPrevias.get(f) || (esHttps(f) ? f : `../fotos/ini
 
 function seccionesInicio() {
   if (!Array.isArray(datos.inicio)) datos.inicio = SECCIONES_BASE.map((s) => ({ ...s }));
+  // La Galería es nueva: si Inicio se guardó antes de que existiera, se agrega una sola vez antes de Ofrendar
+  // (la app hace lo mismo). Después se puede borrar como cualquier otra.
+  if (!datos.config.galeria_inicio) {
+    if (!datos.inicio.some((s) => s.id === 'galeria' || s.accion === 'galeria')) {
+      const i = datos.inicio.findIndex((s) => s.id === 'ofrendar');
+      datos.inicio.splice(i < 0 ? datos.inicio.length : i, 0, { ...SECCIONES_BASE.find((s) => s.id === 'galeria') });
+    }
+    datos.config.galeria_inicio = 'si';
+  }
   return datos.inicio;
 }
 
@@ -886,8 +902,26 @@ function pintarTextos(v) {
   v.replaceChildren(
     el('h2', { text: 'Pestañas y textos' }),
     el('p', { class: 'ayuda', text: 'Cambiá los nombres de las pestañas de abajo y los textos fijos de cada pantalla de la app. Si dejás un campo vacío, la app usa el texto de fábrica (el que se ve en gris). En la vista previa del celular ves cómo queda mientras escribís; al tocar "Guardar cambios" se ve al instante en todos los celulares.' }),
-    el('div', { class: 'editor-grid' }, el('div', {}, cajaPestanas, ...cajas), el('div', { id: 'previaTextos', class: 'previa-col' })));
+    el('div', { class: 'editor-grid' }, el('div', {}, cajaCambiosApp(), cajaPestanas, ...cajas), el('div', { id: 'previaTextos', class: 'previa-col' })));
   pintarPreviaTextos();
+}
+
+// Textos que el administrador cambió desde el celular (modo edición de la app): van en "cambios" como
+// { "texto de fábrica": { es, en, de } }. Quitar uno vuelve al texto de fábrica.
+function cajaCambiosApp() {
+  const cs = datos.cambios && typeof datos.cambios === 'object' ? datos.cambios : null;
+  const claves = cs ? Object.keys(cs) : [];
+  if (!claves.length) return null;
+  return el('div', { class: 'card' },
+    el('h3', { text: 'Textos cambiados desde la app' }),
+    el('p', { class: 'ayuda', text: 'Los cambió el administrador desde el celular (Mi perfil > Editar la app). Para volver al texto de fábrica, tocá Quitar y después "Guardar cambios".' }),
+    ...claves.map((k) => {
+      const b = el('button', { class: 'btn sec chico', type: 'button', text: 'Quitar' });
+      b.addEventListener('click', () => { delete cs[k]; cambio(); pintar(); });
+      return el('div', { style: 'display:flex;align-items:center;gap:10px;margin:8px 0' },
+        el('div', { style: 'flex:1;min-width:0' }, el('div', { class: 'ayuda', style: 'margin:0', text: 'Antes: ' + k }), el('div', { text: 'Ahora: ' + String((cs[k] && cs[k].es) || '') })),
+        b);
+    }));
 }
 
 // Evento actual: la foto de la tarjeta, las palabras para elegir sus videos y si se muestra o no.
@@ -1550,7 +1584,7 @@ function revisarPantallas() {
 }
 
 const TABS = [
-  ['inicio', 'Inicio'], ['textos', 'Pestañas y textos'], ['paginas', 'Pantallas'], ['novedades', 'Novedades'], ['push', 'Notificaciones push'], ['registrados', 'Registrados'], ['campanas', 'Campañas'], ['muro', 'Pedidos de oración'], ['vivo', 'En vivo y encuentro'], ['brou', 'Cuenta BROU'],
+  ['inicio', 'Inicio'], ['textos', 'Pestañas y textos'], ['paginas', 'Pantallas'], ['galeria', 'Galería de fotos'], ['novedades', 'Novedades'], ['push', 'Notificaciones push'], ['registrados', 'Registrados'], ['campanas', 'Campañas'], ['muro', 'Pedidos de oración'], ['vivo', 'En vivo y encuentro'], ['brou', 'Cuenta BROU'],
   ['iglesias', 'Iglesias'], ['app', 'Actualización'], ['seguridad', 'Seguridad'],
 ];
 
@@ -1616,6 +1650,7 @@ function pintar() {
   else if (tab === 'inicio') pintarInicio(v);
   else if (tab === 'textos') pintarTextos(v);
   else if (tab === 'paginas') pintarPaginas(v);
+  else if (tab === 'galeria') pintarTabGaleria(v);
   else if (tab === 'push') pintarPush(v);
   else if (tab === 'muro') pintarMuro(v);
   else if (tab === 'campanas') pintarCampanas(v);
@@ -1711,7 +1746,7 @@ function selectorFoto(base, alListo) {
     el('div', { class: 'link-fila' }, link, usar));
 }
 
-async function achicarFoto(archivo) {
+async function achicarFoto(archivo, lado = 1280, calidad = 0.85) {
   let img;
   try { img = await createImageBitmap(archivo, { imageOrientation: 'from-image' }); }
   catch (e) {
@@ -1724,7 +1759,7 @@ async function achicarFoto(archivo) {
   }
   const w0 = img.naturalWidth || img.width, h0 = img.naturalHeight || img.height;
   if (!w0 || !h0) throw new Error('No pude abrir esa imagen. Probá con otra.');
-  const k = Math.min(1, 1280 / Math.max(w0, h0));
+  const k = Math.min(1, lado / Math.max(w0, h0));
   const w = Math.max(1, Math.round(w0 * k)), h = Math.max(1, Math.round(h0 * k));
   const lienzo = document.createElement('canvas');
   lienzo.width = w; lienzo.height = h;
@@ -1733,7 +1768,7 @@ async function achicarFoto(archivo) {
   g.imageSmoothingQuality = 'high';
   g.drawImage(img, 0, 0, w, h);
   if (img.close) img.close();
-  return new Promise((ok, mal) => lienzo.toBlob((b) => (b ? ok(b) : mal(new Error('No pude convertir la foto.'))), 'image/jpeg', 0.85));
+  return new Promise((ok, mal) => lienzo.toBlob((b) => (b ? ok(b) : mal(new Error('No pude convertir la foto.'))), 'image/jpeg', calidad));
 }
 
 const blobABase64 = (b) => new Promise((ok, mal) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(',')[1]); r.onerror = () => mal(new Error('No pude leer la foto.')); r.readAsDataURL(b); });
@@ -1767,6 +1802,167 @@ async function subirFoto(archivo, base, decir) {
     nombre = nombre.replace(/-(\d+)\.jpg$/, (_, n) => `-${+n + 1}.jpg`);
   }
   throw new Error('No se pudo subir la foto. Probá de nuevo.');
+}
+
+// ---------- Galería de fotos ----------
+// Va en galeria.json (aparte de contenido.json, para no agrandarlo): { albumes: [{ id, titulo, fotos: [{ f, m }] }] }.
+// Cada foto se sube achicada en dos tamaños a fotos/galeria/<álbum>/: f la grande (lado mayor 1600) y m la miniatura
+// (480) para la grilla de la app. La app baja las fotos de internet al mirarlas: no van dentro de la app.
+// Los cambios se guardan al instante (no esperan a "Guardar cambios").
+const GALERIA = 'galeria.json';
+const gal = { lista: null, sha: null, cargando: false, error: '', msg: null, ocupado: '' };
+let cajaGaleria = null;
+const rawGh = (ruta) => `https://raw.githubusercontent.com/${DUENO}/${REPO}/main/${ruta}`;
+const idAlbum = (t) => (t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 30) || 'album') + '-' + Math.random().toString(36).slice(2, 6);
+
+async function cargarGaleria() {
+  if (gal.cargando) return;
+  gal.cargando = true; gal.error = ''; pintarGaleria();
+  try {
+    const r = await api('contents/' + GALERIA);
+    if (r.status === 404) { gal.lista = []; gal.sha = null; }
+    else if (!r.ok) throw new Error('No pude leer la galería (' + r.status + ').');
+    else {
+      const j = await r.json();
+      gal.sha = j.sha;
+      const d = JSON.parse(de64(j.content));
+      gal.lista = (Array.isArray(d.albumes) ? d.albumes : []).filter((a) => a && typeof a === 'object').map((a) => ({
+        id: /^[a-z0-9-]{1,40}$/.test(String(a.id)) ? String(a.id) : idAlbum(String(a.titulo || '')),
+        titulo: String(a.titulo || ''),
+        fotos: (Array.isArray(a.fotos) ? a.fotos : []).filter((f) => f && typeof f.f === 'string').map((f) => ({ f: f.f, m: typeof f.m === 'string' ? f.m : f.f })),
+      }));
+    }
+  } catch (e) { gal.error = e.message; }
+  gal.cargando = false; pintarGaleria();
+}
+
+async function guardarGaleria(que) {
+  const texto = JSON.stringify({ albumes: gal.lista }, null, 1);
+  const r = await api('contents/' + GALERIA, { method: 'PUT', body: JSON.stringify({ message: 'Panel: galería, ' + que, content: a64(texto), ...(gal.sha ? { sha: gal.sha } : {}) }) });
+  if (r.status === 409 || r.status === 422) throw new Error('La galería cambió en otra ventana. Tocá Actualizar y probá de nuevo.');
+  if (!r.ok) throw new Error('No se pudo guardar la galería (' + r.status + ').');
+  gal.sha = (await r.json()).content.sha;
+}
+
+async function subirArchivoGh(ruta, blob) {
+  const r = await api('contents/' + ruta, { method: 'PUT', body: JSON.stringify({ message: 'Panel: ' + ruta, content: await blobABase64(blob) }) });
+  if (!r.ok) throw new Error('No se pudo subir una foto (' + r.status + ').');
+}
+
+// Cambia la lista (nombre, orden, borrar) y la guarda. Si no se pudo guardar, vuelve a como estaba.
+async function accionGaleria(cambiarLista, que, hecho) {
+  if (gal.ocupado) return;
+  const antes = JSON.stringify(gal.lista);
+  try {
+    cambiarLista();
+    gal.ocupado = 'Guardando...'; pintarGaleria();
+    await guardarGaleria(que);
+    gal.msg = nota(true, hecho + ' En la app se ve en unos minutos.');
+  } catch (e) { gal.lista = JSON.parse(antes); gal.msg = nota(false, e.message); }
+  gal.ocupado = ''; pintarGaleria();
+}
+
+async function subirFotosGaleria(album, archivos) {
+  if (gal.ocupado) return;
+  const xs = archivos.filter((f) => TIPOS_FOTO.includes(f.type) && f.size <= 25 * 1024 * 1024);
+  if (!xs.length) { gal.msg = nota(false, 'Elegí fotos JPG, PNG o WEBP (de hasta 25 MB).'); pintarGaleria(); return; }
+  let hechas = 0, guardadas = 0;
+  try {
+    for (const archivo of xs) {
+      gal.ocupado = `Subiendo ${hechas + 1} de ${xs.length}... No cierres esta pestaña.`; pintarGaleria();
+      const grande = await achicarFoto(archivo, 1600, 0.82), mini = await achicarFoto(archivo, 480, 0.78);
+      const base = `fotos/galeria/${album.id}/${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+      await subirArchivoGh(base + '.jpg', grande);
+      await subirArchivoGh(base + '-m.jpg', mini);
+      vistasPrevias.set(rawGh(base + '-m.jpg'), URL.createObjectURL(mini));
+      album.fotos.push({ f: base + '.jpg', m: base + '-m.jpg' });
+      hechas++;
+      // Cada 10 se guarda la lista: si se corta a mitad de camino, lo subido ya queda.
+      if (hechas % 10 === 0) { await guardarGaleria(`${hechas} fotos en ${album.titulo}`); guardadas = hechas; }
+    }
+    if (guardadas !== hechas) await guardarGaleria(`${hechas} fotos en ${album.titulo}`);
+    gal.msg = nota(true, `Listo: ${plural(hechas, 'foto subida', 'fotos subidas')} a "${album.titulo}". En la app aparecen en unos minutos.`);
+  } catch (e) {
+    if (guardadas !== hechas) { try { await guardarGaleria(`${hechas} fotos en ${album.titulo}`); } catch (e2) {} }
+    gal.msg = nota(false, (hechas ? `Se subieron ${hechas} de ${xs.length}. ` : '') + e.message);
+  }
+  gal.ocupado = ''; pintarGaleria();
+}
+
+function nuevoAlbum() {
+  if (!gal.lista) return;
+  abrirDialogo('Nuevo álbum', [{ clave: 'titulo', etiqueta: 'Nombre', max: 60, placeholder: 'Ej: Salto 2026' }], async (v) => {
+    const titulo = String(v.titulo || '').trim();
+    if (!titulo) return 'Escribí el nombre del álbum.';
+    if (titulo.length > 60) return 'El nombre puede tener hasta 60 letras.';
+    const antes = gal.lista;
+    gal.lista = [{ id: idAlbum(titulo), titulo, fotos: [] }, ...antes];
+    try { await guardarGaleria('álbum ' + titulo); } catch (e) { gal.lista = antes; return e.message; }
+    gal.msg = nota(true, `Listo: se creó "${titulo}". Ahora tocá "+ Subir fotos".`);
+    pintarGaleria();
+    return '';
+  });
+}
+
+function tarjetaAlbum(a, i) {
+  const no = gal.ocupado ? '' : null;
+  const titulo = el('input', { value: a.titulo, maxlength: '60', 'aria-label': 'Nombre del álbum', disabled: no });
+  titulo.addEventListener('change', () => {
+    const t = titulo.value.trim();
+    if (!t) { titulo.value = a.titulo; return; }
+    accionGaleria(() => { a.titulo = t; }, 'nombre ' + t, 'Listo: nombre cambiado.');
+  });
+  const archivo = el('input', { type: 'file', accept: 'image/jpeg,image/png,image/webp', multiple: '', style: 'display:none' });
+  archivo.addEventListener('change', () => { const fs = [...archivo.files]; archivo.value = ''; subirFotosGaleria(a, fs); });
+  const boton = (texto, clase, apagado, alTocar, titulo) => {
+    const b = el('button', { class: clase, type: 'button', text: texto, title: titulo || null, disabled: gal.ocupado || apagado ? '' : null });
+    b.addEventListener('click', alTocar);
+    return b;
+  };
+  const n = gal.lista.length;
+  const mover = (paso) => accionGaleria(() => { const [x] = gal.lista.splice(i, 1); gal.lista.splice(i + paso, 0, x); }, 'orden', 'Listo: álbum movido.');
+  const grilla = el('div', { class: 'grilla-galeria' }, ...a.fotos.map((f, k) => {
+    const img = el('img', { src: vistasPrevias.get(rawGh(f.m)) || rawGh(f.m), alt: '', loading: 'lazy' });
+    const quitar = boton('×', 'quitar-foto', false, () => accionGaleria(() => a.fotos.splice(k, 1), 'quitar foto de ' + a.titulo, 'Listo: foto quitada.'), 'Quitar esta foto');
+    const portada = k === 0 ? el('span', { class: 'portada', text: 'Portada' })
+      : boton('Portada', 'portada', false, () => accionGaleria(() => { const [x] = a.fotos.splice(k, 1); a.fotos.unshift(x); }, 'portada de ' + a.titulo, 'Listo: nueva portada.'), 'Usar de portada');
+    return el('div', { class: 'foto-galeria' }, img, quitar, portada);
+  }));
+  return el('div', { class: 'card' },
+    el('div', { style: 'display:flex;flex-wrap:wrap;gap:8px;align-items:center' },
+      el('div', { style: 'flex:1;min-width:200px' }, titulo),
+      boton('↑', 'btn sec chico', i === 0, () => mover(-1), 'Subir el álbum'),
+      boton('↓', 'btn sec chico', i === n - 1, () => mover(1), 'Bajar el álbum'),
+      boton('Borrar álbum', 'btn peligro chico', false, () => {
+        if (confirm(`¿Borrar el álbum "${a.titulo}"${a.fotos.length ? ' con sus ' + plural(a.fotos.length, 'foto', 'fotos') : ''}? Deja de verse en la app.`)) accionGaleria(() => gal.lista.splice(i, 1), 'borrar ' + a.titulo, 'Listo: álbum borrado.');
+      })),
+    el('p', { class: 'ayuda', text: a.fotos.length ? plural(a.fotos.length, 'foto', 'fotos') + '. La primera es la portada del álbum.' : 'Sin fotos todavía: el álbum no aparece en la app hasta que le subas alguna.' }),
+    el('div', { class: 'acciones', style: 'margin:0' }, boton('+ Subir fotos', 'btn chico', false, () => archivo.click()), archivo),
+    a.fotos.length ? grilla : null);
+}
+
+function pintarGaleria() {
+  if (!cajaGaleria || !cajaGaleria.isConnected) return;
+  const hijos = [];
+  if (gal.ocupado) hijos.push(el('p', { class: 'estado', text: gal.ocupado }));
+  else if (gal.msg) hijos.push(gal.msg);
+  if (gal.error) hijos.push(nota(false, gal.error));
+  if (!gal.lista) hijos.push(el('p', { class: 'ayuda', text: gal.cargando ? 'Cargando...' : '' }));
+  else if (!gal.lista.length) hijos.push(el('p', { class: 'ayuda', text: 'Todavía no hay álbumes. Creá el primero con "+ Nuevo álbum".' }));
+  else hijos.push(...gal.lista.map(tarjetaAlbum));
+  cajaGaleria.replaceChildren(...hijos);
+}
+
+function pintarTabGaleria(v) {
+  cajaGaleria = el('div');
+  v.replaceChildren(
+    el('h2', { text: 'Galería de fotos' }),
+    el('p', { class: 'ayuda', text: 'Las fotos se ven en la app, en la tarjeta "Galería de fotos" de Inicio (antes de Ofrendar), sin iniciar sesión. Quedan guardadas en internet y no dentro de la app, así la app no pesa más. Cada foto se achica sola antes de subirse. Lo que hagas acá se guarda al instante (no hace falta "Guardar cambios") y en la app aparece en unos minutos.' }),
+    el('div', { class: 'acciones', style: 'margin:0 0 12px' },
+      el('button', { class: 'btn', type: 'button', text: '+ Nuevo álbum', on: { click: nuevoAlbum } }),
+      el('button', { class: 'btn sec', type: 'button', text: 'Actualizar', on: { click: cargarGaleria } })),
+    cajaGaleria);
+  if (!gal.lista) cargarGaleria(); else pintarGaleria();
 }
 
 // ---------- Notificaciones push (Firebase Cloud Messaging) ----------
@@ -2370,6 +2566,17 @@ async function sincronizarContenido() {
     const xs = await r.json();
     const fila = Array.isArray(xs) && xs.length ? xs[0] : null;
     if (id !== sesionDb || (fila && canon(fila.json) === canon(gh))) return;
+    // Lo último lo cambió el administrador desde la app (modo edición): se trae acá y se guarda también en
+    // GitHub, en vez de pisarlo con la copia de GitHub.
+    if (fila && fila.json && typeof fila.json === 'object' && fila.json.origen === 'app') {
+      datos = fila.json;
+      prepararDatos();
+      pintar();
+      cambio();
+      $('#estado').textContent = 'Trajimos los cambios hechos desde la app. Guardando...';
+      setTimeout(() => guardar(), 0);
+      return;
+    }
     // Si otro panel guardó después de que este entró, ya mandó a la base su versión, que es más nueva: no se pisa.
     const r2 = await api(`contents/${ARCHIVO}`);
     if (!r2.ok) throw new Error('no se pudo revisar GitHub (' + r2.status + ').');
@@ -3153,6 +3360,10 @@ async function cargar() {
   sha = j.sha;
   textoGh = de64(j.content);
   datos = JSON.parse(textoGh);
+  prepararDatos();
+}
+
+function prepararDatos() {
   datos.config = datos.config || {}; datos.en = datos.en || {}; datos.noticias = datos.noticias || []; datos.iglesias = datos.iglesias || []; datos.misioneros = datos.misioneros || [];
   datos.push_historial = Array.isArray(datos.push_historial) ? datos.push_historial.filter((h) => h && typeof h === 'object') : [];
   normalizarPantallas();
@@ -3215,6 +3426,8 @@ async function guardar() {
     await completarIngles();
     $('#estado').textContent = 'Guardando...';
     datos.actualizado = new Date().toISOString().slice(0, 10);
+    // Ya no es "hecho desde la app": desde acá la versión de GitHub y la de la base son la misma.
+    delete datos.origen;
     const guardada = version;
     const texto = JSON.stringify(datos, null, 1);
     const r = await api(`contents/${ARCHIVO}`, {
