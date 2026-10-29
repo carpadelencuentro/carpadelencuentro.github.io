@@ -1011,18 +1011,7 @@
   "Juan Lacaze, San Carlos, Chuy y Villa del Carmen": "Juan Lacaze, San Carlos, Chuy and Villa del Carmen",
   "Juan Lacaze, Carmelo, Chuy y Villa del Carmen": "Juan Lacaze, Carmelo, Chuy and Villa del Carmen"
  },
- "push_historial": [
-  {
-   "id": "mvu3ncm9-68bf35d68d7c",
-   "fecha": "2026-10-29T22:12:57.485Z",
-   "titulo": "Nueva versión Disponible.",
-   "texto": "Tocá para actualizar",
-   "titulo_en": "New version available.",
-   "texto_en": "Tap to update",
-   "accion": "link",
-   "link": "https://play.google.com/store/apps/details?id=com.corapps.carpadelencuentro"
-  }
- ],
+ "push_historial": [],
  "inicio": [
   {
    "id": "eventos",
