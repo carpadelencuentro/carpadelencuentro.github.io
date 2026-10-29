@@ -940,11 +940,11 @@
   "Ya podés ver las 5 noches de la carpa en Salto.": "You can now see the 5 nights of the tent in Salto.",
   "Campañas evangelísticas 2026": "Evangelistic campaigns 2026",
   "Mirá el resumen de las campañas de este año por todo el país.": "Look at the summary of this year's campaigns throughout the country.",
-  "Prédicas": "preachings",
-  "Escuchá o mirá cada noche": "Listen or watch every night",
   "Carpa Salto 2026": "Jump Tent 2026",
   "22 al 26 de setiembre": "September 22 to 26",
   "Eventos": "Events",
+  "Prédicas": "preachings",
+  "Escuchá o mirá cada noche": "Listen or watch every night",
   "Oración": "Prayer",
   "Podemos orar por vos": "We can pray for you",
   "Iglesias cerca": "Churches nearby",
@@ -1005,22 +1005,22 @@
  "push_historial": [],
  "inicio": [
   {
-   "id": "predicas",
-   "titulo": "Prédicas",
-   "sub": "Escuchá o mirá cada noche",
-   "pill": "",
-   "foto": "predicas",
-   "accion": "predicas",
-   "link": "",
-   "visible": true
-  },
-  {
    "id": "eventos",
    "titulo": "Carpa Salto 2026",
    "sub": "22 al 26 de setiembre",
    "pill": "Eventos",
    "foto": "carpa",
    "accion": "eventos",
+   "link": "",
+   "visible": true
+  },
+  {
+   "id": "predicas",
+   "titulo": "Prédicas",
+   "sub": "Escuchá o mirá cada noche",
+   "pill": "",
+   "foto": "predicas",
+   "accion": "predicas",
    "link": "",
    "visible": true
   },
