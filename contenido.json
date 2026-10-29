@@ -993,6 +993,16 @@
  },
  "push_historial": [
   {
+   "id": "mvszqpbn-2821ea04681c",
+   "fecha": "2026-10-29T03:35:49.478Z",
+   "titulo": "Test",
+   "texto": "Testeando",
+   "titulo_en": "Test",
+   "texto_en": "Testing",
+   "accion": "inicio",
+   "link": ""
+  },
+  {
    "id": "mvszb240-4fd3ad9bb30a",
    "fecha": "2026-10-29T03:23:39.557Z",
    "titulo": "Prueba",
