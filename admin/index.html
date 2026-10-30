@@ -2435,6 +2435,7 @@ async function sincronizarContenido() {
       // Solo lo que se cambia desde la app (textos y tarjetas de Inicio); lo demás queda como en GitHub.
       for (const k of CLAVES_APP) if (fila.json[k] !== undefined) datos[k] = fila.json[k];
       if (fila.json.config && fila.json.config.galeria_inicio) datos.config.galeria_inicio = fila.json.config.galeria_inicio;
+      if (fila.json.config && fila.json.config.envivo_url !== undefined) datos.config.envivo_url = fila.json.config.envivo_url;
       anotarCargado();
       pintar();
       cambio();
@@ -3116,8 +3117,11 @@ async function cargar() {
 // Cómo estaban los textos cambiados y las tarjetas de Inicio al cargar (o al último guardado): para saber si el
 // panel los tocó, y si no, traer los que se cambiaron desde la app mientras tanto.
 let cargadoApp = null;
-const anotarCargado = () => { cargadoApp = { cambios: canon(datos.cambios ?? null), inicio: canon(datos.inicio ?? null) }; };
-const CLAVES_APP = ['cambios', 'inicio', 'ocultos', 'ocultos_nombres', 'noticias', 'extras', 'galeria_ocultas'];
+const anotarCargado = () => {
+  cargadoApp = Object.fromEntries(CLAVES_APP.map((k) => [k, canon(datos[k] ?? null)]));
+  cargadoApp.envivo = canon((datos.config && datos.config.envivo_url) ?? null);
+};
+const CLAVES_APP = ['cambios', 'inicio', 'ocultos', 'ocultos_nombres', 'noticias', 'extras', 'galeria_ocultas', 'galeria_extra'];
 
 // Si en la base lo último lo cambió el administrador desde la app, se traen esos cambios a lo que se va a guardar.
 // Lo que el panel cambió en esas mismas partes gana.
@@ -3131,6 +3135,8 @@ async function traerCambiosApp() {
     if (!j || typeof j !== 'object' || j.origen !== 'app') return;
     for (const k of CLAVES_APP) if (j[k] !== undefined && (!cargadoApp || canon(datos[k] ?? null) === cargadoApp[k])) datos[k] = j[k];
     if (j.config && j.config.galeria_inicio) datos.config.galeria_inicio = j.config.galeria_inicio;
+    // La transmisión en vivo se prende y apaga también desde la app.
+    if (j.config && j.config.envivo_url !== undefined && (!cargadoApp || canon(datos.config.envivo_url ?? null) === cargadoApp.envivo)) datos.config.envivo_url = j.config.envivo_url;
   } catch (e) {}
 }
 
