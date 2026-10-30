@@ -913,7 +913,14 @@ function pintarTextos(v) {
 // "ocultos_nombres" (cómo se llaman). Mostrar una la vuelve a poner.
 function cajaOcultos() {
   const xs = Array.isArray(datos.ocultos) ? datos.ocultos : [];
-  if (!xs.length) return null;
+  const fotos = Array.isArray(datos.galeria_ocultas) ? datos.galeria_ocultas : [];
+  if (!xs.length && !fotos.length) return null;
+  if (!xs.length) {
+    const b = el('button', { class: 'btn sec chico', type: 'button', text: 'Volver a mostrar todas' });
+    b.addEventListener('click', () => { datos.galeria_ocultas = []; cambio(); pintar(); });
+    return el('div', { class: 'card' }, el('h3', { text: 'Fotos sacadas de la galería' }),
+      el('p', { class: 'ayuda', text: `El administrador sacó ${fotos.length === 1 ? '1 foto' : fotos.length + ' fotos'} desde el celular.` }), b);
+  }
   const nombres = datos.ocultos_nombres && typeof datos.ocultos_nombres === 'object' ? datos.ocultos_nombres : {};
   return el('div', { class: 'card' },
     el('h3', { text: 'Partes ocultas de la app' }),
@@ -3110,7 +3117,7 @@ async function cargar() {
 // panel los tocó, y si no, traer los que se cambiaron desde la app mientras tanto.
 let cargadoApp = null;
 const anotarCargado = () => { cargadoApp = { cambios: canon(datos.cambios ?? null), inicio: canon(datos.inicio ?? null) }; };
-const CLAVES_APP = ['cambios', 'inicio', 'ocultos', 'ocultos_nombres', 'noticias', 'extras'];
+const CLAVES_APP = ['cambios', 'inicio', 'ocultos', 'ocultos_nombres', 'noticias', 'extras', 'galeria_ocultas'];
 
 // Si en la base lo último lo cambió el administrador desde la app, se traen esos cambios a lo que se va a guardar.
 // Lo que el panel cambió en esas mismas partes gana.
