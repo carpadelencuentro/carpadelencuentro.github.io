@@ -69,6 +69,15 @@ def bajar(url, ruta):
         f.write(datos)
 
 
+def portada_actual():
+    """La foto de la tarjeta de Inicio ("portada"): se elige a mano y se conserva."""
+    try:
+        with open(GALERIA, encoding='utf-8') as f:
+            return json.load(f).get('portada')
+    except (OSError, ValueError):
+        return None
+
+
 def cuantas_habia():
     try:
         with open(GALERIA, encoding='utf-8') as f:
@@ -117,8 +126,9 @@ def main():
         ruta = f'{CARPETA}/{n}'
         if ruta not in usadas:
             os.remove(ruta)
+    portada = portada_actual()
     with open(GALERIA, 'w', encoding='utf-8', newline='\n') as f:
-        json.dump({'albumes': [a for _, a in albumes]}, f, ensure_ascii=False, indent=1)
+        json.dump({**({'portada': portada} if portada else {}), 'albumes': [a for _, a in albumes]}, f, ensure_ascii=False, indent=1)
     print(f'{len(albumes)} álbumes, {total} fotos.')
 
 
