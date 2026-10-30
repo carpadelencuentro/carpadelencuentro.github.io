@@ -905,8 +905,24 @@ function pintarTextos(v) {
   v.replaceChildren(
     el('h2', { text: 'Pestañas y textos' }),
     el('p', { class: 'ayuda', text: 'Cambiá los nombres de las pestañas de abajo y los textos fijos de cada pantalla de la app. Si dejás un campo vacío, la app usa el texto de fábrica (el que se ve en gris). En la vista previa del celular ves cómo queda mientras escribís; al tocar "Guardar cambios" se ve al instante en todos los celulares.' }),
-    el('div', { class: 'editor-grid' }, el('div', {}, cajaCambiosApp(), cajaPestanas, ...cajas), el('div', { id: 'previaTextos', class: 'previa-col' })));
+    el('div', { class: 'editor-grid' }, el('div', {}, cajaOcultos(), cajaCambiosApp(), cajaPestanas, ...cajas), el('div', { id: 'previaTextos', class: 'previa-col' })));
   pintarPreviaTextos();
+}
+
+// Partes de la app que el administrador ocultó desde el celular (modo edición): van en "ocultos" (sus ids) y
+// "ocultos_nombres" (cómo se llaman). Mostrar una la vuelve a poner.
+function cajaOcultos() {
+  const xs = Array.isArray(datos.ocultos) ? datos.ocultos : [];
+  if (!xs.length) return null;
+  const nombres = datos.ocultos_nombres && typeof datos.ocultos_nombres === 'object' ? datos.ocultos_nombres : {};
+  return el('div', { class: 'card' },
+    el('h3', { text: 'Partes ocultas de la app' }),
+    el('p', { class: 'ayuda', text: 'Las ocultó el administrador desde el celular (Mi perfil > Editar la app). Para que vuelvan a verse, tocá Mostrar y después "Guardar cambios".' }),
+    ...xs.map((id) => {
+      const b = el('button', { class: 'btn sec chico', type: 'button', text: 'Mostrar' });
+      b.addEventListener('click', () => { datos.ocultos = xs.filter((x) => x !== id); delete nombres[id]; cambio(); pintar(); });
+      return el('div', { style: 'display:flex;align-items:center;gap:10px;margin:8px 0' }, el('div', { style: 'flex:1;min-width:0', text: String(nombres[id] || id) }), b);
+    }));
 }
 
 // Textos que el administrador cambió desde el celular (modo edición de la app): van en "cambios" como
@@ -1604,7 +1620,7 @@ function pintar() {
   if (tab === 'novedades') {
     v.replaceChildren(
       el('h2', { text: 'Novedades' }),
-      el('p', { class: 'ayuda', text: 'Aparecen en Inicio y en Avisos de la app. La primera de la lista es la que se ve arriba. Si querés que además le llegue un aviso al celular, usá la pestaña Notificaciones push.' }),
+      el('p', { class: 'ayuda', text: 'Aparecen en Avisos de la app (la campanita). La primera de la lista es la que se ve arriba. Si querés que además le llegue un aviso al celular, usá la pestaña Notificaciones push.' }),
       el('button', { class: 'btn', type: 'button', text: '+ Nueva novedad', on: { click: nuevaNovedad } }),
       el('div', { style: 'height:12px' }),
       ...datos.noticias.map((n, i) => {
@@ -3094,7 +3110,7 @@ async function cargar() {
 // panel los tocó, y si no, traer los que se cambiaron desde la app mientras tanto.
 let cargadoApp = null;
 const anotarCargado = () => { cargadoApp = { cambios: canon(datos.cambios ?? null), inicio: canon(datos.inicio ?? null) }; };
-const CLAVES_APP = ['cambios', 'inicio'];
+const CLAVES_APP = ['cambios', 'inicio', 'ocultos', 'ocultos_nombres', 'noticias'];
 
 // Si en la base lo último lo cambió el administrador desde la app, se traen esos cambios a lo que se va a guardar.
 // Lo que el panel cambió en esas mismas partes gana.
