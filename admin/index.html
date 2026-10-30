@@ -3110,7 +3110,7 @@ async function cargar() {
 // panel los tocó, y si no, traer los que se cambiaron desde la app mientras tanto.
 let cargadoApp = null;
 const anotarCargado = () => { cargadoApp = { cambios: canon(datos.cambios ?? null), inicio: canon(datos.inicio ?? null) }; };
-const CLAVES_APP = ['cambios', 'inicio', 'ocultos', 'ocultos_nombres', 'noticias'];
+const CLAVES_APP = ['cambios', 'inicio', 'ocultos', 'ocultos_nombres', 'noticias', 'extras'];
 
 // Si en la base lo último lo cambió el administrador desde la app, se traen esos cambios a lo que se va a guardar.
 // Lo que el panel cambió en esas mismas partes gana.
