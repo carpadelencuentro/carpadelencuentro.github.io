@@ -36,7 +36,8 @@ jobs:
         run: |
           git config user.name "Galería automática"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A galeria.json fotos/galeria
+          git add -A galeria.json
+          if [ -d fotos/galeria ]; then git add -A fotos/galeria; fi
           if git diff --cached --quiet; then echo "Sin cambios."; exit 0; fi
           git commit -q -m "Galería: fotos de Facebook"
           git pull -q --rebase origin main
