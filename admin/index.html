@@ -914,22 +914,17 @@ function pintarTextos(v) {
 function cajaOcultos() {
   const xs = Array.isArray(datos.ocultos) ? datos.ocultos : [];
   const fotos = Array.isArray(datos.galeria_ocultas) ? datos.galeria_ocultas : [];
-  if (!xs.length && !fotos.length) return null;
-  if (!xs.length) {
-    const b = el('button', { class: 'btn sec chico', type: 'button', text: 'Volver a mostrar todas' });
-    b.addEventListener('click', () => { datos.galeria_ocultas = []; cambio(); pintar(); });
-    return el('div', { class: 'card' }, el('h3', { text: 'Fotos sacadas de la galería' }),
-      el('p', { class: 'ayuda', text: `El administrador sacó ${fotos.length === 1 ? '1 foto' : fotos.length + ' fotos'} desde el celular.` }), b);
-  }
+  const videos = Array.isArray(datos.videos_ocultos) ? datos.videos_ocultos : [];
+  if (!xs.length && !fotos.length && !videos.length) return null;
   const nombres = datos.ocultos_nombres && typeof datos.ocultos_nombres === 'object' ? datos.ocultos_nombres : {};
+  const fila = (texto, boton) => el('div', { style: 'display:flex;align-items:center;gap:10px;margin:8px 0' }, el('div', { style: 'flex:1;min-width:0', text: texto }), boton);
+  const boton = (texto, alTocar) => { const b = el('button', { class: 'btn sec chico', type: 'button', text: texto }); b.addEventListener('click', () => { alTocar(); cambio(); pintar(); }); return b; };
   return el('div', { class: 'card' },
-    el('h3', { text: 'Partes ocultas de la app' }),
-    el('p', { class: 'ayuda', text: 'Las ocultó el administrador desde el celular (Mi perfil > Editar la app). Para que vuelvan a verse, tocá Mostrar y después "Guardar cambios".' }),
-    ...xs.map((id) => {
-      const b = el('button', { class: 'btn sec chico', type: 'button', text: 'Mostrar' });
-      b.addEventListener('click', () => { datos.ocultos = xs.filter((x) => x !== id); delete nombres[id]; cambio(); pintar(); });
-      return el('div', { style: 'display:flex;align-items:center;gap:10px;margin:8px 0' }, el('div', { style: 'flex:1;min-width:0', text: String(nombres[id] || id) }), b);
-    }));
+    el('h3', { text: 'Borrado desde la app' }),
+    el('p', { class: 'ayuda', text: 'Lo borró el administrador desde el celular (modo edición). Para que vuelva a verse, tocá el botón y después "Guardar cambios".' }),
+    ...xs.map((id) => fila(String(nombres[id] || id), boton('Restaurar', () => { datos.ocultos = xs.filter((x) => x !== id); delete nombres[id]; }))),
+    fotos.length ? fila(`Fotos sacadas de la galería: ${fotos.length}`, boton('Volver a mostrar todas', () => { datos.galeria_ocultas = []; })) : null,
+    videos.length ? fila(`Videos sacados: ${videos.length}`, boton('Volver a mostrar todos', () => { datos.videos_ocultos = []; })) : null);
 }
 
 // Textos que el administrador cambió desde el celular (modo edición de la app): van en "cambios" como
@@ -3121,7 +3116,7 @@ const anotarCargado = () => {
   cargadoApp = Object.fromEntries(CLAVES_APP.map((k) => [k, canon(datos[k] ?? null)]));
   cargadoApp.envivo = canon((datos.config && datos.config.envivo_url) ?? null);
 };
-const CLAVES_APP = ['cambios', 'inicio', 'ocultos', 'ocultos_nombres', 'noticias', 'extras', 'galeria_ocultas', 'galeria_extra'];
+const CLAVES_APP = ['cambios', 'inicio', 'ocultos', 'ocultos_nombres', 'noticias', 'extras', 'galeria_ocultas', 'galeria_extra', 'videos_ocultos', 'eventos_extra', 'anteriores'];
 
 // Si en la base lo último lo cambió el administrador desde la app, se traen esos cambios a lo que se va a guardar.
 // Lo que el panel cambió en esas mismas partes gana.
