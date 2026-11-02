@@ -583,18 +583,21 @@ const SECCIONES_BASE = [
   { id: 'oracion', titulo: 'Oración', sub: 'Podemos orar por vos', pill: '', foto: 'oracion', accion: 'oracion', link: '', visible: true },
   { id: 'iglesias', titulo: 'Iglesias cerca', sub: 'Encontrá dónde congregarte', pill: '', foto: 'iglesias', accion: 'iglesias', link: '', visible: true },
   { id: 'galeria', titulo: 'Galería de fotos', sub: 'Mirá las fotos de cada carpa', pill: '', foto: 'carpa_afuera', accion: 'galeria', link: '', visible: true },
+  { id: 'misioneros', titulo: 'Misioneros', sub: 'Familias que llevan el evangelio', pill: '', foto: 'misioneros', accion: 'misioneros', link: '', visible: true },
+  { id: 'mundo', titulo: 'Hermanos en el mundo', sub: 'Orá por las asambleas de cada país', pill: '', foto: 'mundo', accion: 'mundo', link: '', visible: true },
   { id: 'ofrendar', titulo: 'Ofrendar', sub: 'Ayudá a llevar la carpa', pill: '', foto: 'ofrendar', accion: 'ofrendar', link: '', visible: true },
 ];
 // Fotos que ya vienen dentro de la app (lib/contenido.dart, fotosInicio). Sus copias para ver acá están en fotos/inicio/.
 const FOTOS_APP = [
   ['carpa', 'La carpa de día'], ['carpa_afuera', 'La carpa al atardecer'], ['carpa_adentro', 'Adentro de la carpa'],
   ['predicas', 'Predicador (1)'], ['predica_1', 'Predicador (2)'], ['predica_2', 'Predicador (3)'], ['predica_3', 'Predicador (4)'],
-  ['oracion', 'Mesa de oración'], ['iglesias', 'Gente de la iglesia'], ['ofrendar', 'Trigo'],
+  ['oracion', 'Mesa de oración'], ['iglesias', 'Gente de la iglesia'], ['ofrendar', 'Trigo'], ['misioneros', 'Los misioneros (van pasando)'], ['mundo', 'Mapa y Biblia'],
   ['ninos_juegos', 'Niños jugando'], ['ninos_pintando', 'Niños pintando'], ['conocer_ninos', 'Niños y el bus'], ['conocer_bus', 'El bus'],
 ];
 const ACCIONES_INICIO = [
   ['eventos', 'Ir a Eventos'], ['predicas', 'Ir a Prédicas'], ['oracion', 'Ir a Oración'], ['biblia', 'Ir a Biblia'],
-  ['iglesias', 'Abrir Iglesias cerca'], ['ofrendar', 'Abrir Ofrendar'], ['galeria', 'Abrir Galería de fotos'], ['conocer', 'Abrir Conocer más'],
+  ['iglesias', 'Abrir Iglesias cerca'], ['misioneros', 'Abrir Misioneros'], ['mundo', 'Abrir Hermanos en el mundo'],
+  ['ofrendar', 'Abrir Ofrendar'], ['galeria', 'Abrir Galería de fotos'], ['conocer', 'Abrir Conocer más'],
   ['pagina', 'Abrir una pantalla'], ['link', 'Abrir un link (https)'], ['nada', 'Nada (solo se muestra)'],
 ];
 // Los botones de las pantallas nuevas pueden hacer lo mismo, y además abrir WhatsApp u otra pantalla.
@@ -605,6 +608,8 @@ const srcInicio = (f) => vistasPrevias.get(f) || (esHttps(f) ? f : `../fotos/ini
 // Primera versión de la app con la galería (lib/contenido.dart, versionConGaleria). Antes de que sea la obligatoria
 // (pestaña Actualización), la tarjeta no se guarda: las versiones viejas la mostrarían sin poder abrirla.
 const VERSION_CON_GALERIA = '1.0.3';
+// Lo mismo con Misioneros (lib/contenido.dart, versionConMisioneros): va antes de la Galería.
+const VERSION_CON_MISIONEROS = '1.0.4';
 function versionAlMenos(v, minima) {
   const a = String(v || '').split('.').map((x) => parseInt(x, 10) || 0), b = minima.split('.').map((x) => parseInt(x, 10) || 0);
   for (let i = 0; i < 3; i++) { const d = (a[i] || 0) - (b[i] || 0); if (d) return d > 0; }
@@ -612,7 +617,17 @@ function versionAlMenos(v, minima) {
 }
 
 function seccionesInicio() {
-  if (!Array.isArray(datos.inicio)) datos.inicio = SECCIONES_BASE.map((s) => ({ ...s }));
+  const conMisioneros = versionAlMenos(datos.config.version_app, VERSION_CON_MISIONEROS);
+  if (!Array.isArray(datos.inicio)) datos.inicio = SECCIONES_BASE.filter((s) => conMisioneros || (s.id !== 'misioneros' && s.id !== 'mundo')).map((s) => ({ ...s }));
+  // Misioneros y Hermanos en el mundo (nuevas en la 1.0.4) van antes de Ofrendar, una sola vez, igual que en la app.
+  for (const id of ['misioneros', 'mundo']) {
+    if (datos.config[`${id}_inicio`] || !conMisioneros) continue;
+    if (!datos.inicio.some((s) => s.id === id || s.accion === id)) {
+      const i = datos.inicio.findIndex((s) => s.id === 'ofrendar');
+      datos.inicio.splice(i < 0 ? datos.inicio.length : i, 0, { ...SECCIONES_BASE.find((s) => s.id === id) });
+    }
+    datos.config[`${id}_inicio`] = 'si';
+  }
   // La Galería es nueva: si Inicio se guardó antes de que existiera, se agrega una sola vez antes de Ofrendar
   // (la app hace lo mismo). Después se puede borrar como cualquier otra.
   if (!datos.config.galeria_inicio && versionAlMenos(datos.config.version_app, VERSION_CON_GALERIA)) {
