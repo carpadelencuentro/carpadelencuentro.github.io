@@ -212,6 +212,20 @@
   .noti .vacio { color:#9AA0B4; }
   .cel-nombre { text-align:center; font-weight:700; font-size:13px; color:var(--gris); margin-top:6px; }
   .aviso { position:fixed; left:16px; right:16px; bottom:86px; max-width:620px; margin:0 auto; background:#FFF4CF; color:#5C4400; border:1px solid #F0D98A; border-radius:14px; padding:12px 14px; font-weight:700; z-index:700; }
+  .mis-previas { display:flex; flex-wrap:wrap; gap:14px; margin:8px 0 4px; align-items:flex-start; }
+  .mis-tarjeta { position:relative; width:100%; max-width:380px; aspect-ratio:2.65; border-radius:16px; overflow:hidden; background:#0B1638; }
+  .mis-tarjeta img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .mis-tarjeta .scrim { position:absolute; inset:0; background:linear-gradient(0deg, rgba(0,0,0,.6), rgba(0,0,0,0) 65%); }
+  .mis-tarjeta .tit { position:absolute; left:14px; bottom:10px; color:#fff; }
+  .mis-tarjeta .tit b { display:block; font-size:20px; font-weight:800; }
+  .mis-tarjeta .tit span { font-size:12px; opacity:.9; }
+  .mis-carrusel { width:220px; border:1px solid var(--linea); border-radius:16px; overflow:hidden; background:#fff; }
+  .mis-carrusel img { width:100%; aspect-ratio:720/596; object-fit:cover; display:block; }
+  .mis-carrusel > div { padding:8px 10px 10px; }
+  .mis-carrusel b { display:block; font-size:15px; }
+  .mis-carrusel span { display:block; color:var(--gris); font-size:12px; margin-top:2px; }
+  .mis-carrusel span.chip { display:inline-block; color:var(--azul2); }
+  .mis-previas label { margin-top:0; }
 </style>
 </head>
 <body>
@@ -1621,7 +1635,7 @@ function revisarPantallas() {
 
 const TABS = [
   ['inicio', 'Inicio'], ['textos', 'Pestañas y textos'], ['paginas', 'Pantallas'], ['novedades', 'Novedades'], ['push', 'Notificaciones push'], ['campanas', 'Campañas'], ['muro', 'Pedidos de oración'], ['vivo', 'En vivo y encuentro'], ['brou', 'Cuenta BROU'],
-  ['iglesias', 'Iglesias'], ['app', 'Actualización'], ['seguridad', 'Seguridad'],
+  ['iglesias', 'Iglesias'], ['misioneros', 'Misioneros'], ['app', 'Actualización'], ['seguridad', 'Seguridad'],
 ];
 
 function irA(id) { tab = id; if (id !== 'muro') pararMuro(); pintarTabs(); pintar(); window.scrollTo(0, 0); }
@@ -1683,6 +1697,7 @@ function pintar() {
         campo('Link de Android', cfg, 'actualizar_url', { placeholder: 'https://play.google.com/store/apps/details?id=com.corapps.carpadelencuentro', https: true, max: 300 }),
         campo('Link de iPhone', cfg, 'actualizar_url_ios', { placeholder: 'https://apps.apple.com/app/id...', https: true, max: 300 })));
   } else if (tab === 'iglesias') pintarIglesias(v);
+  else if (tab === 'misioneros') pintarMisioneros(v);
   else if (tab === 'inicio') pintarInicio(v);
   else if (tab === 'textos') pintarTextos(v);
   else if (tab === 'paginas') pintarPaginas(v);
@@ -1744,6 +1759,115 @@ function fotosIglesia(c, alCambiar) {
   pintarGaleria();
   return el('div', {}, el('label', { text: 'Fotos (la primera es la principal)' }), galeria,
     selectorFoto(() => nombreBase(c.id, c.ciudad), (url) => { c.fotos = [url, ...(c.fotos || []).filter((f) => f !== url)]; listo(); }));
+}
+
+// ---------- Misioneros (lib/screens_misioneros.dart): sin cuentas, solo contacto ----------
+// Van en contenido.json como "misioneros": [{ id, nombres, foto, frase, obra, enviados, versiculo, motivos: [...],
+// contactos: [{ nombre, numero }], mails: [...], foco }]. foco: altura del recorte de la foto en la tarjeta ancha de
+// Inicio (-1 arriba a 1 abajo), para que se vean bien las caras.
+let misAbiertos = new Set(), misFiltro = '';
+const nombresLindos = (m) => (m.nombres || '(sin nombre)').replace(/\s*;\s*/g, ' y ');
+const contactosATexto = (m) => (m.contactos || []).map((c) => (c.nombre ? `${c.nombre}: ${c.numero}` : c.numero)).join('\n');
+function textoAContactos(t) {
+  return String(t || '').split(/\n|,/).map((l) => l.trim()).filter(Boolean).map((l) => {
+    const i = l.indexOf(':');
+    const nombre = i > 0 && /[^\d\s+()-]/.test(l.slice(0, i)) ? l.slice(0, i).trim() : '';
+    const numero = (nombre ? l.slice(i + 1) : l).trim();
+    return { nombre, numero };
+  }).filter((c) => c.numero.replace(/\D/g, '').length >= 8);
+}
+const textoAMails = (t) => String(t || '').split(/[\s,;/]+/).map((x) => x.trim()).filter((x) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(x));
+
+function previaMisionero(m) {
+  const cont = el('div', { class: 'mis-previas' });
+  function pintarPrevia() {
+    const src = srcFoto(m.foto, 'misioneros');
+    const foco = Math.max(-1, Math.min(1, Number(m.foco ?? -0.4) || 0));
+    const tarjeta = el('div', { class: 'mis-tarjeta' });
+    const img = el('img', { src, alt: '' });
+    img.style.objectPosition = `50% ${((foco + 1) / 2 * 100).toFixed(1)}%`;
+    tarjeta.append(img);
+    tarjeta.append(el('div', { class: 'scrim' }), el('div', { class: 'tit' }, el('b', { text: 'Misioneros' }), el('span', { text: 'Familias que llevan el evangelio' })));
+    const carrusel = el('div', { class: 'mis-carrusel' }, el('img', { src, alt: '' }),
+      el('div', {}, el('b', { text: nombresLindos(m) }), el('span', { text: m.obra || '' }),
+        m.versiculo ? el('span', { class: 'chip', style: 'margin-top:6px', text: m.versiculo }) : null));
+    cont.replaceChildren(
+      el('div', { style: 'flex:1 1 300px; min-width:0' }, el('label', { text: 'Así se ve en la tarjeta de Inicio (celular grande)' }), tarjeta),
+      el('div', {}, el('label', { text: 'Así se ve en Misioneros' }), carrusel));
+  }
+  pintarPrevia();
+  const idR = nuevoId();
+  const rango = el('input', { id: idR, type: 'range', min: '-1', max: '1', step: '0.05', value: String(m.foco ?? -0.4), style: 'width:100%' });
+  rango.addEventListener('input', () => { m.foco = parseFloat(rango.value); cambio(); pintarPrevia(); });
+  return {
+    pintarPrevia,
+    nodo: el('div', {}, cont,
+      el('label', { for: idR, text: 'Altura del recorte en Inicio (movelo hasta que se vean bien las caras)' }), rango),
+  };
+}
+
+function pintarMisioneros(v) {
+  if (!Array.isArray(datos.misioneros)) datos.misioneros = [];
+  const buscar = el('input', { value: misFiltro, placeholder: 'Buscar misionero...', maxlength: '100' });
+  buscar.addEventListener('input', () => { misFiltro = buscar.value; pintarLista(); });
+  const lista = el('div');
+  function pintarLista() {
+    const q = misFiltro.toLowerCase();
+    const filas = datos.misioneros.map((m, i) => [m, i]).filter(([m]) => !q || `${m.nombres} ${m.obra}`.toLowerCase().includes(q)).map(([m, i]) => {
+      const abierto = misAbiertos.has(i);
+      const cab = el('div', { class: 'item-cab', on: { click: () => { abierto ? misAbiertos.delete(i) : misAbiertos.add(i); pintarLista(); } } },
+        imgFoto(m.foto, 'misioneros'),
+        el('div', {}, el('b', { text: nombresLindos(m) }), el('span', { text: m.obra || '' })),
+        el('span', { class: 'chev', text: abierto ? '▴' : '▾' }));
+      if (!abierto) return el('div', { class: 'card' }, cab);
+      const previa = previaMisionero(m);
+      const tx = { motivos: (m.motivos || []).join('\n'), contactos: contactosATexto(m), mails: (m.mails || []).join(', ') };
+      const repintar = () => {
+        cab.querySelector('img').src = srcFoto(m.foto, 'misioneros');
+        cab.querySelector('b').textContent = nombresLindos(m);
+        previa.pintarPrevia();
+      };
+      return el('div', { class: 'card' }, cab, el('div', { class: 'detalle' },
+        campo('Nombres', m, 'nombres', { max: 150, ayuda: 'Si son dos, separalos con punto y coma: Juan Pérez; Ana Gómez', alCambiar: repintar }),
+        el('div', { class: 'fila' }, campoEn('Sirven en', m, 'obra', { max: 200, alCambiar: repintar }), campoEn('Enviados por', m, 'enviados', { max: 200 })),
+        el('div', { class: 'fila' }, campoEn('Frase o versículo', m, 'frase', { multilinea: true, max: 600 }), campo('Cita (ej: Salmo 90:17)', m, 'versiculo', { max: 60, alCambiar: repintar })),
+        campo('Motivos de oración (uno por renglón)', tx, 'motivos', { multilinea: true, max: 3000, alCambiar: () => { m.motivos = tx.motivos.split('\n').map((x) => x.trim()).filter(Boolean); } }),
+        el('div', { class: 'fila' },
+          campo('Celulares (uno por renglón)', tx, 'contactos', { multilinea: true, max: 300, placeholder: '099 123 456\nAna: 098 765 432', ayuda: 'Los que empiezan con 09 tienen botón de WhatsApp; los fijos, botón para llamar. Si son de distintas personas, poné el nombre y dos puntos delante.', alCambiar: () => { m.contactos = textoAContactos(tx.contactos); } }),
+          campo('Mails (separados por coma)', tx, 'mails', { max: 300, placeholder: 'nombre@gmail.com', alCambiar: () => { m.mails = textoAMails(tx.mails); } })),
+        el('label', { text: 'Foto' }),
+        selectorFoto(() => nombreBase(m.id, m.nombres), (url) => { m.foto = url; cambio(); repintar(); }),
+        previa.nodo,
+        el('div', { class: 'acciones' },
+          el('button', { class: 'btn sec', type: 'button', text: 'Subir en la lista', on: { click: () => { if (i > 0) { [datos.misioneros[i - 1], datos.misioneros[i]] = [datos.misioneros[i], datos.misioneros[i - 1]]; misAbiertos = new Set([i - 1]); cambio(); pintarLista(); } } } }),
+          el('button', { class: 'btn peligro', type: 'button', text: 'Borrar misionero', on: { click: () => { if (confirm(`¿Borrar a ${nombresLindos(m)}?`)) { datos.misioneros.splice(i, 1); misAbiertos.clear(); cambio(); pintarLista(); } } } }))));
+    });
+    lista.replaceChildren(...(filas.length ? filas : [el('p', { class: 'ayuda', text: datos.misioneros.length ? 'No encontré a nadie con ese nombre.' : 'Todavía no hay misioneros.' })]));
+  }
+  pintarLista();
+  v.replaceChildren(
+    el('h2', { text: 'Misioneros' }),
+    el('p', { class: 'ayuda', text: 'Aparecen en la tarjeta Misioneros de Inicio (sus fotos van pasando) y en su pantalla, con sus motivos de oración, WhatsApp y mail. Tocá uno para editarlo; al guardar, se ve al instante en la app.' }),
+    el('div', { class: 'acciones', style: 'margin:0 0 12px' }, el('button', { class: 'btn', type: 'button', text: '+ Nuevo misionero', on: { click: nuevoMisionero } })),
+    buscar, el('div', { style: 'height:12px' }), lista);
+}
+
+function nuevoMisionero() {
+  abrirDialogo('Nuevo misionero', [
+    { clave: 'nombres', etiqueta: 'Nombres', placeholder: 'Juan Pérez; Ana Gómez', ayuda: 'Si son dos, separalos con punto y coma.', max: 150 },
+    { clave: 'obra', etiqueta: 'Sirven en', placeholder: 'Iglesia de ... (Ciudad)', max: 200 },
+    { clave: 'enviados', etiqueta: 'Enviados por', max: 200 },
+    { clave: 'contactos', etiqueta: 'Celular', placeholder: '099 123 456', max: 120 },
+    { clave: 'mails', etiqueta: 'Mail', placeholder: 'nombre@gmail.com', max: 200 },
+  ], (v) => {
+    if (!v.nombres) return 'Escribí los nombres.';
+    const m = { id: `${nombreBase('', v.nombres)}-${Date.now().toString(36)}`, nombres: v.nombres, foto: '', frase: '', obra: v.obra, enviados: v.enviados, versiculo: '', motivos: [], contactos: textoAContactos(v.contactos), mails: textoAMails(v.mails), foco: -0.4 };
+    datos.misioneros.unshift(m);
+    misAbiertos = new Set([0]); misFiltro = '';
+    cambio(); pintar();
+    $('#estado').textContent = 'Misionero agregado: subí su foto, sus motivos de oración y tocá Guardar cambios';
+    traducirNuevos([m.obra, m.enviados]);
+  });
 }
 
 // ---------- Subir fotos desde la PC ----------
@@ -2752,6 +2876,10 @@ function pintarListaMuro() {
   if (muro.pedidos) hijos.push(...(n ? muro.pedidos.map(tarjetaPedido) : [el('p', { class: 'ayuda', text: textoVacioMuro() })]));
   cajaMuro.replaceChildren(...hijos);
 }
+
+// Nombre y celular de quien mandó el pedido (tabla registros).
+const nombreReg = (x) => `${String(x.nombre || '').trim()} ${String(x.apellido || '').trim()}`.trim();
+const soloNumeros = (s) => String(s || '').replace(/\D/g, '');
 
 // Todo lo del pedido lo escribe la persona desde la app: se muestra siempre como texto (textContent), nunca como HTML.
 function tarjetaPedido(p) {

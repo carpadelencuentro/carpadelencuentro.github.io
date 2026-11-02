@@ -699,7 +699,8 @@
    "mails": [
     "alejandro.alvarez.banchero@gmail.com",
     "anagfteacher@gmail.com"
-   ]
+   ],
+   "foco": -0.57
   },
   {
    "id": "alejandro-las",
@@ -723,7 +724,8 @@
    ],
    "mails": [
     "alecris@vera.com.uy"
-   ]
+   ],
+   "foco": -0.55
   },
   {
    "id": "alejandro-lopez",
@@ -748,7 +750,8 @@
    ],
    "mails": [
     "aleydelia@gmail.com"
-   ]
+   ],
+   "foco": -0.88
   },
   {
    "id": "alejandro-luis-huerta-martinez",
@@ -771,7 +774,8 @@
    ],
    "mails": [
     "ale.huerta@hotmail.com"
-   ]
+   ],
+   "foco": -0.97
   },
   {
    "id": "andrew-russell",
@@ -792,7 +796,8 @@
    ],
    "mails": [
     "andrewandlety@gmail.com"
-   ]
+   ],
+   "foco": -0.39
   },
   {
    "id": "christopher-baum",
@@ -815,7 +820,8 @@
    ],
    "mails": [
     "christopherbaum93@hotmail.com"
-   ]
+   ],
+   "foco": 0.05
   },
   {
    "id": "enrique-vazquez",
@@ -841,7 +847,8 @@
    ],
    "mails": [
     "eyevaz@adinet.com.uy"
-   ]
+   ],
+   "foco": -0.0
   },
   {
    "id": "ernesto-rey",
@@ -866,7 +873,8 @@
    ],
    "mails": [
     "danerrey@adinet.com.uy"
-   ]
+   ],
+   "foco": 0.1
   },
   {
    "id": "guillermo-silva",
@@ -891,7 +899,8 @@
    ],
    "mails": [
     "guisil2007@gmail.com"
-   ]
+   ],
+   "foco": -0.26
   },
   {
    "id": "humberto-correa",
@@ -913,7 +922,8 @@
    ],
    "mails": [
     "humbertocorrea2000@yahoo.com.ar"
-   ]
+   ],
+   "foco": -1.0
   },
   {
    "id": "ignacio-flandez",
@@ -938,7 +948,8 @@
    ],
    "mails": [
     "nachoflandez@gmail.com"
-   ]
+   ],
+   "foco": -0.81
   },
   {
    "id": "ken-russell",
@@ -960,7 +971,8 @@
    ],
    "mails": [
     "keneun@adinet.com.uy"
-   ]
+   ],
+   "foco": -0.41
   },
   {
    "id": "nurymar-rodriguez",
@@ -984,7 +996,8 @@
    ],
    "mails": [
     "murymarrod@hotmail.com"
-   ]
+   ],
+   "foco": -0.12
   },
   {
    "id": "paul-schulz",
@@ -1006,7 +1019,8 @@
    ],
    "mails": [
     "paullydia8@hotmail.com"
-   ]
+   ],
+   "foco": -0.77
   },
   {
    "id": "roberto-russell",
@@ -1028,7 +1042,8 @@
    ],
    "mails": [
     "cecyrob@gmail.com"
-   ]
+   ],
+   "foco": 0.05
   },
   {
    "id": "sergio-rodriguez",
@@ -1050,7 +1065,8 @@
    ],
    "mails": [
     "servira@gmail.com.uy"
-   ]
+   ],
+   "foco": 0.1
   }
  ],
  "en": {
