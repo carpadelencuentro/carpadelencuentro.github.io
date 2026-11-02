@@ -1763,8 +1763,22 @@ function fotosIglesia(c, alCambiar) {
 
 // ---------- Misioneros (lib/screens_misioneros.dart): sin cuentas, solo contacto ----------
 // Van en contenido.json como "misioneros": [{ id, nombres, foto, frase, obra, enviados, versiculo, motivos: [...],
-// contactos: [{ nombre, numero }], mails: [...], foco }]. foco: altura del recorte de la foto en la tarjeta ancha de
-// Inicio (-1 arriba a 1 abajo), para que se vean bien las caras.
+// contactos: [{ nombre, numero }], mails: [...], foco, caras, aspecto }]. Para la tarjeta ancha de Inicio: las fotos de
+// fábrica traen dónde están las caras (caras: [[arriba, alto]], aspecto = ancho / alto) y la app recorta sin cortarlas
+// según el tamaño de cada celular; si no, usa foco (altura del recorte, -1 arriba a 1 abajo), que se elige acá.
+function alturaPara(m, ancho, alto) {
+  const caras = Array.isArray(m.caras) ? m.caras : [], a = Number(m.aspecto) || 0;
+  if (!caras.length || !a) return Math.max(-1, Math.min(1, Number(m.foco ?? -0.4) || 0));
+  const v = a / (ancho / alto);
+  if (v >= 1) return 0;
+  let arriba = null;
+  for (const [x, y] of [[-0.18, 1.06], [0.12, 1.04], [0.3, 0.88]]) {
+    const t = Math.min(...caras.map((c) => c[0] + x * c[1])), f = Math.max(...caras.map((c) => c[0] + y * c[1]));
+    if (f - t <= v) { arriba = t - (v - (f - t)) * 0.45; break; }
+  }
+  if (arriba === null) arriba = (Math.min(...caras.map((c) => c[0] + 0.3 * c[1])) + Math.max(...caras.map((c) => c[0] + 0.88 * c[1]))) / 2 - v / 2;
+  return -1 + 2 * Math.max(0, Math.min(1 - v, arriba)) / (1 - v);
+}
 let misAbiertos = new Set(), misFiltro = '';
 const nombresLindos = (m) => (m.nombres || '(sin nombre)').replace(/\s*;\s*/g, ' y ');
 const contactosATexto = (m) => (m.contactos || []).map((c) => (c.nombre ? `${c.nombre}: ${c.numero}` : c.numero)).join('\n');
@@ -1782,7 +1796,7 @@ function previaMisionero(m) {
   const cont = el('div', { class: 'mis-previas' });
   function pintarPrevia() {
     const src = srcFoto(m.foto, 'misioneros');
-    const foco = Math.max(-1, Math.min(1, Number(m.foco ?? -0.4) || 0));
+    const foco = alturaPara(m, 2.65, 1);
     const tarjeta = el('div', { class: 'mis-tarjeta' });
     const img = el('img', { src, alt: '' });
     img.style.objectPosition = `50% ${((foco + 1) / 2 * 100).toFixed(1)}%`;
@@ -1797,8 +1811,9 @@ function previaMisionero(m) {
   }
   pintarPrevia();
   const idR = nuevoId();
-  const rango = el('input', { id: idR, type: 'range', min: '-1', max: '1', step: '0.05', value: String(m.foco ?? -0.4), style: 'width:100%' });
-  rango.addEventListener('input', () => { m.foco = parseFloat(rango.value); cambio(); pintarPrevia(); });
+  const rango = el('input', { id: idR, type: 'range', min: '-1', max: '1', step: '0.05', value: String(alturaPara(m, 2.65, 1)), style: 'width:100%' });
+  // Moverlo a mano reemplaza el encuadre automático (el de las caras detectadas).
+  rango.addEventListener('input', () => { m.foco = parseFloat(rango.value); delete m.caras; delete m.aspecto; cambio(); pintarPrevia(); });
   return {
     pintarPrevia,
     nodo: el('div', {}, cont,
@@ -1836,7 +1851,7 @@ function pintarMisioneros(v) {
           campo('Celulares (uno por renglón)', tx, 'contactos', { multilinea: true, max: 300, placeholder: '099 123 456\nAna: 098 765 432', ayuda: 'Los que empiezan con 09 tienen botón de WhatsApp; los fijos, botón para llamar. Si son de distintas personas, poné el nombre y dos puntos delante.', alCambiar: () => { m.contactos = textoAContactos(tx.contactos); } }),
           campo('Mails (separados por coma)', tx, 'mails', { max: 300, placeholder: 'nombre@gmail.com', alCambiar: () => { m.mails = textoAMails(tx.mails); } })),
         el('label', { text: 'Foto' }),
-        selectorFoto(() => nombreBase(m.id, m.nombres), (url) => { m.foto = url; cambio(); repintar(); }),
+        selectorFoto(() => nombreBase(m.id, m.nombres), (url) => { m.foto = url; delete m.caras; delete m.aspecto; cambio(); repintar(); }),
         previa.nodo,
         el('div', { class: 'acciones' },
           el('button', { class: 'btn sec', type: 'button', text: 'Subir en la lista', on: { click: () => { if (i > 0) { [datos.misioneros[i - 1], datos.misioneros[i]] = [datos.misioneros[i], datos.misioneros[i - 1]]; misAbiertos = new Set([i - 1]); cambio(); pintarLista(); } } } }),

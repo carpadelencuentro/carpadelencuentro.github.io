@@ -700,7 +700,30 @@
     "alejandro.alvarez.banchero@gmail.com",
     "anagfteacher@gmail.com"
    ],
-   "foco": -0.57
+   "foco": -0.57,
+   "aspecto": 1.535,
+   "caras": [
+    [
+     0.075,
+     0.235
+    ],
+    [
+     0.132,
+     0.203
+    ],
+    [
+     0.264,
+     0.188
+    ],
+    [
+     0.398,
+     0.195
+    ],
+    [
+     0.465,
+     0.183
+    ]
+   ]
   },
   {
    "id": "alejandro-las",
@@ -725,7 +748,34 @@
    "mails": [
     "alecris@vera.com.uy"
    ],
-   "foco": -0.55
+   "foco": -0.55,
+   "aspecto": 1.208,
+   "caras": [
+    [
+     0.093,
+     0.114
+    ],
+    [
+     0.142,
+     0.102
+    ],
+    [
+     0.155,
+     0.101
+    ],
+    [
+     0.333,
+     0.141
+    ],
+    [
+     0.355,
+     0.116
+    ],
+    [
+     0.458,
+     0.129
+    ]
+   ]
   },
   {
    "id": "alejandro-lopez",
@@ -751,7 +801,22 @@
    "mails": [
     "aleydelia@gmail.com"
    ],
-   "foco": -0.88
+   "foco": -0.88,
+   "aspecto": 1.208,
+   "caras": [
+    [
+     0.133,
+     0.166
+    ],
+    [
+     0.178,
+     0.15
+    ],
+    [
+     0.238,
+     0.156
+    ]
+   ]
   },
   {
    "id": "alejandro-luis-huerta-martinez",
@@ -775,7 +840,18 @@
    "mails": [
     "ale.huerta@hotmail.com"
    ],
-   "foco": -0.97
+   "foco": -0.97,
+   "aspecto": 1.208,
+   "caras": [
+    [
+     0.109,
+     0.168
+    ],
+    [
+     0.21,
+     0.161
+    ]
+   ]
   },
   {
    "id": "andrew-russell",
@@ -797,7 +873,18 @@
    "mails": [
     "andrewandlety@gmail.com"
    ],
-   "foco": -0.39
+   "foco": -0.39,
+   "aspecto": 1.208,
+   "caras": [
+    [
+     0.219,
+     0.187
+    ],
+    [
+     0.426,
+     0.162
+    ]
+   ]
   },
   {
    "id": "christopher-baum",
@@ -821,7 +908,34 @@
    "mails": [
     "christopherbaum93@hotmail.com"
    ],
-   "foco": 0.05
+   "foco": 0.05,
+   "aspecto": 1.208,
+   "caras": [
+    [
+     0.265,
+     0.123
+    ],
+    [
+     0.381,
+     0.173
+    ],
+    [
+     0.394,
+     0.165
+    ],
+    [
+     0.518,
+     0.124
+    ],
+    [
+     0.565,
+     0.105
+    ],
+    [
+     0.617,
+     0.118
+    ]
+   ]
   },
   {
    "id": "enrique-vazquez",
@@ -848,7 +962,18 @@
    "mails": [
     "eyevaz@adinet.com.uy"
    ],
-   "foco": -0.0
+   "foco": -0.0,
+   "aspecto": 1.208,
+   "caras": [
+    [
+     0.151,
+     0.515
+    ],
+    [
+     0.338,
+     0.395
+    ]
+   ]
   },
   {
    "id": "ernesto-rey",
@@ -874,7 +999,26 @@
    "mails": [
     "danerrey@adinet.com.uy"
    ],
-   "foco": 0.1
+   "foco": 0.1,
+   "aspecto": 1.208,
+   "caras": [
+    [
+     0.434,
+     0.135
+    ],
+    [
+     0.438,
+     0.127
+    ],
+    [
+     0.464,
+     0.13
+    ],
+    [
+     0.483,
+     0.128
+    ]
+   ]
   },
   {
    "id": "guillermo-silva",
@@ -900,7 +1044,26 @@
    "mails": [
     "guisil2007@gmail.com"
    ],
-   "foco": -0.26
+   "foco": -0.26,
+   "aspecto": 1.208,
+   "caras": [
+    [
+     0.06,
+     0.249
+    ],
+    [
+     0.181,
+     0.207
+    ],
+    [
+     0.364,
+     0.209
+    ],
+    [
+     0.554,
+     0.193
+    ]
+   ]
   },
   {
    "id": "humberto-correa",
@@ -923,7 +1086,14 @@
    "mails": [
     "humbertocorrea2000@yahoo.com.ar"
    ],
-   "foco": -1.0
+   "foco": -1.0,
+   "aspecto": 1.208,
+   "caras": [
+    [
+     0.089,
+     0.221
+    ]
+   ]
   },
   {
    "id": "ignacio-flandez",
@@ -949,7 +1119,26 @@
    "mails": [
     "nachoflandez@gmail.com"
    ],
-   "foco": -0.81
+   "foco": -0.81,
+   "aspecto": 1.208,
+   "caras": [
+    [
+     0.099,
+     0.167
+    ],
+    [
+     0.166,
+     0.148
+    ],
+    [
+     0.182,
+     0.152
+    ],
+    [
+     0.335,
+     0.143
+    ]
+   ]
   },
   {
    "id": "ken-russell",
@@ -972,7 +1161,18 @@
    "mails": [
     "keneun@adinet.com.uy"
    ],
-   "foco": -0.41
+   "foco": -0.41,
+   "aspecto": 1.208,
+   "caras": [
+    [
+     0.15,
+     0.398
+    ],
+    [
+     0.272,
+     0.287
+    ]
+   ]
   },
   {
    "id": "nurymar-rodriguez",
@@ -997,7 +1197,14 @@
    "mails": [
     "murymarrod@hotmail.com"
    ],
-   "foco": -0.12
+   "foco": -0.12,
+   "aspecto": 0.887,
+   "caras": [
+    [
+     0.143,
+     0.538
+    ]
+   ]
   },
   {
    "id": "paul-schulz",
@@ -1020,7 +1227,18 @@
    "mails": [
     "paullydia8@hotmail.com"
    ],
-   "foco": -0.77
+   "foco": -0.77,
+   "aspecto": 1.208,
+   "caras": [
+    [
+     0.112,
+     0.251
+    ],
+    [
+     0.305,
+     0.199
+    ]
+   ]
   },
   {
    "id": "roberto-russell",
@@ -1043,7 +1261,18 @@
    "mails": [
     "cecyrob@gmail.com"
    ],
-   "foco": 0.05
+   "foco": 0.05,
+   "aspecto": 1.208,
+   "caras": [
+    [
+     0.222,
+     0.28
+    ],
+    [
+     0.481,
+     0.272
+    ]
+   ]
   },
   {
    "id": "sergio-rodriguez",
@@ -1066,7 +1295,26 @@
    "mails": [
     "servira@gmail.com.uy"
    ],
-   "foco": 0.1
+   "foco": 0.1,
+   "aspecto": 1.366,
+   "caras": [
+    [
+     0.215,
+     0.311
+    ],
+    [
+     0.246,
+     0.42
+    ],
+    [
+     0.321,
+     0.262
+    ],
+    [
+     0.522,
+     0.238
+    ]
+   ]
   }
  ],
  "en": {
