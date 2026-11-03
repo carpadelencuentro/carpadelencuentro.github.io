@@ -622,8 +622,10 @@ const srcInicio = (f) => vistasPrevias.get(f) || (esHttps(f) ? f : `../fotos/ini
 // Primera versión de la app con la galería (lib/contenido.dart, versionConGaleria). Antes de que sea la obligatoria
 // (pestaña Actualización), la tarjeta no se guarda: las versiones viejas la mostrarían sin poder abrirla.
 const VERSION_CON_GALERIA = '1.0.3';
-// Lo mismo con Misioneros (lib/contenido.dart, versionConMisioneros): va antes de la Galería.
-const VERSION_CON_MISIONEROS = '1.0.4';
+// Misioneros y Hermanos en el mundo llegan con la 1.0.4 (lib/contenido.dart, versionConMisioneros). La versión
+// de la pestaña Actualización es solo la de iPhone y en Android la 1.0.4 puede salir después: por eso se guardan
+// en Inicio recién desde la siguiente. Mientras, la app (1.0.4 o más nueva) las agrega sola antes de Ofrendar.
+const VERSION_GUARDA_MISIONEROS = '1.0.5';
 function versionAlMenos(v, minima) {
   const a = String(v || '').split('.').map((x) => parseInt(x, 10) || 0), b = minima.split('.').map((x) => parseInt(x, 10) || 0);
   for (let i = 0; i < 3; i++) { const d = (a[i] || 0) - (b[i] || 0); if (d) return d > 0; }
@@ -631,9 +633,7 @@ function versionAlMenos(v, minima) {
 }
 
 function seccionesInicio() {
-  // Con el link de una tienda vacío, esa tienda todavía no tiene la versión nueva (pestaña Actualización): las
-  // tarjetas nuevas esperan, porque ahí la versión vieja las mostraría sin poder abrirlas.
-  const conMisioneros = versionAlMenos(datos.config.version_app, VERSION_CON_MISIONEROS) && !!datos.config.actualizar_url && !!datos.config.actualizar_url_ios;
+  const conMisioneros = versionAlMenos(datos.config.version_app, VERSION_GUARDA_MISIONEROS);
   if (!Array.isArray(datos.inicio)) datos.inicio = SECCIONES_BASE.filter((s) => conMisioneros || (s.id !== 'misioneros' && s.id !== 'mundo')).map((s) => ({ ...s }));
   // Misioneros y Hermanos en el mundo (nuevas en la 1.0.4) van antes de Ofrendar, una sola vez, igual que en la app.
   for (const id of ['misioneros', 'mundo']) {
@@ -1693,11 +1693,9 @@ function pintar() {
   } else if (tab === 'app') {
     v.replaceChildren(
       el('h2', { text: 'Actualización de la app' }),
-      el('p', { class: 'ayuda', text: 'Cuando publiques una versión nueva en las tiendas, poné acá su número: al abrir la app, a quien tenga una versión anterior le aparece el cartel para actualizar.' }),
-      el('p', { class: 'ayuda', text: 'Si todavía salió en una sola tienda, borrá el link de la otra: ahí no aparece el cartel. Cuando salga también en esa, volvé a poner su link.' }),
+      el('p', { class: 'ayuda', text: 'Cuando salga una versión nueva en el App Store, poné acá su número: al abrir la app, a quien tenga un iPhone con una versión anterior le aparece el cartel para actualizar. En Android no hace falta: la app se actualiza sola apenas la versión sale en Google Play.' }),
       el('div', { class: 'card' },
-        campo('Versión nueva (ej: 1.0.1)', cfg, 'version_app', { max: 20 }),
-        campo('Link de Android', cfg, 'actualizar_url', { placeholder: 'https://play.google.com/store/apps/details?id=com.corapps.carpadelencuentro', https: true, max: 300 }),
+        campo('Versión nueva en iPhone (ej: 1.0.4)', cfg, 'version_app', { max: 20 }),
         campo('Link de iPhone', cfg, 'actualizar_url_ios', { placeholder: 'https://apps.apple.com/app/id...', https: true, max: 300 })));
   } else if (tab === 'iglesias') pintarIglesias(v);
   else if (tab === 'misioneros') pintarMisioneros(v);
@@ -3299,7 +3297,10 @@ function prepararDatos() {
 // Revisa lo que se va a guardar: links https, ids de YouTube y largos.
 function revisar() {
   const cfg = datos.config;
-  for (const [k, nombre] of [['envivo_url', 'El link de la transmisión'], ['actualizar_url', 'El link de Android'], ['actualizar_url_ios', 'El link de iPhone']]) {
+  // Android se actualiza solo desde Google Play: sin link, la app no muestra el cartel del panel. Va vacío y no
+  // borrado, porque si falta la app usa el link que trae de fábrica.
+  cfg.actualizar_url = '';
+  for (const [k, nombre] of [['envivo_url', 'El link de la transmisión'], ['actualizar_url_ios', 'El link de iPhone']]) {
     if (typeof cfg[k] === 'string') cfg[k] = cfg[k].trim();
     if (cfg[k] && !esHttps(cfg[k])) return nombre + ' tiene que empezar con https://';
   }
