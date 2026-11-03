@@ -1810,16 +1810,7 @@ function previaMisionero(m) {
       el('div', {}, el('label', { text: 'Así se ve en Misioneros' }), carrusel));
   }
   pintarPrevia();
-  const idR = nuevoId();
-  const rango = el('input', { id: idR, type: 'range', min: '-1', max: '1', step: '0.05', value: String(alturaPara(m, 2.65, 1)), style: 'width:100%' });
-  // Moverlo a mano reemplaza el encuadre automático (el de las caras detectadas): caras queda vacío a propósito, así
-  // la app no vuelve a poner las de fábrica.
-  rango.addEventListener('input', () => { m.foco = parseFloat(rango.value); m.caras = []; delete m.aspecto; cambio(); pintarPrevia(); });
-  return {
-    pintarPrevia,
-    nodo: el('div', {}, cont,
-      el('label', { for: idR, text: 'Altura del recorte en Inicio (movelo hasta que se vean bien las caras)' }), rango),
-  };
+  return { pintarPrevia, nodo: cont };
 }
 
 function pintarMisioneros(v) {
