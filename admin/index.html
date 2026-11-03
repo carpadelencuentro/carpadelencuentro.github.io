@@ -1812,8 +1812,9 @@ function previaMisionero(m) {
   pintarPrevia();
   const idR = nuevoId();
   const rango = el('input', { id: idR, type: 'range', min: '-1', max: '1', step: '0.05', value: String(alturaPara(m, 2.65, 1)), style: 'width:100%' });
-  // Moverlo a mano reemplaza el encuadre automático (el de las caras detectadas).
-  rango.addEventListener('input', () => { m.foco = parseFloat(rango.value); delete m.caras; delete m.aspecto; cambio(); pintarPrevia(); });
+  // Moverlo a mano reemplaza el encuadre automático (el de las caras detectadas): caras queda vacío a propósito, así
+  // la app no vuelve a poner las de fábrica.
+  rango.addEventListener('input', () => { m.foco = parseFloat(rango.value); m.caras = []; delete m.aspecto; cambio(); pintarPrevia(); });
   return {
     pintarPrevia,
     nodo: el('div', {}, cont,
@@ -1851,7 +1852,7 @@ function pintarMisioneros(v) {
           campo('Celulares (uno por renglón)', tx, 'contactos', { multilinea: true, max: 300, placeholder: '099 123 456\nAna: 098 765 432', ayuda: 'Los que empiezan con 09 tienen botón de WhatsApp; los fijos, botón para llamar. Si son de distintas personas, poné el nombre y dos puntos delante.', alCambiar: () => { m.contactos = textoAContactos(tx.contactos); } }),
           campo('Mails (separados por coma)', tx, 'mails', { max: 300, placeholder: 'nombre@gmail.com', alCambiar: () => { m.mails = textoAMails(tx.mails); } })),
         el('label', { text: 'Foto' }),
-        selectorFoto(() => nombreBase(m.id, m.nombres), (url) => { m.foto = url; delete m.caras; delete m.aspecto; cambio(); repintar(); }),
+        selectorFoto(() => nombreBase(m.id, m.nombres), (url) => { m.foto = url; m.caras = []; delete m.aspecto; cambio(); repintar(); }),
         previa.nodo,
         el('div', { class: 'acciones' },
           el('button', { class: 'btn sec', type: 'button', text: 'Subir en la lista', on: { click: () => { if (i > 0) { [datos.misioneros[i - 1], datos.misioneros[i]] = [datos.misioneros[i], datos.misioneros[i - 1]]; misAbiertos = new Set([i - 1]); cambio(); pintarLista(); } } } }),
