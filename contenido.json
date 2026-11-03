@@ -10,8 +10,8 @@
   "proximo_fecha": "",
   "proximo_lugar": "",
   "version_app": "",
-  "actualizar_url": "https://play.google.com/store/apps/details?id=com.corapps.carpadelencuentro",
-  "actualizar_url_ios": "",
+  "actualizar_url": "",
+  "actualizar_url_ios": "https://apps.apple.com/app/id6828604270",
   "traducciones_v2": true
  },
  "noticias": [
@@ -1452,8 +1452,8 @@
  "paginas": [],
  "anteriores": [
   {
-   "anio": 2026,
    "titulo": "Rosario, Tacuarembó, El Carmen, Rocha y Salto",
+   "anio": 2026,
    "palabras": [
     "Rosario",
     "Tacuaremb",
@@ -1463,8 +1463,8 @@
    ]
   },
   {
-   "anio": 2025,
    "titulo": "Colonia, Tacuarembó, Villa del Carmen, Rocha y Maldonado",
+   "anio": 2025,
    "palabras": [
     "Colonia",
     "Tacuaremb",
@@ -1474,8 +1474,8 @@
    ]
   },
   {
-   "anio": 2024,
    "titulo": "Colonia, Tacuarembó, Ciudad del Carmen, San Carlos y Maldonado",
+   "anio": 2024,
    "palabras": [
     "Colonia",
     "Tacuaremb",
@@ -1485,8 +1485,8 @@
    ]
   },
   {
-   "anio": 2023,
    "titulo": "Colonia, Villa del Carmen, San Carlos, Chuy y Maldonado",
+   "anio": 2023,
    "palabras": [
     "Colonia",
     "Carmen",
@@ -1496,8 +1496,8 @@
    ]
   },
   {
-   "anio": 2022,
    "titulo": "Juan Lacaze, San Carlos, Chuy y Villa del Carmen",
+   "anio": 2022,
    "palabras": [
     "Juan Lacaze",
     "San Carlos",
@@ -1506,8 +1506,8 @@
    ]
   },
   {
-   "anio": 2021,
    "titulo": "Juan Lacaze, Carmelo, Chuy y Villa del Carmen",
+   "anio": 2021,
    "palabras": [
     "Juan Lacaze",
     "Carmelo",
