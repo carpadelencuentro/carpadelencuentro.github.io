@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-10-29",
+ "actualizado": "2026-11-03",
  "config": {
   "brou_titular": "",
   "brou_cuenta": "",
@@ -16,16 +16,16 @@
  },
  "noticias": [
   {
-   "titulo": "Prédicas de Salto 2026",
-   "texto": "Ya podés ver las 5 noches de la carpa en Salto.",
    "fecha": "2026-09-28",
-   "accion": "predicas"
+   "texto": "Ya podés ver las 5 noches de la carpa en Salto.",
+   "accion": "predicas",
+   "titulo": "Prédicas de Salto 2026"
   },
   {
-   "titulo": "Campañas evangelísticas 2026",
-   "texto": "Mirá el resumen de las campañas de este año por todo el país.",
    "fecha": "2026-04-06",
-   "video": "jlx7T1iMWU0"
+   "texto": "Mirá el resumen de las campañas de este año por todo el país.",
+   "video": "jlx7T1iMWU0",
+   "titulo": "Campañas evangelísticas 2026"
   }
  ],
  "iglesias": [
@@ -962,7 +962,7 @@
    "mails": [
     "eyevaz@adinet.com.uy"
    ],
-   "foco": -0.0,
+   "foco": 0,
    "aspecto": 1.208,
    "caras": [
     [
@@ -1082,7 +1082,7 @@
    "mails": [
     "humbertocorrea2000@yahoo.com.ar"
    ],
-   "foco": -1.0,
+   "foco": -1,
    "aspecto": 1.208,
    "caras": [
     [
@@ -1322,7 +1322,7 @@
   "22 al 26 de setiembre": "September 22 to 26",
   "Eventos": "Events",
   "Prédicas": "Sermons",
-  "Escuchá o mirá cada noche": "Listen to or watch every night",
+  "Escuchá las charlas más destacadas": "Listen to the most watched talks",
   "Oración": "Prayer",
   "Podemos orar por vos": "We can pray for you",
   "Iglesias cerca": "Churches nearby",
@@ -1392,52 +1392,52 @@
  "inicio": [
   {
    "id": "eventos",
-   "titulo": "Carpa Salto 2026",
    "sub": "22 al 26 de setiembre",
-   "pill": "Eventos",
    "foto": "carpa",
-   "accion": "eventos",
    "link": "",
+   "pill": "Eventos",
+   "accion": "eventos",
+   "titulo": "Carpa Salto 2026",
    "visible": true
   },
   {
    "id": "predicas",
-   "titulo": "Prédicas",
    "sub": "Escuchá las charlas más destacadas",
-   "pill": "",
    "foto": "predicas",
-   "accion": "predicas",
    "link": "",
+   "pill": "",
+   "accion": "predicas",
+   "titulo": "Prédicas",
    "visible": true
   },
   {
    "id": "oracion",
-   "titulo": "Oración",
    "sub": "Podemos orar por vos",
-   "pill": "",
    "foto": "oracion",
-   "accion": "oracion",
    "link": "",
+   "pill": "",
+   "accion": "oracion",
+   "titulo": "Oración",
    "visible": true
   },
   {
    "id": "iglesias",
-   "titulo": "Iglesias cerca",
    "sub": "Encontrá dónde congregarte",
-   "pill": "",
    "foto": "iglesias",
-   "accion": "iglesias",
    "link": "",
+   "pill": "",
+   "accion": "iglesias",
+   "titulo": "Iglesias cerca",
    "visible": true
   },
   {
    "id": "ofrendar",
-   "titulo": "Ofrendar",
    "sub": "Ayudá a llevar la carpa",
-   "pill": "",
    "foto": "ofrendar",
-   "accion": "ofrendar",
    "link": "",
+   "pill": "",
+   "accion": "ofrendar",
+   "titulo": "Ofrendar",
    "visible": true
   }
  ],
@@ -1452,8 +1452,8 @@
  "paginas": [],
  "anteriores": [
   {
-   "titulo": "Rosario, Tacuarembó, El Carmen, Rocha y Salto",
    "anio": 2026,
+   "titulo": "Rosario, Tacuarembó, El Carmen, Rocha y Salto",
    "palabras": [
     "Rosario",
     "Tacuaremb",
@@ -1463,8 +1463,8 @@
    ]
   },
   {
-   "titulo": "Colonia, Tacuarembó, Villa del Carmen, Rocha y Maldonado",
    "anio": 2025,
+   "titulo": "Colonia, Tacuarembó, Villa del Carmen, Rocha y Maldonado",
    "palabras": [
     "Colonia",
     "Tacuaremb",
@@ -1474,8 +1474,8 @@
    ]
   },
   {
-   "titulo": "Colonia, Tacuarembó, Ciudad del Carmen, San Carlos y Maldonado",
    "anio": 2024,
+   "titulo": "Colonia, Tacuarembó, Ciudad del Carmen, San Carlos y Maldonado",
    "palabras": [
     "Colonia",
     "Tacuaremb",
@@ -1485,8 +1485,8 @@
    ]
   },
   {
-   "titulo": "Colonia, Villa del Carmen, San Carlos, Chuy y Maldonado",
    "anio": 2023,
+   "titulo": "Colonia, Villa del Carmen, San Carlos, Chuy y Maldonado",
    "palabras": [
     "Colonia",
     "Carmen",
@@ -1496,8 +1496,8 @@
    ]
   },
   {
-   "titulo": "Juan Lacaze, San Carlos, Chuy y Villa del Carmen",
    "anio": 2022,
+   "titulo": "Juan Lacaze, San Carlos, Chuy y Villa del Carmen",
    "palabras": [
     "Juan Lacaze",
     "San Carlos",
@@ -1506,14 +1506,26 @@
    ]
   },
   {
-   "titulo": "Juan Lacaze, Carmelo, Chuy y Villa del Carmen",
    "anio": 2021,
+   "titulo": "Juan Lacaze, Carmelo, Chuy y Villa del Carmen",
    "palabras": [
     "Juan Lacaze",
     "Carmelo",
     "Chuy",
     "Carmen"
    ]
+  }
+ ],
+ "cambios": {},
+ "ocultos": [],
+ "ocultos_nombres": {},
+ "galeria_ocultas": [
+  "https://iqmfcreqirwhlxgldvig.supabase.co/storage/v1/object/public/galeria/app/1793342250169-9k11ox.jpg"
+ ],
+ "galeria_extra": [
+  {
+   "f": "https://iqmfcreqirwhlxgldvig.supabase.co/storage/v1/object/public/galeria/app/1793342250169-9k11ox.jpg",
+   "m": "https://iqmfcreqirwhlxgldvig.supabase.co/storage/v1/object/public/galeria/app/1793342250169-9k11ox.jpg"
   }
  ]
 }
