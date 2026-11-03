@@ -631,7 +631,9 @@ function versionAlMenos(v, minima) {
 }
 
 function seccionesInicio() {
-  const conMisioneros = versionAlMenos(datos.config.version_app, VERSION_CON_MISIONEROS);
+  // Con el link de una tienda vacío, esa tienda todavía no tiene la versión nueva (pestaña Actualización): las
+  // tarjetas nuevas esperan, porque ahí la versión vieja las mostraría sin poder abrirlas.
+  const conMisioneros = versionAlMenos(datos.config.version_app, VERSION_CON_MISIONEROS) && !!datos.config.actualizar_url && !!datos.config.actualizar_url_ios;
   if (!Array.isArray(datos.inicio)) datos.inicio = SECCIONES_BASE.filter((s) => conMisioneros || (s.id !== 'misioneros' && s.id !== 'mundo')).map((s) => ({ ...s }));
   // Misioneros y Hermanos en el mundo (nuevas en la 1.0.4) van antes de Ofrendar, una sola vez, igual que en la app.
   for (const id of ['misioneros', 'mundo']) {
@@ -1692,6 +1694,7 @@ function pintar() {
     v.replaceChildren(
       el('h2', { text: 'Actualización de la app' }),
       el('p', { class: 'ayuda', text: 'Cuando publiques una versión nueva en las tiendas, poné acá su número: al abrir la app, a quien tenga una versión anterior le aparece el cartel para actualizar.' }),
+      el('p', { class: 'ayuda', text: 'Si todavía salió en una sola tienda, borrá el link de la otra: ahí no aparece el cartel. Cuando salga también en esa, volvé a poner su link.' }),
       el('div', { class: 'card' },
         campo('Versión nueva (ej: 1.0.1)', cfg, 'version_app', { max: 20 }),
         campo('Link de Android', cfg, 'actualizar_url', { placeholder: 'https://play.google.com/store/apps/details?id=com.corapps.carpadelencuentro', https: true, max: 300 }),
