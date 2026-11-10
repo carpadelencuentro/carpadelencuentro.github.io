@@ -1,0 +1,27 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "XMRDQ6BLP2.com.corapps.carpadelencuentro",
+        "appIDs": [
+          "XMRDQ6BLP2.com.corapps.carpadelencuentro"
+        ],
+        "paths": [
+          "/lista",
+          "/lista/*"
+        ],
+        "components": [
+          {
+            "/": "/lista",
+            "comment": "Listas de oración"
+          },
+          {
+            "/": "/lista/*",
+            "comment": "Listas de oración"
+          }
+        ]
+      }
+    ]
+  }
+}

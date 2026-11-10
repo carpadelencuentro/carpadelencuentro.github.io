@@ -291,7 +291,7 @@ const $ = (s) => document.querySelector(s);
 const ARCHIVO = 'contenido.json';
 const DUENO = 'carpadelencuentro';
 const REPO = 'carpadelencuentro.github.io';
-// Base en línea (Supabase): con ella lo que se guarda se ve al instante en la app y funcionan los pedidos y las campañas de oración.
+// Base en línea (Supabase): con ella lo que se guarda se ve al instante en la app y funcionan los pedidos y las listas de oración.
 // La dirección (https://<proyecto>.supabase.co) y la anon key son públicas: van también dentro de la app.
 // Mientras estén vacías, todo sigue funcionando como antes (solo GitHub).
 const SUPABASE_URL = 'https://iqmfcreqirwhlxgldvig.supabase.co';
@@ -869,8 +869,8 @@ const TEXTOS_APP = [
   ] },
   { pantalla: 'oracion', nombre: 'Oración', campos: [
     ['oracion.form_titulo', 'Título del formulario de pedidos', 'Contanos tu pedido'],
-    ['oracion.campanas_titulo', 'Título de las campañas de oración', 'Campañas de oración'],
-    ['oracion.campanas_texto', 'Texto de las campañas de oración', 'Si alguien te pasó un código, ponelo acá para ver los motivos de oración de esa campaña y sumar los tuyos.', { multilinea: true }],
+    ['oracion.campanas_titulo', 'Título de las listas de oración', 'Listas de Oración'],
+    ['oracion.campanas_texto', 'Texto de las listas de oración', 'Creá tu propia lista y compartila con un link, o poné el código que te pasaron para ver sus motivos y sumar los tuyos.', { multilinea: true }],
   ] },
   { pantalla: 'biblia', nombre: 'Biblia', campos: [
     ['biblia.titulo_dia', 'Título del versículo del día (la app lo pone en mayúsculas)', 'Versículo del día'],
@@ -896,8 +896,8 @@ const INGLES_APP = {
   'Las noches en video': 'The nights on video', '¿Querés anotarte en este evento?': 'Would you like to sign up for this event?',
   'Escribinos al 091 800 800': 'Message us at +598 91 800 800',
   'Destacadas': 'Featured', 'Los videos más vistos del canal.': 'The most watched videos on the channel.', 'Más recientes': 'Most recent',
-  'Contanos tu pedido': 'Share your prayer request', 'Campañas de oración': 'Prayer campaigns',
-  'Si alguien te pasó un código, ponelo acá para ver los motivos de oración de esa campaña y sumar los tuyos.': 'If someone gave you a code, enter it here to see that campaign’s prayer requests and add your own.',
+  'Contanos tu pedido': 'Share your prayer request', 'Listas de Oración': 'Prayer Lists',
+  'Creá tu propia lista y compartila con un link, o poné el código que te pasaron para ver sus motivos y sumar los tuyos.': 'Create your own list and share it with a link, or enter the code you were given to see its requests and add yours.',
   'Versículo del día': 'Verse of the day', 'VERSÍCULO DEL DÍA': 'VERSE OF THE DAY',
   'Programa': 'Schedule', 'Salto 2026': 'Salto 2026', 'Anteriores': 'Past', 'Buscá una prédica': 'Search for a sermon',
   'Por ejemplo: por la salud de mi mamá': 'For example: for my mom’s health', 'Enviar': 'Send', 'Código': 'Code', 'Entrar': 'Join',
@@ -1647,7 +1647,7 @@ function revisarPantallas() {
 }
 
 const TABS = [
-  ['inicio', 'Inicio'], ['textos', 'Pestañas y textos'], ['paginas', 'Pantallas'], ['novedades', 'Novedades'], ['push', 'Notificaciones push'], ['campanas', 'Campañas'], ['muro', 'Pedidos de oración'], ['vivo', 'En vivo y encuentro'], ['brou', 'Cuenta BROU'],
+  ['inicio', 'Inicio'], ['textos', 'Pestañas y textos'], ['paginas', 'Pantallas'], ['novedades', 'Novedades'], ['push', 'Notificaciones push'], ['campanas', 'Listas'], ['muro', 'Pedidos de oración'], ['vivo', 'En vivo y encuentro'], ['brou', 'Cuenta BROU'],
   ['iglesias', 'Iglesias'], ['misioneros', 'Misioneros'], ['app', 'Actualización'], ['seguridad', 'Seguridad'],
 ];
 
@@ -2393,7 +2393,7 @@ function pintarSeguridad(v) {
 
   partes.push(el('div', { class: 'card' },
     el('h3', { text: 'Base en línea (Supabase)' }),
-    !hayDb() ? el('p', { class: 'ayuda', style: 'margin:0' }, 'Todavía no está activada. Con ella, lo que guardás se ve al instante en la app, los avisos se pueden quitar al instante y funcionan los pedidos y las campañas de oración. Los pasos están en la pestaña ', el('a', { href: '#', text: 'Pedidos de oración', on: { click: (e) => { e.preventDefault(); irA('muro'); } } }), '.')
+    !hayDb() ? el('p', { class: 'ayuda', style: 'margin:0' }, 'Todavía no está activada. Con ella, lo que guardás se ve al instante en la app, los avisos se pueden quitar al instante y funcionan los pedidos y las listas de oración. Los pasos están en la pestaña ', el('a', { href: '#', text: 'Pedidos de oración', on: { click: (e) => { e.preventDefault(); irA('muro'); } } }), '.')
       : supa ? el('p', { class: 'ayuda ok', style: 'margin:0', text: `Conectada con el usuario ${SUPA_EMAIL}. Las claves de la base viven solo mientras el panel está abierto.` })
       : el('p', { class: 'ayuda error', style: 'margin:0', text: supaProblema || 'No está conectada. Salí del panel y volvé a entrar.' })));
   v.replaceChildren(...partes);
@@ -2666,13 +2666,13 @@ function pintarAvisoDb() {
     el('p', { class: 'ayuda', style: 'margin:6px 0 0', text: supaProblema }),
     el('p', { class: 'ayuda', style: 'margin:6px 0 0', text: (dbConContenido
       ? 'Mientras tanto, lo que guardes queda solo en GitHub y la app sigue mostrando lo último que se guardó en la base.'
-      : 'Mientras tanto, el panel guarda solo en GitHub y la app lo muestra en unos minutos, como antes.') + ' Tampoco se pueden quitar avisos al instante ni manejar las campañas y los pedidos de oración.' }));
+      : 'Mientras tanto, el panel guarda solo en GitHub y la app lo muestra en unos minutos, como antes.') + ' Tampoco se pueden quitar avisos al instante ni manejar las listas y los pedidos de oración.' }));
 }
 
 // ---------- Pedidos de oración (moderación) ----------
-// Son privados: el panel los ve todos (con quién lo mandó) y elige cuáles mostrar en su campaña (visible = true).
-// Los aprobados los ven solo las personas que se unieron a esa campaña con el código. Los "solo para el equipo"
-// (sin campaña) no se muestran en ningún lado: los ve solo el panel (y quien lo mandó, en Mis pedidos).
+// Son privados: el panel los ve todos (con quién lo mandó) y elige cuáles mostrar en su lista (visible = true).
+// Los aprobados los ven solo las personas que se unieron a esa lista con el código. Los "solo para el equipo"
+// (sin lista) no se muestran en ningún lado: los ve solo el panel (y quien lo mandó, en Mis pedidos).
 const LIMITE_PEDIDOS = 300;
 const muroVacio = () => ({
   pedidos: null, campanas: null, personas: new Map(), errorPersonas: '', pendientes: new Map(), equipo: 0, hayCuentas: false,
@@ -2686,7 +2686,7 @@ function pasosSupabase() {
     el('li', {}, 'Creá un proyecto gratis en ', el('a', { href: 'https://supabase.com/dashboard', target: '_blank', rel: 'noopener noreferrer', text: 'Supabase' }), '.'),
     el('li', {}, 'En ', el('b', { text: 'Project Settings → API' }), ' copiá la ', el('b', { text: 'Project URL' }), ' y la ', el('b', { text: 'anon public key' }), ' y pasáselas al desarrollador: las pone en la app y en este panel (son públicas, no son contraseñas).'),
     el('li', {}, 'En ', el('b', { text: 'SQL Editor' }), ' pegá todo el archivo ', el('b', { text: 'supabase/setup.sql' }), ' del proyecto de la app y tocá ', el('b', { text: 'Run' }), '.'),
-    el('li', {}, 'En ', el('b', { text: 'Authentication → Sign In / Providers' }), ' activá ', el('b', { text: 'Allow anonymous sign-ins' }), ' (así cada celular puede mandar pedidos y unirse a campañas sin crear una cuenta).'),
+    el('li', {}, 'En ', el('b', { text: 'Authentication → Sign In / Providers' }), ' activá ', el('b', { text: 'Allow anonymous sign-ins' }), ' (así cada celular puede mandar pedidos y unirse a listas sin crear una cuenta).'),
     el('li', {}, 'En ', el('b', { text: 'Authentication → Users → Add user' }), ' creá el usuario ', el('b', { text: SUPA_EMAIL }), ' con la misma contraseña de administrador de este panel y marcá ', el('b', { text: 'Auto Confirm User' }), '. (Supabase pide 6 caracteres o más: si tu contraseña es más corta, primero cambiala en la pestaña Seguridad.)'),
     el('li', {}, 'En ', el('b', { text: 'Authentication → Sign In / Providers → Email' }), ' dejá prendido ', el('b', { text: 'Confirm email' }), ': así nadie más puede registrarse con el usuario del panel.'),
     el('li', {}, 'Cuando el desarrollador publique el panel con los datos, entrá: el panel pasa solo el contenido a la base y desde ahí la app recibe al instante lo que guardes.'));
@@ -2711,7 +2711,7 @@ const campanaDe = (id) => (muro.campanas || []).find((c) => c.id === id) || (cam
 
 function pintarMuro(v) {
   const titulo = el('h2', { text: 'Pedidos de oración' });
-  const explica = el('p', { class: 'ayuda', text: 'Los pedidos de oración son privados: la gente los manda desde la app y acá los ves todos, con el nombre y el celular de quien lo mandó (aunque haya elegido "anónimo"). Nadie más los ve. Los que se mandan a una campaña se publican al instante en esa campaña (los ven solo quienes pusieron su código): si alguno no corresponde, tocá "Ocultar" o "Borrar". Los "solo para el equipo" no los ve nadie más, pero podés pasar cualquiera a una campaña con "Pasar a la campaña".' });
+  const explica = el('p', { class: 'ayuda', text: 'Los pedidos de oración son privados: la gente los manda desde la app y acá los ves todos, con el nombre y el celular de quien lo mandó (aunque haya elegido "anónimo"). Nadie más los ve. Los que se mandan a una lista se publican al instante en esa lista (los ven solo quienes pusieron su código): si alguno no corresponde, tocá "Ocultar" o "Borrar". Los "solo para el equipo" no los ve nadie más, pero podés pasar cualquiera a una lista con "Pasar a la lista".' });
   cajaMuro = botonMuro = filtrosMuro = cuentaMuro = null;
   if (!hayDb()) {
     pararMuro();
@@ -2743,7 +2743,7 @@ function pintarMuro(v) {
   cajaMuro = el('div');
   v.replaceChildren(titulo, explica,
     el('div', { class: 'fila' },
-      el('div', {}, el('label', { for: 'filtroCamp', text: 'Campaña' }), selCamp),
+      el('div', {}, el('label', { for: 'filtroCamp', text: 'Lista' }), selCamp),
       el('div', {}, el('label', { for: 'filtroEstado', text: 'Estado' }), selEstado)),
     el('div', { class: 'acciones', style: 'margin:12px 0 4px;align-items:center' }, botonMuro,
       el('span', { class: 'ayuda', style: 'margin:0', text: 'Mientras tengas esta pestaña abierta, la lista se actualiza sola cada 20 segundos.' })),
@@ -2808,7 +2808,7 @@ async function cargarMuro() {
     if (!rp.ok) throw await errorDb(rp);
     const xs = await rp.json();
     const pedidos = (Array.isArray(xs) ? xs : []).filter((p) => p && typeof p === 'object' && p.id != null);
-    // Pendientes por campaña (para el título y el filtro) y cuántos hay solo para el equipo.
+    // Pendientes por lista (para el título y el filtro) y cuántos hay solo para el equipo.
     const pendientes = new Map();
     let equipo = 0;
     for (const p of sinMostrar) {
@@ -2831,13 +2831,13 @@ async function cargarMuro() {
   }
 }
 
-// Las opciones del filtro de campaña se rehacen solo si cambiaron (así no se cierra la lista si está abierta).
+// Las opciones del filtro de lista se rehacen solo si cambiaron (así no se cierra la lista si está abierta).
 function pintarFiltrosMuro() {
   if (!filtrosMuro) return;
   const { camp: selCamp, estado: selEstado } = filtrosMuro;
   const cs = muro.campanas || [];
   const elegida = !['todas', 'equipo'].includes(muro.filtroCamp);
-  // La campaña elegida ya no existe (la borraron): se vuelve a "Todas".
+  // La lista elegida ya no existe (la borraron): se vuelve a "Todas".
   if (elegida && muro.campanas && !muro.cargando && !cs.some((c) => c.id === muro.filtroCamp)) {
     muro.filtroCamp = 'todas'; muro.pedidos = null;
     setTimeout(cargarMuro, 0);
@@ -2848,7 +2848,7 @@ function pintarFiltrosMuro() {
     ['equipo', 'Solo para el equipo' + (muro.hayCuentas && muro.equipo ? ` (${muro.equipo})` : '')],
     ...cs.map((c) => [c.id, c.nombre + (c.activa ? '' : ' (pausada)') + (pend(c.id) ? ' · ' + plural(pend(c.id), 'pendiente', 'pendientes') : '')]),
   ];
-  if (!opciones.some(([val]) => val === muro.filtroCamp)) opciones.push([muro.filtroCamp, 'La campaña elegida']);
+  if (!opciones.some(([val]) => val === muro.filtroCamp)) opciones.push([muro.filtroCamp, 'La lista elegida']);
   const firma = JSON.stringify(opciones);
   if (selCamp.dataset.firma !== firma) {
     selCamp.replaceChildren(...opciones.map(([val, t]) => el('option', { value: val, text: t })));
@@ -2857,11 +2857,11 @@ function pintarFiltrosMuro() {
   selCamp.value = muro.filtroCamp;
   selEstado.value = muro.filtroEstado;
   selEstado.disabled = muro.filtroCamp === 'equipo';
-  selEstado.title = selEstado.disabled ? 'No aplica: los pedidos solo para el equipo no se muestran en ninguna campaña.' : '';
+  selEstado.title = selEstado.disabled ? 'No aplica: los pedidos solo para el equipo no se muestran en ninguna lista.' : '';
 }
 
 function textoVacioMuro() {
-  const enCamp = !['todas', 'equipo'].includes(muro.filtroCamp) ? ' en esta campaña' : '';
+  const enCamp = !['todas', 'equipo'].includes(muro.filtroCamp) ? ' en esta lista' : '';
   if (muro.filtroCamp === 'equipo') return 'No hay pedidos solo para el equipo.';
   if (muro.filtroEstado === 'pendientes') return 'No hay pedidos pendientes' + enCamp + '.';
   if (muro.filtroEstado === 'publicados') return 'No hay pedidos publicados' + enCamp + '.';
@@ -2873,7 +2873,7 @@ function pintarListaMuro() {
   if (botonMuro) botonMuro.disabled = muro.cargando;
   if (!cajaMuro || !cajaMuro.isConnected) return;
   pintarFiltrosMuro();
-  // Contador de pendientes (de todas las campañas) en el título.
+  // Contador de pendientes (de todas las listas) en el título.
   if (cuentaMuro) {
     const total = [...muro.pendientes.values()].reduce((a, b) => a + b, 0);
     cuentaMuro.className = 'chip ' + (total ? 'aprox' : 'verde') + (muro.hayCuentas ? '' : ' oculto');
@@ -2889,7 +2889,7 @@ function pintarListaMuro() {
   if (muro.error) hijos.push(el('p', { class: 'ayuda error', text: muro.error }));
   if (muro.errorPersonas) hijos.push(el('p', { class: 'ayuda error', text: 'No pude leer quién mandó cada pedido: ' + muro.errorPersonas }));
   if (muro.filtroCamp === 'todas' && muro.filtroEstado === 'pendientes' && muro.equipo > 0) {
-    hijos.push(el('p', { class: 'ayuda' }, `Además hay ${plural(muro.equipo, 'pedido', 'pedidos')} solo para el equipo (no van a ninguna campaña): `,
+    hijos.push(el('p', { class: 'ayuda' }, `Además hay ${plural(muro.equipo, 'pedido', 'pedidos')} solo para el equipo (no van a ninguna lista): `,
       el('a', { href: '#', text: 'verlos', on: { click: (e) => { e.preventDefault(); muro.filtroCamp = 'equipo'; muro.pedidos = null; cargarMuro(); pintarListaMuro(); } } }), '.'));
   }
   if (muro.pedidos) hijos.push(...(n ? muro.pedidos.map(tarjetaPedido) : [el('p', { class: 'ayuda', text: textoVacioMuro() })]));
@@ -2913,18 +2913,18 @@ function tarjetaPedido(p) {
   const de = persona ? [nombreReg(persona) || '(sin nombre)', String(persona.celular || '').trim()].filter(Boolean).join(' · ')
     : muro.errorPersonas ? 'no se pudo leer' : 'sin datos de registro (los borraron o todavía no los completó)';
   const botones = [];
-  // Los "solo para el equipo" se pueden pasar a una campaña (se publican ahí con el nombre o "Anónimo", como los mandó la persona).
+  // Los "solo para el equipo" se pueden pasar a una lista (se publican ahí con el nombre o "Anónimo", como los mandó la persona).
   const campanasActivas = (muro.campanas || []).filter((c) => c.activa);
   if (!p.campana && campanasActivas.length) {
-    const sel = el('select', { 'aria-label': 'Campaña', style: 'width:auto;max-width:220px;height:34px;padding:4px 8px;font-size:14px' }, ...campanasActivas.map((c) => el('option', { value: c.id, text: c.nombre })));
-    const pasar = el('button', { class: 'btn chico', type: 'button', text: 'Pasar a la campaña' });
+    const sel = el('select', { 'aria-label': 'Lista', style: 'width:auto;max-width:220px;height:34px;padding:4px 8px;font-size:14px' }, ...campanasActivas.map((c) => el('option', { value: c.id, text: c.nombre })));
+    const pasar = el('button', { class: 'btn chico', type: 'button', text: 'Pasar a la lista' });
     pasar.addEventListener('click', () => pasarACampana(p, sel.value, pasar));
     botones.push(sel, pasar);
   }
   if (p.campana) {
     const b = p.visible
       ? el('button', { class: 'btn sec chico', type: 'button', text: 'Ocultar' })
-      : el('button', { class: 'btn chico', type: 'button', text: 'Mostrar en la campaña' });
+      : el('button', { class: 'btn chico', type: 'button', text: 'Mostrar en la lista' });
     b.addEventListener('click', () => cambiarVisible(p, !p.visible, b));
     botones.push(b);
     // Pendiente: también se puede decidir no mostrarlo (a quien lo mandó le queda "Lo recibió el equipo").
@@ -2941,7 +2941,7 @@ function tarjetaPedido(p) {
   return el('div', { class: 'card' },
     el('div', { class: 'meta', style: 'margin:0' },
       p.campana
-        ? el('span', { class: 'chip', text: 'Campaña: ' + (c ? c.nombre + (c.activa ? '' : ' (pausada)') : '(sin nombre)') })
+        ? el('span', { class: 'chip', text: 'Lista: ' + (c ? c.nombre + (c.activa ? '' : ' (pausada)') : '(sin nombre)') })
         : el('span', { class: 'chip equipo', text: 'Solo para el equipo' }),
       el('span', { class: 'chip gris', text: String(p.cat || 'Otro') }),
       p.campana ? el('span', { class: p.visible ? 'chip verde' : p.revisado ? 'chip gris' : 'chip aprox', text: p.visible ? 'Publicado' : p.revisado ? 'Oculto' : 'Pendiente' }) : null,
@@ -2951,17 +2951,17 @@ function tarjetaPedido(p) {
     el('p', { class: 'pedido-texto', text: String(p.texto || '') }),
     el('p', { class: 'meta', text: [(p.campana ? 'Se ve como: ' : 'Nombre: ') + publico, fechaLinda(p.fecha), p.campana && (p.visible || oraron) ? plural(oraron, 'persona oró', 'personas oraron') : ''].filter(Boolean).join(' · ') }),
     el('div', { class: 'de' }, el('b', { text: 'De: ' }), de,
-      p.anonimo ? el('small', { text: p.campana ? 'Anónimo para los demás: en la campaña aparece como "Anónimo".' : 'Lo mandó como anónimo.' }) : null),
+      p.anonimo ? el('small', { text: p.campana ? 'Anónimo para los demás: en la lista aparece como "Anónimo".' : 'Lo mandó como anónimo.' }) : null),
     p.contestada && testimonio ? el('div', { class: 'testimonio' }, el('b', { text: 'Testimonio: ' }), testimonio) : null,
     el('div', { class: 'acciones' }, ...botones));
 }
 
-// Mostrar u ocultar en su campaña. Se confirma con la fila que devuelve la base (si no deja, devuelve 0 filas).
-// Pasa un pedido "solo para el equipo" a una campaña y lo publica ahí.
+// Mostrar u ocultar en su lista. Se confirma con la fila que devuelve la base (si no deja, devuelve 0 filas).
+// Pasa un pedido "solo para el equipo" a una lista y lo publica ahí.
 async function pasarACampana(p, campana, boton) {
   const c = campanaDe(String(campana));
   if (!c) return;
-  if (!confirm(`¿Pasar este pedido a la campaña "${c.nombre}"? Lo van a ver las personas que pusieron el código de esa campaña, ${p.anonimo ? 'como "Anónimo"' : 'con el nombre de quien lo mandó'}.`)) return;
+  if (!confirm(`¿Pasar este pedido a la lista "${c.nombre}"? Lo van a ver las personas que pusieron el código de esa lista, ${p.anonimo ? 'como "Anónimo"' : 'con el nombre de quien lo mandó'}.`)) return;
   boton.disabled = true;
   try {
     const r = await db('pedidos?id=eq.' + encodeURIComponent(String(p.id)) + '&select=id,campana,visible', { method: 'PATCH', headers: { Prefer: 'return=representation' }, body: JSON.stringify({ campana: c.id, visible: true, revisado: true }) });
@@ -2972,7 +2972,7 @@ async function pasarACampana(p, campana, boton) {
     p.campana = c.id; p.visible = true; p.revisado = true;
     if (muro.pedidos && muro.filtroCamp === 'equipo') muro.pedidos = muro.pedidos.filter((x) => x.id !== p.id);
     camp.cuando = 0;
-    muro.msg = nota(true, `Listo: ya está en la campaña "${c.nombre}".`);
+    muro.msg = nota(true, `Listo: ya está en la lista "${c.nombre}".`);
   } catch (e) { muro.msg = nota(false, 'No se pasó: ' + e.message); boton.disabled = false; }
   pintarListaMuro();
 }
@@ -3000,16 +3000,16 @@ async function cambiarVisible(p, visible, boton) {
     camp.cuando = 0;
     const nombre = c ? `"${c.nombre}"` : '';
     muro.msg = nota(true, visible
-      ? `Listo: ya lo ven en la campaña ${nombre}.` + (c && !c.activa ? ' Ojo: la campaña está pausada, así que se va a ver cuando la vuelvas a activar.' : '')
-      : eraPendiente ? `Listo: no se publica en la campaña ${nombre}. A quien lo mandó le aparece "Lo recibió el equipo".`
-      : `Listo: ya no se ve en la campaña ${nombre}. A los celulares que la tienen abierta se les va en menos de un minuto.`);
+      ? `Listo: ya lo ven en la lista ${nombre}.` + (c && !c.activa ? ' Ojo: la lista está pausada, así que se va a ver cuando la vuelvas a activar.' : '')
+      : eraPendiente ? `Listo: no se publica en la lista ${nombre}. A quien lo mandó le aparece "Lo recibió el equipo".`
+      : `Listo: ya no se ve en la lista ${nombre}. A los celulares que la tienen abierta se les va en menos de un minuto.`);
   } catch (e) { muro.msg = nota(false, 'No se cambió: ' + e.message); boton.disabled = false; }
   pintarListaMuro();
 }
 
 async function borrarPedido(p, boton) {
   const resumen = String(p.texto || '').slice(0, 140);
-  const extra = p.campana && p.visible ? ' También se saca al instante de la campaña.' : '';
+  const extra = p.campana && p.visible ? ' También se saca al instante de la lista.' : '';
   if (!confirm(`¿Borrar este pedido de oración? Se borra para siempre, también de "Mis pedidos" de quien lo mandó.${extra} No se puede deshacer.\n\n"${resumen}"`)) return;
   boton.disabled = true;
   try {
@@ -3025,26 +3025,28 @@ async function borrarPedido(p, boton) {
   pintarListaMuro();
 }
 
-// ---------- Campañas de oración: grupos privados con un código (las crea y las maneja solo el panel) ----------
-// En la app, la persona pone el código y queda unida a la campaña: ve sus pedidos aprobados y puede mandar los suyos.
+// ---------- Listas de Oración: grupos privados con un código (las crea y las maneja solo el panel) ----------
+// En la app, la persona pone el código y queda unida a la lista: ve sus pedidos aprobados y puede mandar los suyos.
 const campVacio = () => ({ lista: null, cuentas: new Map(), error: '', cuando: 0, cargando: false, msg: null });
 let camp = campVacio(), cajaCamp = null, botonesCamp = [];
 const LETRAS_CODIGO = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // sin I, O, 0 ni 1, que se confunden al dictarlos
 const codigoAlAzar = () => Array.from(crypto.getRandomValues(new Uint8Array(6)), (b) => LETRAS_CODIGO[b % LETRAS_CODIGO.length]).join('');
-const mensajeCampana = (c) => `Sumate a la campaña de oración "${c.nombre}" en la app Carpa del Encuentro: entrá a Oración, buscá Campañas de oración y poné el código ${c.codigo}.`;
+const linkLista = (c) => 'https://carpadelencuentro.github.io/lista/?c=' + encodeURIComponent(c.codigo);
+// El link abre la app directo en la lista (o lleva a la tienda si no la tiene).
+const mensajeCampana = (c) => `Sumate a la lista de oración "${c.nombre}" en la app Carpa del Encuentro. Código: ${c.codigo}\n${linkLista(c)}`;
 const plural = (n, uno, varios) => (n === 1 ? '1 ' + uno : n + ' ' + varios);
 const cuentasVacias = () => ({ personas: 0, pendientes: 0, publicados: 0 });
 
 function pintarCampanas(v) {
-  const titulo = el('h2', { text: 'Campañas de oración' });
-  const explica = el('p', { class: 'ayuda', text: 'Cada campaña es un grupo privado de oración con su propio código. En la app, la persona entra a Oración → Campañas de oración y pone el código: desde ahí ve los pedidos de esa campaña que vos aprobaste y puede mandar los suyos. Sin el código no se ve nada. Los pedidos nuevos llegan a la pestaña Pedidos de oración y no aparecen en la campaña hasta que toques "Mostrar en la campaña".' });
+  const titulo = el('h2', { text: 'Listas de Oración' });
+  const explica = el('p', { class: 'ayuda', text: 'Cada lista es un grupo privado de oración con su propio código y su link. Desde la app (1.0.6 en adelante) cualquiera puede crear la suya en Oración → Listas de Oración; acá ves todas y podés crear las del equipo. Quien toca el link o pone el código entra a la lista: ve sus pedidos y puede mandar los suyos, que se publican al instante. Sin el link o el código no se ve nada. Quien creó una lista puede borrar los pedidos que pongan en ella; vos podés ocultar o borrar cualquiera en Pedidos de oración.' });
   cajaCamp = null; botonesCamp = [];
   if (!hayDb()) { v.replaceChildren(titulo, explica, el('div', { class: 'card alerta' }, el('b', { text: 'Falta activar la base en línea (se hace una sola vez)' }), pasosSupabase())); return; }
   const mal = problemaConfig();
   if (mal) { v.replaceChildren(titulo, el('div', { class: 'card alerta' }, el('b', { text: 'La base en línea está mal configurada en el panel' }), el('p', { class: 'ayuda', style: 'margin:6px 0 0', text: mal }))); return; }
-  // Las campañas las crea y las ve solo el usuario del panel: sin esa sesión la base no devuelve nada.
-  if (!supa) { v.replaceChildren(titulo, explica, el('div', { class: 'card alerta' }, el('b', { text: 'Para manejar las campañas falta conectar el usuario del panel' }), el('p', { class: 'ayuda', style: 'margin:6px 0 0', text: supaProblema || 'Salí del panel y volvé a entrar.' }))); return; }
-  const nueva = el('button', { class: 'btn', type: 'button', text: '+ Nueva campaña', on: { click: nuevaCampana } });
+  // Las listas las crea y las ve solo el usuario del panel: sin esa sesión la base no devuelve nada.
+  if (!supa) { v.replaceChildren(titulo, explica, el('div', { class: 'card alerta' }, el('b', { text: 'Para manejar las listas falta conectar el usuario del panel' }), el('p', { class: 'ayuda', style: 'margin:6px 0 0', text: supaProblema || 'Salí del panel y volvé a entrar.' }))); return; }
+  const nueva = el('button', { class: 'btn', type: 'button', text: '+ Nueva lista', on: { click: nuevaCampana } });
   const actualizar = el('button', { class: 'btn sec', type: 'button', text: 'Actualizar', on: { click: () => cargarCampanas() } });
   botonesCamp = [actualizar];
   cajaCamp = el('div');
@@ -3059,7 +3061,7 @@ async function cargarCampanas() {
   m.cargando = true;
   pintarListaCamp();
   try {
-    // El panel ve todas las campañas, todos los miembros y todos los pedidos: con eso se cuentan.
+    // El panel ve todas las listas, todos los miembros y todos los pedidos: con eso se cuentan.
     const [cs, ms, ps] = await Promise.all([
       leerTodas('campanas?select=id,nombre,codigo,activa,creada&order=creada.desc,id.asc'),
       leerTodas('miembros?select=campana&order=campana.asc,usuario.asc'),
@@ -3079,10 +3081,10 @@ function pintarListaCamp() {
   if (!cajaCamp || !cajaCamp.isConnected) return;
   const hijos = [];
   const hora = camp.cuando ? new Date(camp.cuando).toLocaleTimeString('es-UY', { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }) : '';
-  hijos.push(el('p', { class: 'ayuda', 'aria-live': 'polite', text: camp.cargando ? 'Actualizando...' : camp.lista ? `${plural(camp.lista.length, 'campaña', 'campañas')} · actualizado a las ${hora}.` : '' }));
+  hijos.push(el('p', { class: 'ayuda', 'aria-live': 'polite', text: camp.cargando ? 'Actualizando...' : camp.lista ? `${plural(camp.lista.length, 'lista', 'listas')} · actualizado a las ${hora}.` : '' }));
   if (notaVigente(camp.msg)) hijos.push(el('p', { class: 'ayuda ' + (camp.msg.ok ? 'ok' : 'error'), text: camp.msg.texto }));
   if (camp.error) hijos.push(el('p', { class: 'ayuda error', text: camp.error }));
-  if (camp.lista) hijos.push(...(camp.lista.length ? camp.lista.map(tarjetaCampana) : [el('p', { class: 'ayuda', text: 'Todavía no hay campañas. Creá la primera con "+ Nueva campaña".' })]));
+  if (camp.lista) hijos.push(...(camp.lista.length ? camp.lista.map(tarjetaCampana) : [el('p', { class: 'ayuda', text: 'Todavía no hay listas. Creá la primera con "+ Nueva lista".' })]));
   cajaCamp.replaceChildren(...hijos);
 }
 
@@ -3098,11 +3100,12 @@ function tarjetaCampana(c) {
       el('span', { class: c.activa ? 'chip verde' : 'chip gris', text: c.activa ? 'Activa' : 'Pausada' }),
       c.creada ? el('span', { text: 'Creada el ' + fechaLinda(c.creada) }) : null),
     el('h3', { style: 'margin:8px 0 0;overflow-wrap:anywhere', text: c.nombre }),
-    el('div', { class: 'codigo-camp', title: 'Código de la campaña', text: c.codigo }),
+    el('div', { class: 'codigo-camp', title: 'Código de la lista', text: c.codigo }),
     el('p', { class: 'meta', text: `${plural(k.personas, 'persona se unió', 'personas se unieron')} · ${plural(k.pendientes, 'pedido pendiente', 'pedidos pendientes')} · ${plural(k.publicados, 'publicado', 'publicados')}` }),
     c.activa ? null : el('p', { class: 'ayuda', style: 'margin:6px 0 0', text: 'Pausada: nadie puede unirse con el código y no se ve en la app. Los pedidos y las personas siguen guardados: cuando la actives, vuelve a aparecer.' }),
     el('div', { class: 'acciones' },
       botonCopiar('Copiar código', () => c.codigo),
+      botonCopiar('Copiar link', () => linkLista(c)),
       botonCopiar('Copiar mensaje', () => mensajeCampana(c)),
       el('button', { class: 'btn sec chico', type: 'button', text: 'Ver pedidos', on: { click: () => verPedidosDe(c) } }),
       estado, borrar));
@@ -3129,12 +3132,12 @@ function botonCopiar(texto, valor) {
 }
 
 function nuevaCampana() {
-  abrirDialogo('Nueva campaña', [
+  abrirDialogo('Nueva lista', [
     { clave: 'nombre', etiqueta: 'Nombre', max: 80, placeholder: 'Ej: Ayuno de noviembre' },
     { clave: 'codigo', etiqueta: 'Código', valor: codigoAlAzar(), max: 12, mayusculas: true, ayuda: 'Es lo que la gente pone en la app para unirse. De 4 a 12 letras o números, sin espacios. Podés dejar este o escribir uno fácil de decir (por ejemplo AYUNO2026).' },
   ], async (v) => {
     const nombre = v.nombre, codigo = v.codigo.toUpperCase();
-    if (!nombre) return 'Escribí el nombre de la campaña.';
+    if (!nombre) return 'Escribí el nombre de la lista.';
     if (nombre.length > 80) return 'El nombre puede tener hasta 80 letras.';
     // 6 o más: con códigos cortos se podría adivinar probando al azar.
     if (!/^[A-Z0-9]{6,12}$/.test(codigo)) return 'El código tiene que tener de 6 a 12 letras (sin Ñ ni tildes) o números, sin espacios.';
@@ -3142,12 +3145,12 @@ function nuevaCampana() {
     const r = await db('campanas', { method: 'POST', headers: { Prefer: 'return=representation' }, body: JSON.stringify({ nombre, codigo }) });
     if (!r.ok) {
       const j = await r.clone().json().catch(() => ({}));
-      if (r.status === 409 || String(j.code || '') === '23505') return 'Ese código ya lo usa otra campaña. Elegí otro.';
+      if (r.status === 409 || String(j.code || '') === '23505') return 'Ese código ya lo usa otra lista. Elegí otro.';
       throw await errorDb(r);
     }
     const xs = await r.json().catch(() => null);
     const fila = Array.isArray(xs) && xs[0];
-    if (!fila || fila.id == null) return 'La base no confirmó la campaña. Cerrá esta ventana y tocá Actualizar para ver si se creó.';
+    if (!fila || fila.id == null) return 'La base no confirmó la lista. Cerrá esta ventana y tocá Actualizar para ver si se creó.';
     const c = campanaNormal(fila);
     if (camp.lista) camp.lista = [c, ...camp.lista.filter((x) => x.id !== c.id)];
     camp.cuentas.set(c.id, cuentasVacias());
@@ -3160,7 +3163,7 @@ function nuevaCampana() {
 
 async function cambiarActiva(c, boton) {
   const activar = !c.activa;
-  if (!activar && !confirm(`¿Pausar la campaña "${c.nombre}"?\n\nMientras esté pausada nadie puede unirse con el código ${c.codigo} y la campaña deja de verse en la app (también para los que ya estaban). Los pedidos y las personas no se borran: cuando la actives de nuevo, vuelve a aparecer.`)) return;
+  if (!activar && !confirm(`¿Pausar la lista "${c.nombre}"?\n\nMientras esté pausada nadie puede unirse con el código ${c.codigo} y la lista deja de verse en la app (también para los que ya estaban). Los pedidos y las personas no se borran: cuando la actives de nuevo, vuelve a aparecer.`)) return;
   boton.disabled = true;
   try {
     const r = await db('campanas?id=eq.' + encodeURIComponent(c.id) + '&select=id,activa', { method: 'PATCH', headers: { Prefer: 'return=representation' }, body: JSON.stringify({ activa: activar }) });
@@ -3177,7 +3180,7 @@ async function cambiarActiva(c, boton) {
 async function borrarCampana(c, k, boton) {
   const pedidos = k.pendientes + k.publicados;
   const gente = k.personas ? (k.personas === 1 ? ' La persona que se unió queda afuera.' : ` Las ${k.personas} personas que se unieron quedan afuera.`) : '';
-  if (!confirm(`¿Borrar la campaña "${c.nombre}" (código ${c.codigo})?\n\nSe borran también TODOS sus pedidos de oración (${plural(pedidos, 'pedido', 'pedidos')}), incluso de "Mis pedidos" de quienes los mandaron.${gente} No se puede deshacer.\n\nSi solo querés cerrarla por un tiempo, usá "Pausar".`)) return;
+  if (!confirm(`¿Borrar la lista "${c.nombre}" (código ${c.codigo})?\n\nSe borran también TODOS sus pedidos de oración (${plural(pedidos, 'pedido', 'pedidos')}), incluso de "Mis pedidos" de quienes los mandaron.${gente} No se puede deshacer.\n\nSi solo querés cerrarla por un tiempo, usá "Pausar".`)) return;
   boton.disabled = true;
   try {
     await dbBorrar('campanas', c.id);
@@ -3188,13 +3191,13 @@ async function borrarCampana(c, k, boton) {
     muro.pendientes.delete(c.id);
     if (muro.filtroCamp === c.id) { muro.filtroCamp = 'todas'; muro.pedidos = null; }
     muro.cuando = 0;
-    camp.msg = nota(true, `Se borró la campaña "${c.nombre}" con sus pedidos.`);
+    camp.msg = nota(true, `Se borró la lista "${c.nombre}" con sus pedidos.`);
   } catch (e) { camp.msg = nota(false, 'No se borró: ' + e.message); boton.disabled = false; }
   pintarListaCamp();
 }
 
-// "Ver pedidos": va a la pestaña Pedidos de oración filtrada por esta campaña
-// (los pendientes, si tiene; si no, todos los de la campaña).
+// "Ver pedidos": va a la pestaña Pedidos de oración filtrada por esta lista
+// (los pendientes, si tiene; si no, todos los de la lista).
 function verPedidosDe(c) {
   const k = camp.cuentas.get(c.id) || cuentasVacias();
   if (camp.lista) muro.campanas = camp.lista.map((x) => ({ ...x }));

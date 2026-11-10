@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.corapps.carpadelencuentro",
+      "sha256_cert_fingerprints": [
+        "95:A6:BF:E5:DD:22:68:22:90:35:3F:22:B3:4C:17:7D:7D:33:9B:76:5F:6F:97:88:0C:F8:CC:7E:8A:0B:42:17"
+      ]
+    }
+  }
+]
