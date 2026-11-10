@@ -596,6 +596,7 @@ const SECCIONES_BASE = [
   { id: 'predicas', titulo: 'Prédicas', sub: 'Escuchá las charlas más destacadas', pill: '', foto: 'predicas', accion: 'predicas', link: '', visible: true },
   { id: 'oracion', titulo: 'Oración', sub: 'Podemos orar por vos', pill: '', foto: 'oracion', accion: 'oracion', link: '', visible: true },
   { id: 'iglesias', titulo: 'Iglesias cerca', sub: 'Encontrá dónde congregarte', pill: '', foto: 'iglesias', accion: 'iglesias', link: '', visible: true },
+  { id: 'contenidos', titulo: 'Contenidos', sub: 'Los canales de YouTube de las iglesias', pill: '', foto: 'contenidos', accion: 'contenidos', link: '', visible: true },
   { id: 'galeria', titulo: 'Galería de fotos', sub: 'Mirá las fotos de cada carpa', pill: '', foto: 'carpa_afuera', accion: 'galeria', link: '', visible: true },
   { id: 'misioneros', titulo: 'Misioneros', sub: 'Familias que llevan el evangelio', pill: '', foto: 'misioneros', accion: 'misioneros', link: '', visible: true },
   { id: 'mundo', titulo: 'Hermanos en el mundo', sub: 'Orá por las asambleas de cada país', pill: '', foto: 'mundo', accion: 'mundo', link: '', visible: true },
@@ -606,11 +607,12 @@ const FOTOS_APP = [
   ['carpa', 'La carpa de día'], ['carpa_afuera', 'La carpa al atardecer'], ['carpa_adentro', 'Adentro de la carpa'],
   ['predicas', 'Predicador (1)'], ['predica_1', 'Predicador (2)'], ['predica_2', 'Predicador (3)'], ['predica_3', 'Predicador (4)'],
   ['oracion', 'Mesa de oración'], ['iglesias', 'Gente de la iglesia'], ['ofrendar', 'Trigo'], ['misioneros', 'Los misioneros (van pasando)'], ['mundo', 'Mapa y Biblia'],
+  ['contenidos', 'Logos de los canales'],
   ['ninos_juegos', 'Niños jugando'], ['ninos_pintando', 'Niños pintando'], ['conocer_ninos', 'Niños y el bus'], ['conocer_bus', 'El bus'],
 ];
 const ACCIONES_INICIO = [
   ['eventos', 'Ir a Eventos'], ['predicas', 'Ir a Prédicas'], ['oracion', 'Ir a Oración'], ['biblia', 'Ir a Biblia'],
-  ['iglesias', 'Abrir Iglesias cerca'], ['misioneros', 'Abrir Misioneros'], ['mundo', 'Abrir Hermanos en el mundo'],
+  ['iglesias', 'Abrir Iglesias cerca'], ['contenidos', 'Abrir Contenidos'], ['misioneros', 'Abrir Misioneros'], ['mundo', 'Abrir Hermanos en el mundo'],
   ['ofrendar', 'Abrir Ofrendar'], ['galeria', 'Abrir Galería de fotos'], ['conocer', 'Abrir Conocer más'],
   ['pagina', 'Abrir una pantalla'], ['link', 'Abrir un link (https)'], ['nada', 'Nada (solo se muestra)'],
 ];
@@ -622,10 +624,15 @@ const srcInicio = (f) => vistasPrevias.get(f) || (esHttps(f) ? f : `../fotos/ini
 // Primera versión de la app con la galería (lib/contenido.dart, versionConGaleria). Antes de que sea la obligatoria
 // (pestaña Actualización), la tarjeta no se guarda: las versiones viejas la mostrarían sin poder abrirla.
 const VERSION_CON_GALERIA = '1.0.3';
-// Misioneros y Hermanos en el mundo llegan con la 1.0.4 (lib/contenido.dart, versionConMisioneros). La versión
-// de la pestaña Actualización es solo la de iPhone y en Android la 1.0.4 puede salir después: por eso se guardan
-// en Inicio recién desde la siguiente. Mientras, la app (1.0.4 o más nueva) las agrega sola antes de Ofrendar.
-const VERSION_GUARDA_MISIONEROS = '1.0.5';
+// Tarjetas que llegaron con una versión de la app (lib/contenido.dart, _tarjetasNuevas): desde qué versión el panel
+// las guarda en Inicio y antes de cuáles van. La versión de la pestaña Actualización es solo la de iPhone y en
+// Android la nueva puede salir después: por eso se guardan recién desde la siguiente a la que las trajo. Mientras,
+// la app las agrega sola en su lugar.
+const TARJETAS_NUEVAS = [
+  { id: 'contenidos', guarda: '1.0.6', antes: ['galeria', 'misioneros', 'mundo', 'ofrendar'] }, // llegó con la 1.0.5
+  { id: 'misioneros', guarda: '1.0.5', antes: ['mundo', 'ofrendar'] }, // con la 1.0.4
+  { id: 'mundo', guarda: '1.0.5', antes: ['ofrendar'] }, // con la 1.0.4
+];
 function versionAlMenos(v, minima) {
   const a = String(v || '').split('.').map((x) => parseInt(x, 10) || 0), b = minima.split('.').map((x) => parseInt(x, 10) || 0);
   for (let i = 0; i < 3; i++) { const d = (a[i] || 0) - (b[i] || 0); if (d) return d > 0; }
@@ -633,16 +640,20 @@ function versionAlMenos(v, minima) {
 }
 
 function seccionesInicio() {
-  const conMisioneros = versionAlMenos(datos.config.version_app, VERSION_GUARDA_MISIONEROS);
-  if (!Array.isArray(datos.inicio)) datos.inicio = SECCIONES_BASE.filter((s) => conMisioneros || (s.id !== 'misioneros' && s.id !== 'mundo')).map((s) => ({ ...s }));
-  // Misioneros y Hermanos en el mundo (nuevas en la 1.0.4) van antes de Ofrendar, una sola vez, igual que en la app.
-  for (const id of ['misioneros', 'mundo']) {
-    if (datos.config[`${id}_inicio`] || !conMisioneros) continue;
-    if (!datos.inicio.some((s) => s.id === id || s.accion === id)) {
-      const i = datos.inicio.findIndex((s) => s.id === 'ofrendar');
-      datos.inicio.splice(i < 0 ? datos.inicio.length : i, 0, { ...SECCIONES_BASE.find((s) => s.id === id) });
+  const guarda = (t) => versionAlMenos(datos.config.version_app, t.guarda);
+  if (!Array.isArray(datos.inicio)) datos.inicio = SECCIONES_BASE.filter((s) => TARJETAS_NUEVAS.every((t) => t.id !== s.id || guarda(t))).map((s) => ({ ...s }));
+  // Las nuevas van en su lugar, una sola vez, igual que en la app. Después se pueden mover o borrar.
+  for (const t of TARJETAS_NUEVAS) {
+    if (datos.config[`${t.id}_inicio`] || !guarda(t)) continue;
+    if (!datos.inicio.some((s) => s.id === t.id || s.accion === t.id)) {
+      let i = -1;
+      for (const a of t.antes) {
+        i = datos.inicio.findIndex((s) => s.id === a);
+        if (i >= 0) break;
+      }
+      datos.inicio.splice(i < 0 ? datos.inicio.length : i, 0, { ...SECCIONES_BASE.find((s) => s.id === t.id) });
     }
-    datos.config[`${id}_inicio`] = 'si';
+    datos.config[`${t.id}_inicio`] = 'si';
   }
   // La Galería es nueva: si Inicio se guardó antes de que existiera, se agrega una sola vez antes de Ofrendar
   // (la app hace lo mismo). Después se puede borrar como cualquier otra.
