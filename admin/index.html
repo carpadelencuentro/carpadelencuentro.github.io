@@ -130,12 +130,12 @@
   .tm-btn { background:#1F3FA8; color:#fff; border-radius:10px; text-align:center; font-weight:800; font-size:12px; padding:9px 12px; }
   .tm-codigo { display:flex; gap:6px; } .tm-codigo .tm-input { flex:1; }
   .tm-foto { height:118px; border-radius:14px; background-size:cover; background-position:center; margin-bottom:10px; }
-  .tm-dia { background:#1F3FA8; color:#fff; border-radius:16px; padding:14px; margin-bottom:12px; }
-  .tm-dia small { display:block; text-transform:uppercase; letter-spacing:.06em; font-weight:800; font-size:10.5px; color:#C8D3F5; margin-bottom:12px; overflow-wrap:anywhere; }
-  .tm-dia .tm-gris { background:rgba(255,255,255,.25); }
-  .tm-cita { margin-top:12px; }
-  .tm-toggle { width:34px; height:20px; border-radius:999px; background:#C9CEDB; position:relative; flex:none; }
-  .tm-toggle::after { content:''; position:absolute; left:3px; top:3px; width:14px; height:14px; border-radius:50%; background:#fff; }
+  .tm-libro { display:flex; align-items:center; gap:8px; background:#F4F5F8; border-radius:12px; padding:6px 10px; margin-bottom:12px; }
+  .tm-libro b { flex:1; min-width:0; text-align:center; font-size:13.5px; font-weight:800; color:#1F3FA8; }
+  .tm-libro small { font-size:10px; font-weight:700; color:#5A5F75; }
+  .tm-cap { font-size:18px; font-weight:800; margin:2px 0 8px; }
+  .tm-vers { margin:0 0 8px; font-size:12.5px; line-height:1.55; color:#141A33; overflow-wrap:anywhere; }
+  .tm-vers sup { font-size:9px; font-weight:800; color:#1F3FA8; margin-right:3px; }
   .wa-previa { margin:12px 0 4px; padding:10px; border:1.5px dashed #C9CEDB; border-radius:12px; background:#ECE5DD; }
   .wa-previa small { display:block; color:#3F4560; font-weight:700; font-size:10.5px; margin-bottom:6px; }
   .wa-burbuja { background:#DCF8C6; color:#141A33; border-radius:10px 10px 2px 10px; padding:7px 9px; font-size:11.5px; line-height:1.4; white-space:pre-line; overflow-wrap:anywhere; margin-left:auto; max-width:92%; width:fit-content; }
@@ -878,12 +878,10 @@ const TEXTOS_APP = [
     ['oracion.campanas_titulo', 'Título de las listas de oración', 'Listas de Oración'],
     ['oracion.campanas_texto', 'Texto de las listas de oración', 'Creá tu propia lista y compartila con un link, o poné el código que te pasaron para ver sus motivos y sumar los tuyos.', { multilinea: true }],
   ] },
-  { pantalla: 'biblia', nombre: 'Biblia', campos: [
-    ['biblia.titulo_dia', 'Título del versículo del día (la app lo pone en mayúsculas)', 'Versículo del día'],
-    ['biblia.avisar_titulo', 'Título para recibir el versículo cada mañana', 'Avisarme el versículo'],
-    ['biblia.leer_titulo', 'Título para leer el capítulo', 'Leer el capítulo completo'],
-  ] },
+  // Biblia no tiene textos para cambiar: es la Biblia completa (RVR1960, King James o Lutero 1912). Solo se cambia el nombre de la pestaña.
 ];
+// Textos del versículo del día, que la app ya no usa: se sacan al cargar, así no se muestran, no se traducen y se borran al guardar.
+const TEXTOS_VIEJOS = new Set(['biblia.titulo_dia', 'biblia.avisar_titulo', 'biblia.leer_titulo']);
 // eventos.foto, eventos.videos y eventos.oculto se editan aparte (extrasEvento): no son textos que se vean.
 const TEXTOS_FABRICA = { ...Object.fromEntries(TEXTOS_APP.flatMap((g) => g.campos.map(([k, , f]) => [k, f]))), 'eventos.foto': 'carpa' };
 const ETIQUETAS_TEXTOS = { ...Object.fromEntries(TEXTOS_APP.flatMap((g) => g.campos.map(([k, e]) => [k, e]))), 'eventos.foto': 'Foto del evento', 'eventos.videos': 'Videos del evento' };
@@ -904,10 +902,8 @@ const INGLES_APP = {
   'Destacadas': 'Featured', 'Los videos más vistos del canal.': 'The most watched videos on the channel.', 'Más recientes': 'Most recent',
   'Contanos tu pedido': 'Share your prayer request', 'Listas de Oración': 'Prayer Lists',
   'Creá tu propia lista y compartila con un link, o poné el código que te pasaron para ver sus motivos y sumar los tuyos.': 'Create your own list and share it with a link, or enter the code you were given to see its requests and add yours.',
-  'Versículo del día': 'Verse of the day', 'VERSÍCULO DEL DÍA': 'VERSE OF THE DAY',
   'Programa': 'Schedule', 'Salto 2026': 'Salto 2026', 'Anteriores': 'Past', 'Buscá una prédica': 'Search for a sermon',
   'Por ejemplo: por la salud de mi mamá': 'For example: for my mom’s health', 'Enviar': 'Send', 'Código': 'Code', 'Entrar': 'Join',
-  'Avisarme el versículo': 'Send me the verse', 'Cada mañana a las 8:00': 'Every morning at 8:00 AM', 'Leer el capítulo completo': 'Read the whole chapter',
   'Tocá un año para ver sus videos.': 'Tap a year to see its videos.',
   'Rosario, Tacuarembó, El Carmen, Rocha y Salto': 'Rosario, Tacuarembó, El Carmen, Rocha and Salto',
   'Colonia, Tacuarembó, Villa del Carmen, Rocha y Maldonado': 'Colonia, Tacuarembó, Villa del Carmen, Rocha and Maldonado',
@@ -1143,7 +1139,7 @@ function revisarEventos() {
   return '';
 }
 
-// Piezas de las maquetas. Lo gris es lo que la app carga sola (videos, versículo del día).
+// Piezas de las maquetas. Lo gris es lo que la app carga sola (videos).
 const gris = (ancho, alto = 8) => { const d = el('div', { class: 'tm-gris' }); d.style.width = ancho; d.style.height = alto + 'px'; return d; };
 const filaVideo = () => el('div', { class: 'tm-fila' }, el('div', { class: 'tm-gris tm-mini' }), el('div', { class: 'tm-lineas' }, gris('92%'), gris('55%')));
 const fondoFoto = (clase, foto) => { const d = el('div', { class: clase }); d.style.backgroundImage = `url("${srcInicio(foto).replace(/"/g, '%22')}")`; return d; };
@@ -1159,7 +1155,6 @@ function icono(clase, trazo) {
   return s;
 }
 const TRAZO_CHAT = 'M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z';
-const TRAZO_LIBRO = 'M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14zM20 17v4H6.5A2.5 2.5 0 0 1 4 19.5';
 const TRAZO_CARPA = 'M3 20 12 4l9 16H3zM12 4v16';
 const eventoOculto = () => valorTexto('eventos.oculto') === 'si';
 // Las sub-pestañas de Eventos: el evento actual (si no está oculto) y Anteriores. enEvento: cuál está elegida.
@@ -1206,10 +1201,26 @@ const MAQUETAS = {
     el('div', { class: 'tm-soft' }, t('oracion.form_titulo', 'b', 'tm-tit'), el('div', { class: 'tm-input alto', text: enApp('Por ejemplo: por la salud de mi mamá') }), el('div', { class: 'tm-btn', text: enApp('Enviar') })),
     t('oracion.campanas_titulo', 'div', 'tm-sec'), t('oracion.campanas_texto', 'p', 'tm-sub'),
     el('div', { class: 'tm-codigo' }, el('div', { class: 'tm-input', text: enApp('Código') }), el('div', { class: 'tm-btn', text: enApp('Entrar') }))] }),
-  biblia: (t) => ({ gris: true, cuerpo: [
-    el('div', { class: 'tm-dia' }, t('biblia.titulo_dia', 'small'), el('div', { class: 'tm-lineas' }, gris('96%', 10), gris('90%', 10), gris('70%', 10)), el('div', { class: 'tm-cita' }, gris('40%', 9))),
-    el('div', { class: 'tm-soft tm-fila' }, el('div', { class: 'tm-flex' }, t('biblia.avisar_titulo', 'b'), el('span', { class: 'tm-sub', text: enApp('Cada mañana a las 8:00') })), el('span', { class: 'tm-toggle' })),
-    el('div', { class: 'tm-fila' }, icono('azul', TRAZO_LIBRO), t('biblia.leer_titulo', 'b', 'tm-flex'), el('span', { class: 'tm-chev', text: '›' }))] }),
+  // La Biblia completa: arriba se elige libro y capítulo, abajo el texto (en inglés la app usa la King James).
+  biblia: () => {
+    const [cap, version, versos] = previaIngles ? BIBLIA_PREVIA.en : BIBLIA_PREVIA.es;
+    return { cuerpo: [
+      el('div', { class: 'tm-libro' }, el('span', { class: 'tm-chev', text: '‹' }), el('b', { text: cap + ' ▾' }), el('small', { text: version }), el('span', { class: 'tm-chev', text: '›' })),
+      el('div', { class: 'tm-cap', text: cap }),
+      ...versos.map((v, i) => el('p', { class: 'tm-vers' }, el('sup', { text: String(i + 1) }), v)),
+      el('div', { class: 'tm-lineas' }, gris('96%'), gris('88%'), gris('60%'))] };
+  },
+};
+// Unos versículos de ejemplo para la maqueta de Biblia (Juan 3:1-3).
+const BIBLIA_PREVIA = {
+  es: ['Juan 3', 'RVR1960', [
+    'Había un hombre de los fariseos que se llamaba Nicodemo, un principal entre los judíos.',
+    'Este vino a Jesús de noche, y le dijo: Rabí, sabemos que has venido de Dios como maestro; porque nadie puede hacer estas señales que tú haces, si no está Dios con él.',
+    'Respondió Jesús y le dijo: De cierto, de cierto te digo, que el que no naciere de nuevo, no puede ver el reino de Dios.']],
+  en: ['John 3', 'KJV', [
+    'There was a man of the Pharisees, named Nicodemus, a ruler of the Jews:',
+    'The same came to Jesus by night, and said unto him, Rabbi, we know that thou art a teacher come from God: for no man can do these miracles that thou doest, except God be with him.',
+    'Jesus answered and said unto him, Verily, verily, I say unto thee, Except a man be born again, he cannot see the kingdom of God.']],
 };
 
 function pintarPreviaTextos() {
@@ -1230,7 +1241,7 @@ function pintarPreviaTextos() {
     el('div', { class: 'previa-pantallas', role: 'group', 'aria-label': 'Pantalla de la vista previa' },
       ...PANTALLAS_PREVIA.map(([k, n]) => el('button', { type: 'button', class: 'btn sec chico' + (k === p ? ' on' : ''), 'aria-pressed': k === p ? 'true' : 'false', text: n, on: { click: () => { pantallaTextos = k; pintarPreviaTextos(); } } }))),
     tel,
-    ...(vista.gris ? [el('p', { class: 'ayuda nota-previa', text: 'Lo gris lo carga la app sola (videos y versículo del día).' })] : []));
+    ...(vista.gris ? [el('p', { class: 'ayuda nota-previa', text: 'Lo gris lo carga la app sola (los videos).' })] : []));
   encajarPestanas(caja);
   const cuerpo = tel.querySelector('.tel-cuerpo');
   cuerpo.scrollTop = scroll;
@@ -1565,7 +1576,7 @@ function normalizarPantallas() {
   const str = (x) => (typeof x === 'string' ? x : '');
   const pe = esObjeto(datos.pestanas) ? datos.pestanas : {};
   datos.pestanas = Object.fromEntries(PESTANAS_BASE.map(([k, def]) => [k, str(pe[k]).trim() ? pe[k] : def]));
-  datos.textos = Object.fromEntries(Object.entries(esObjeto(datos.textos) ? datos.textos : {}).filter(([, x]) => typeof x === 'string' && x.trim()));
+  datos.textos = Object.fromEntries(Object.entries(esObjeto(datos.textos) ? datos.textos : {}).filter(([k, x]) => !TEXTOS_VIEJOS.has(k) && typeof x === 'string' && x.trim()));
   const ids = new Set();
   datos.paginas = (Array.isArray(datos.paginas) ? datos.paginas : []).filter(esObjeto).map((p, i) => {
     let id = str(p.id).trim();
