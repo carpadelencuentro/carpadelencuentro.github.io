@@ -1694,7 +1694,7 @@ function pintar() {
     v.replaceChildren(
       el('h2', { text: 'En vivo' }),
       el('p', { class: 'ayuda', text: 'La app detecta sola cuando el canal de YouTube está transmitiendo. Si querés mostrar el cartel EN VIVO con otro link, pegalo acá. Cuando termine, borralo.' }),
-      el('div', { class: 'card' }, campo('Link de la transmisión (opcional)', cfg, 'envivo_url', { placeholder: 'https://www.youtube.com/watch?v=...', https: true, max: 300 })),
+      el('div', { class: 'card' }, campo('Link de la transmisión (opcional)', cfg, 'envivo_url', { placeholder: 'https://www.youtube.com/watch?v=...', https: true, max: 300, ayuda: 'Al guardar un link nuevo, el panel te pregunta si querés mandar un aviso a todos los celulares de que la Carpa está en vivo (a cada uno le llega en su idioma).' })),
       el('h2', { text: 'Próximo encuentro' }),
       el('p', { class: 'ayuda', text: 'Si dejás el título vacío, el cuadro no aparece en la app.' }),
       el('div', { class: 'card' },
@@ -2239,6 +2239,46 @@ async function enviarPush(boton, estado) {
   pushResultado = { ok: !fallas.length && guardado && (enLinea || !hayDb()), texto };
   avisosDb.cuando = 0;
   if (tab === 'push') pintar();
+}
+
+// Aviso de "estamos en vivo": los textos son fijos (no los escribe nadie) y a cada celular le llega el de su idioma.
+const PUSH_EN_VIVO = [
+  ['todos_es', 'español', '🔴 Estamos en vivo', 'La Carpa del Encuentro está transmitiendo en vivo. Tocá para verla.'],
+  ['todos_en', 'inglés', "🔴 We're live", 'Carpa del Encuentro is streaming live. Tap to watch.'],
+  ['todos_de', 'alemán', '🔴 Wir sind live', 'Carpa del Encuentro überträgt gerade live. Tippe zum Ansehen.'],
+];
+
+// Después de guardar un link nuevo de la transmisión, pregunta si avisar a todos. Al tocar el aviso, la app abre el link.
+// Es del momento: no se guarda en Avisos ni en push_historial.
+async function avisarEnVivo(link) {
+  if (!confirm('La transmisión quedó prendida. ¿Mandar un aviso a todos los celulares de que la Carpa está en vivo? Les llega en su idioma.')) return;
+  const est = $('#estado');
+  let antes = est.textContent.trim(), clase = est.className, puesto = null;
+  // El resultado va después del mensaje del guardado (o de lo que haya aparecido ahí mientras se mandaba).
+  const decir = (t, mal = false) => {
+    if (est.textContent !== puesto) { antes = est.textContent.trim(); clase = est.className; }
+    est.textContent = puesto = (antes ? antes + ' ' : '') + t;
+    est.className = mal ? 'estado error' : clase;
+  };
+  const fb = secretos && secretos.firebase;
+  if (!fb) return decir('No se mandó el aviso de en vivo: falta conectar Firebase en la pestaña Seguridad.', true);
+  decir('Mandando el aviso de en vivo...');
+  // Mismo formato de id que los avisos de la pestaña Notificaciones push.
+  const azar = crypto.getRandomValues(new Uint8Array(6));
+  const id = Date.now().toString(36) + '-' + Array.from(azar, (b) => b.toString(16).padStart(2, '0')).join('');
+  const data = { accion: 'link', link, id };
+  const enviados = [], fallas = [];
+  try {
+    const acceso = await pedirAcceso(fb);
+    for (const [topic, idioma, titulo, texto] of PUSH_EN_VIVO) {
+      try { await mandarPush(acceso, fb.project_id, topic, titulo, texto, data); enviados.push(idioma); }
+      catch (e) { fallas.push(idioma + ': ' + e.message); }
+    }
+  } catch (e) { fallas.push(e.message); }
+  if (!enviados.length) return decir('No se mandó el aviso de en vivo. ' + fallas.join(' · '), true);
+  const idiomas = enviados.length > 1 ? enviados.slice(0, -1).join(', ') + ' y ' + enviados[enviados.length - 1] : enviados.join('');
+  if (fallas.length) decir(`El aviso de en vivo salió solo a los celulares en ${idiomas}. Falló: ${fallas.join(' · ')}. Si lo mandás de nuevo desde Notificaciones push, a los celulares en ${idiomas} les llega dos veces.`, true);
+  else decir('Aviso de en vivo mandado a todos los celulares (en español, inglés y alemán).');
 }
 
 async function mandarPush(acceso, proyecto, topic, titulo, texto, data) {
@@ -3337,13 +3377,17 @@ const CLAVES_APP = ['cambios', 'inicio', 'ocultos', 'ocultos_nombres', 'noticias
 
 // Si en la base lo último lo cambió el administrador desde la app, se traen esos cambios a lo que se va a guardar.
 // Lo que el panel cambió en esas mismas partes gana.
+// El link de la transmisión que está puesto ahora en la base (lo que ven los celulares), o undefined si no se pudo leer.
+let vivoEnBase;
 async function traerCambiosApp() {
+  vivoEnBase = undefined;
   if (!hayDb() || !supa) return;
   try {
     const r = await db('contenido?select=json&id=eq.1');
     if (!r.ok) return;
     const xs = await r.json();
     const j = Array.isArray(xs) && xs[0] && xs[0].json;
+    if (j && typeof j === 'object') vivoEnBase = j.config && typeof j.config.envivo_url === 'string' ? j.config.envivo_url.trim() : '';
     if (!j || typeof j !== 'object' || j.origen !== 'app') return;
     for (const k of CLAVES_APP) if (j[k] !== undefined && (!cargadoApp || canon(datos[k] ?? null) === cargadoApp[k])) datos[k] = j[k];
     if (j.config && j.config.galeria_inicio) datos.config.galeria_inicio = j.config.galeria_inicio;
@@ -3400,6 +3444,15 @@ function revisar() {
   return revisarPantallas() || revisarEventos();
 }
 
+// El link de la transmisión es nuevo si quedó guardado un https que puso la persona en el panel (no uno que trajo
+// la app) y es distinto del que había antes de este guardado.
+function vivoEsNuevo(panel, guardado, antes) {
+  if (typeof guardado !== 'string' || !esHttps(guardado) || guardado !== panel) return false;
+  // "antes" sale de canon() (JSON): "null" si no había link. Se compara sin espacios, como lo deja revisar().
+  const viejo = typeof antes === 'string' ? JSON.parse(antes) : null;
+  return typeof viejo !== 'string' || viejo.trim() !== guardado;
+}
+
 let guardando = false;
 async function guardar() {
   // Si ya se está guardando (por ejemplo, al mandar un push justo después de "Guardar cambios"), espera y guarda de nuevo.
@@ -3418,11 +3471,16 @@ async function guardar() {
     $('#estado').textContent = 'Traduciendo al inglés...';
     await completarIngles();
     $('#estado').textContent = 'Guardando...';
+    // Link de la transmisión como lo dejó la persona en el panel, antes de traer lo que cambió la app:
+    // si es nuevo, al terminar se pregunta si avisar a todos. Por un link que puso la app no se pregunta.
+    const vivoPanel = datos.config.envivo_url;
+    const vivoAntes = cargadoApp ? cargadoApp.envivo : canon(null);
     await traerCambiosApp();
     datos.actualizado = new Date().toISOString().slice(0, 10);
     // Ya no es "hecho desde la app": desde acá la versión de GitHub y la de la base son la misma.
     delete datos.origen;
     const guardada = version;
+    const vivo = datos.config.envivo_url;
     const texto = JSON.stringify(datos, null, 1);
     const r = await api(`contents/${ARCHIVO}`, {
       method: 'PUT',
@@ -3437,6 +3495,9 @@ async function guardar() {
     // La misma copia va a la base en línea, que la app escucha al instante.
     if (hayDb() && supa) $('#estado').textContent = 'Guardando en la base en línea...';
     const enLinea = await contenidoADb(JSON.parse(texto));
+    // Se pregunta después de terminar de guardar (y con el mensaje del guardado ya puesto).
+    // Si ese mismo link ya estaba puesto en la base (por ejemplo, lo prendió la app y ahí ya se preguntó), no se repite.
+    if (vivoEsNuevo(vivoPanel, vivo, vivoAntes) && vivoEnBase !== vivo) setTimeout(() => avisarEnVivo(vivo), 0);
     // Lo que se escribió mientras se guardaba no entró en este guardado: queda pendiente.
     if (version !== guardada) { $('#guardar').disabled = false; $('#estado').textContent = 'Guardado, pero hay cambios nuevos sin guardar.'; $('#estado').className = 'estado'; return true; }
     sucio = false;
