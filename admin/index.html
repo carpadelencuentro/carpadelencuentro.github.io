@@ -1714,10 +1714,11 @@ function pintar() {
   } else if (tab === 'brou') {
     v.replaceChildren(
       el('h2', { text: 'Cuenta BROU de la Carpa' }),
-      el('p', { class: 'ayuda', text: 'Se muestra en Ofrendar. Mientras el número esté vacío, la app dice que se publica pronto.' }),
+      el('p', { class: 'ayuda', text: 'Se muestra en Ofrendar. Mientras no haya ningún número, la app dice que se publica pronto. Poné el número como lo da el BROU (por ejemplo 110859722-00001): la app muestra solo, abajo, el número para transferir desde otros bancos (sin el guion). La cuenta en dólares se ve desde la versión 1.0.8 de la app.' }),
       el('div', { class: 'card' },
-        el('div', { class: 'fila' }, campo('Titular', cfg, 'brou_titular', { max: 120 }), campo('Número de cuenta', cfg, 'brou_cuenta', { max: 60 })),
-        el('div', { class: 'fila' }, campo('Moneda', cfg, 'brou_moneda', { max: 60 }), campo('Sucursal (opcional)', cfg, 'brou_sucursal', { max: 120 }))));
+        el('div', { class: 'fila' }, campo('Titular', cfg, 'brou_titular', { max: 120 }), campo('Sucursal (opcional)', cfg, 'brou_sucursal', { max: 120 })),
+        el('div', { class: 'fila' }, campo('Número de cuenta en pesos', cfg, 'brou_cuenta', { max: 60 }), campo('Moneda de esa cuenta', cfg, 'brou_moneda', { max: 60 })),
+        el('div', { class: 'fila' }, campo('Número de cuenta en dólares (opcional)', cfg, 'brou_cuenta_usd', { max: 60 }))));
   } else if (tab === 'app') {
     v.replaceChildren(
       el('h2', { text: 'Actualización de la app' }),
