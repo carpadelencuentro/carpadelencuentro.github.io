@@ -250,7 +250,7 @@
       <div id="pasosToken"></div>
       <label for="token">Clave de GitHub</label>
       <input id="token" type="password" autocomplete="off" maxlength="255" placeholder="github_pat_...">
-      <div id="cajaPass2"><label for="pass2">Repetí la contraseña</label><input id="pass2" type="password" autocomplete="new-password" maxlength="200"></div>
+      <div id="cajaPass2"><label for="pass2">Repite la contraseña</label><input id="pass2" type="password" autocomplete="new-password" maxlength="200"></div>
       <div class="acciones">
         <button class="btn" id="guardarPrimera" type="button">Guardar y entrar</button>
         <button class="btn sec" id="cancelarPrimera" type="button">Cancelar</button>
@@ -278,7 +278,7 @@
 <div id="modal">
   <div class="caja">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-      <b style="font-size:17px">Arrastrá el punto hasta la puerta de la iglesia</b>
+      <b style="font-size:17px">Arrastra el punto hasta la puerta de la iglesia</b>
       <button class="btn sec" id="cerrarMapa" type="button" style="margin-left:auto">Listo</button>
     </div>
     <div id="mapa"></div>
@@ -365,10 +365,10 @@ const TRADUCCIONES_FIJAS = {
   'Inicio': 'Home', 'Eventos': 'Events', 'Encuentros': 'Events', 'Mensajes': 'Sermons', 'Oración': 'Prayer', 'Biblia': 'Bible',
   'Iglesias cerca': 'Churches nearby', 'Ofrendar': 'Give', 'Novedades': 'News',
   'Podemos orar por ti': 'We can pray for you', 'Encuentra dónde congregarte': 'Find a place to worship',
-  'Ayudá a llevar la Carpa': 'Help take the tent further', 'Escuchá o mirá cada noche': 'Listen to or watch every night',
-  'Escuchá las charlas más destacadas': 'Listen to the most watched talks',
+  'Ayuda a llevar la Carpa': 'Help take the tent further', 'Escucha o mira cada noche': 'Listen to or watch every night',
+  'Escucha las charlas más destacadas': 'Listen to the most watched talks',
   'Canales oficiales': 'Official channels', 'De iglesias y ministerios, en YouTube': 'From churches and ministries, on YouTube',
-  'Mirá las fotos de cada encuentro': 'See the photos from every event', 'Hermanos en el Mundo': 'Believers around the world',
+  'Mira las fotos de cada encuentro': 'See the photos from every event', 'Hermanos en el Mundo': 'Believers around the world',
 };
 // Nombres que no se traducen (el traductor pasaba "Carpa Salto" a "Jump Tent"). Los largos primero.
 const NOMBRES_PROPIOS = ['Carpa del Encuentro', 'Villa del Carmen', 'Ciudad del Carmen', 'El Carmen', 'Juan Lacaze', 'San Carlos', 'Tacuarembó', 'Maldonado', 'Paysandú', 'Montevideo', 'Colonia', 'Durazno', 'Carmelo', 'Rosario', 'Rocha', 'Salto', 'Chuy', 'Carpa'];
@@ -394,7 +394,7 @@ async function repararTraducciones() {
   datos.config.traducciones_v2 = true;
   if (!cambiadas) return;
   cambio(); pintar();
-  $('#estado').textContent = `Corregimos ${cambiadas} ${cambiadas === 1 ? 'traducción' : 'traducciones'} al inglés: tocá "Guardar cambios" para que se vean en la app.`;
+  $('#estado').textContent = `Corregimos ${cambiadas} ${cambiadas === 1 ? 'traducción' : 'traducciones'} al inglés: toca "Guardar cambios" para que se vean en la app.`;
 }
 
 function textosATraducir() {
@@ -433,7 +433,7 @@ function campoEn(etiqueta, obj, clave, opts = {}) {
   en.maxLength = opts.multilinea ? MAX_TEXTO : MAX_LINEA * 2;
   en.value = valorEn();
   // placeholderEn: lo que muestra la app en inglés mientras el campo en español está vacío (texto de fábrica).
-  const enVacio = opts.placeholderEn || 'Se traduce solo cuando escribís en español';
+  const enVacio = opts.placeholderEn || 'Se traduce solo cuando escribes en español';
   en.placeholder = enVacio;
   en.addEventListener('input', () => {
     if (opts.lineas) { const es = lineas(), xs = en.value.split('\n'); es.forEach((l, i) => { if (xs[i] != null) datos.en[l] = xs[i].trim(); }); }
@@ -446,13 +446,13 @@ function campoEn(etiqueta, obj, clave, opts = {}) {
     timer = setTimeout(async () => {
       const faltan = (opts.lineas ? lineas() : [String(obj[clave] ?? '')]).filter((t) => t.trim() && !datos.en[t]);
       if (faltan.length) en.placeholder = 'Traduciendo...';
-      try { for (const t of faltan) datos.en[t] = await traducir(t); en.placeholder = enVacio; } catch (e) { en.placeholder = 'No se pudo traducir: escribilo a mano'; }
+      try { for (const t of faltan) datos.en[t] = await traducir(t); en.placeholder = enVacio; } catch (e) { en.placeholder = 'No se pudo traducir: escríbelo a mano'; }
       en.value = valorEn();
       if (faltan.length) repintarPrevia();
     }, 700);
   };
   const caja = campo(etiqueta, obj, clave, { ...opts, alCambiar: () => { if (opts.alCambiar) opts.alCambiar(); programar(); } });
-  caja.append(el('label', { for: id, class: 'en-label', text: 'En inglés (vista previa, la podés corregir)' }), en);
+  caja.append(el('label', { for: id, class: 'en-label', text: 'En inglés (vista previa, la puedes corregir)' }), en);
   return caja;
 }
 
@@ -502,7 +502,7 @@ function abrirDialogo(titulo, campos, alAgregar) {
     }
     ocupado = true; botonAgregar.disabled = botonCancelar.disabled = true;
     error.className = 'ayuda'; error.textContent = 'Un momento...';
-    res.then((problema) => problema, (e) => (e && e.message) || 'No se pudo. Probá de nuevo.').then((problema) => {
+    res.then((problema) => problema, (e) => (e && e.message) || 'No se pudo. Prueba de nuevo.').then((problema) => {
       ocupado = false; botonAgregar.disabled = botonCancelar.disabled = false;
       error.className = 'ayuda error';
       if (problema) { error.textContent = problema; return; }
@@ -535,11 +535,11 @@ function nuevaNovedad() {
     { clave: 'tipo', etiqueta: 'Al tocarla', opciones: [['nada', 'Nada (solo texto)'], ['video', 'Abrir un video de YouTube'], ['predicas', 'Ir a Mensajes'], ['encuentros', 'Ir a Eventos']] },
     { clave: 'video', etiqueta: 'Link del video', placeholder: 'https://youtu.be/...', visibleSi: (i) => i.tipo.value === 'video' },
   ], (v) => {
-    if (!v.titulo) return 'Escribí el título.';
+    if (!v.titulo) return 'Escribe el título.';
     const n = { titulo: v.titulo, texto: v.texto, fecha: /^\d{4}-\d{2}-\d{2}$/.test(v.fecha) ? v.fecha : new Date().toISOString().slice(0, 10) };
     if (v.tipo === 'video') {
       const id = idVideo(v.video);
-      if (!id) return 'Pegá un link de YouTube que funcione.';
+      if (!id) return 'Pega un link de YouTube que funcione.';
       n.video = id;
     } else if (v.tipo === 'predicas' || v.tipo === 'encuentros') n.accion = v.tipo;
     datos.noticias.unshift(n);
@@ -556,13 +556,13 @@ function nuevaIglesia() {
     { clave: 'tels', etiqueta: 'Teléfonos (separados por coma)', ayuda: 'Los celulares que empiezan con 09 tienen botón de WhatsApp.', max: 120 },
     { clave: 'reuniones', etiqueta: 'Reuniones', multilinea: true, placeholder: 'Domingo\n10:00 hs. Culto', max: 800 },
   ], (v) => {
-    if (!v.ciudad) return 'Escribí la ciudad o el barrio.';
+    if (!v.ciudad) return 'Escribe la ciudad o el barrio.';
     const slug = v.ciudad.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'iglesia';
     const c = { id: `${slug}-${Date.now().toString(36)}`, ciudad: v.ciudad, nombre: v.nombre, direccion: v.direccion, telefonos: telefonos(v.tels), reuniones: v.reuniones, fotos: [], lat: -34.88, lng: -56.17, aprox: true };
     datos.iglesias.unshift(c);
     abiertas = new Set([0]); filtro = '';
     cambio(); pintar();
-    $('#estado').textContent = 'Iglesia agregada: ubicala en el mapa, subí una foto y tocá Guardar cambios';
+    $('#estado').textContent = 'Iglesia agregada: ubícala en el mapa, sube una foto y toca Guardar cambios';
     traducirNuevos([c.nombre, c.reuniones]);
   });
 }
@@ -601,14 +601,14 @@ function imgFoto(f, carpeta, clase) {
 // Las mismas que trae la app de fábrica (lib/contenido.dart, seccionesBase): mientras no se guarden acá, la app usa esas.
 const SECCIONES_BASE = [
   { id: 'eventos', titulo: 'Carpa Salto 2026', sub: '22 al 26 de setiembre', pill: 'Eventos', foto: 'carpa', accion: 'eventos', link: '', visible: true },
-  { id: 'predicas', titulo: 'Mensajes', sub: 'Escuchá las charlas más destacadas', pill: '', foto: 'predicas', accion: 'predicas', link: '', visible: true },
+  { id: 'predicas', titulo: 'Mensajes', sub: 'Escucha las charlas más destacadas', pill: '', foto: 'predicas', accion: 'predicas', link: '', visible: true },
   { id: 'oracion', titulo: 'Oración', sub: 'Podemos orar por ti', pill: '', foto: 'oracion', accion: 'oracion', link: '', visible: true },
   { id: 'iglesias', titulo: 'Iglesias cerca', sub: 'Encuentra dónde congregarte', pill: '', foto: 'iglesias', accion: 'iglesias', link: '', visible: true },
   { id: 'contenidos', titulo: 'Canales oficiales', sub: 'De iglesias y ministerios, en YouTube', pill: '', foto: 'contenidos', accion: 'contenidos', link: '', visible: true },
-  { id: 'galeria', titulo: 'Galería de fotos', sub: 'Mirá las fotos de cada encuentro', pill: '', foto: 'carpa_afuera', accion: 'galeria', link: '', visible: true },
+  { id: 'galeria', titulo: 'Galería de fotos', sub: 'Mira las fotos de cada encuentro', pill: '', foto: 'carpa_afuera', accion: 'galeria', link: '', visible: true },
   { id: 'misioneros', titulo: 'Misioneros', sub: 'Familias que llevan el evangelio', pill: '', foto: 'misioneros', accion: 'misioneros', link: '', visible: true },
-  { id: 'mundo', titulo: 'Hermanos en el Mundo', sub: 'Orá por las asambleas de cada país', pill: '', foto: 'mundo', accion: 'mundo', link: '', visible: true },
-  { id: 'ofrendar', titulo: 'Ofrendar', sub: 'Ayudá a llevar la Carpa', pill: '', foto: 'ofrendar', accion: 'ofrendar', link: '', visible: true },
+  { id: 'mundo', titulo: 'Hermanos en el Mundo', sub: 'Ora por las asambleas de cada país', pill: '', foto: 'mundo', accion: 'mundo', link: '', visible: true },
+  { id: 'ofrendar', titulo: 'Ofrendar', sub: 'Ayuda a llevar la Carpa', pill: '', foto: 'ofrendar', accion: 'ofrendar', link: '', visible: true },
 ];
 // Fotos que ya vienen dentro de la app (lib/contenido.dart, fotosInicio). Sus copias para ver acá están en fotos/inicio/.
 const FOTOS_APP = [
@@ -682,7 +682,7 @@ function pintarInicio(v) {
     ...xs.map((s, i) => tarjetaSeccion(s, i)));
   v.replaceChildren(
     el('h2', { text: 'Inicio' }),
-    el('p', { class: 'ayuda', text: 'Son las tarjetas grandes de la pantalla de Inicio de la app, en este orden. Cambiá los textos, la foto y a dónde lleva cada una; ocultá las que no quieras mostrar o agregá nuevas. A la derecha ves cómo queda en el celular mientras escribís. Al tocar "Guardar cambios" se ve al instante en todos los celulares.' }),
+    el('p', { class: 'ayuda', text: 'Son las tarjetas grandes de la pantalla de Inicio de la app, en este orden. Cambia los textos, la foto y a dónde lleva cada una; oculta las que no quieras mostrar o agrega nuevas. A la derecha ves cómo queda en el celular mientras escribes. Al tocar "Guardar cambios" se ve al instante en todos los celulares.' }),
     el('div', { class: 'editor-grid' }, editor, el('div', { id: 'previaInicio', class: 'previa-col' })));
   pintarPreviaInicio();
 }
@@ -751,7 +751,7 @@ function selectorPagina(obj, lista, alCambiar) {
   const llenar = () => {
     const hay = lista.some((p) => p.id === obj.pagina);
     sel.replaceChildren(
-      ...(hay ? [] : [el('option', { value: '', text: lista.length ? 'Elegí una pantalla' : 'Todavía no hay pantallas para elegir' })]),
+      ...(hay ? [] : [el('option', { value: '', text: lista.length ? 'Elige una pantalla' : 'Todavía no hay pantallas para elegir' })]),
       ...lista.map((p) => el('option', { value: p.id, text: p.titulo || '(sin título)' })));
     sel.value = hay ? obj.pagina : '';
   };
@@ -788,7 +788,7 @@ function tarjetaSeccion(s, i) {
   const mostrarPag = () => {
     cajaPag.classList.toggle('oculto', s.accion !== 'pagina');
     const falta = s.accion === 'pagina' && !paginaDe(s.pagina);
-    avisoPag.textContent = paginas().length ? 'Elegí qué pantalla abre: si no, la tarjeta no hace nada.' : 'Todavía no hay pantallas: creá una en la pestaña Pantallas.';
+    avisoPag.textContent = paginas().length ? 'Elige qué pantalla abre: si no, la tarjeta no hace nada.' : 'Todavía no hay pantallas: crea una en la pestaña Pantallas.';
     avisoPag.classList.toggle('oculto', !falta);
   };
   const elegirPag = selectorPagina(s, paginas(), mostrarPag);
@@ -818,7 +818,7 @@ function tarjetaSeccion(s, i) {
       // Solo se apaga "Subir" en la primera y "Bajar" en la última (el() con disabled: null igual apagaba el botón).
       el('button', { class: 'btn sec', type: 'button', text: 'Subir', ...(i === 0 ? { disabled: '' } : {}), on: { click: () => mover(-1) } }),
       el('button', { class: 'btn sec', type: 'button', text: 'Bajar', ...(i === xs.length - 1 ? { disabled: '' } : {}), on: { click: () => mover(1) } }),
-      el('button', { class: 'btn peligro', type: 'button', text: 'Borrar', on: { click: () => { if (confirm(`¿Borrar la sección "${s.titulo || 'sin título'}" de Inicio? Si solo querés que no se vea por un tiempo, destildá "Mostrar en la app".`)) { xs.splice(i, 1); cambio(); pintar(); } } } })));
+      el('button', { class: 'btn peligro', type: 'button', text: 'Borrar', on: { click: () => { if (confirm(`¿Borrar la sección "${s.titulo || 'sin título'}" de Inicio? Si solo quieres que no se vea por un tiempo, destilda "Mostrar en la app".`)) { xs.splice(i, 1); cambio(); pintar(); } } } })));
 }
 
 function nuevaSeccion() {
@@ -826,19 +826,19 @@ function nuevaSeccion() {
     { clave: 'titulo', etiqueta: 'Título', max: 60, placeholder: 'Campamento de jóvenes' },
     { clave: 'sub', etiqueta: 'Texto de abajo', max: 90, placeholder: 'Del 10 al 12 de enero' },
     { clave: 'pill', etiqueta: 'Etiqueta arriba (opcional)', max: 24, placeholder: 'Eventos' },
-    { clave: 'foto', etiqueta: 'Foto (después podés subir una desde la PC)', opciones: FOTOS_APP },
+    { clave: 'foto', etiqueta: 'Foto (después puedes subir una desde la PC)', opciones: FOTOS_APP },
     { clave: 'accion', etiqueta: 'Al tocarla', opciones: ACCIONES_INICIO },
     { clave: 'link', etiqueta: 'Link', placeholder: 'https://...', max: 300, visibleSi: (i) => i.accion.value === 'link' },
-    { clave: 'pagina', etiqueta: 'Pantalla que abre', opciones: paginas().length ? paginas().map((p) => [p.id, p.titulo || '(sin título)']) : [['', 'Todavía no hay pantallas: creá una en la pestaña Pantallas']], visibleSi: (i) => i.accion.value === 'pagina' },
+    { clave: 'pagina', etiqueta: 'Pantalla que abre', opciones: paginas().length ? paginas().map((p) => [p.id, p.titulo || '(sin título)']) : [['', 'Todavía no hay pantallas: crea una en la pestaña Pantallas']], visibleSi: (i) => i.accion.value === 'pagina' },
   ], (v) => {
-    if (!v.titulo) return 'Escribí el título.';
+    if (!v.titulo) return 'Escribe el título.';
     if (v.accion === 'link' && !esHttps(v.link)) return 'El link tiene que empezar con https://';
-    if (v.accion === 'pagina' && !paginaDe(v.pagina)) return 'Primero creá la pantalla en la pestaña Pantallas.';
+    if (v.accion === 'pagina' && !paginaDe(v.pagina)) return 'Primero crea la pantalla en la pestaña Pantallas.';
     const s = { id: 'seccion-' + Date.now().toString(36), titulo: v.titulo, sub: v.sub, pill: v.pill, foto: v.foto, accion: v.accion, link: v.accion === 'link' ? v.link : '', visible: true };
     if (v.accion === 'pagina') s.pagina = v.pagina;
     seccionesInicio().push(s);
     cambio(); pintar();
-    $('#estado').textContent = 'Sección agregada al final: subila de lugar si querés y tocá Guardar cambios';
+    $('#estado').textContent = 'Sección agregada al final: súbela de lugar si quieres y toca Guardar cambios';
     traducirNuevos([s.titulo, s.sub, s.pill]);
   });
 }
@@ -855,7 +855,7 @@ const TEXTOS_APP = [
   { pantalla: 'inicio', nombre: 'Inicio', campos: [
     ['inicio.lema', 'Frase de arriba de las tarjetas', 'Llevando esperanza en Jesucristo'],
   ] },
-  { pantalla: 'eventos', nombre: 'Eventos', ayuda: 'Es el evento actual: la primera sub-pestaña de Eventos. Para pasar a la próxima campaña cambiale el nombre, la foto, los textos y las palabras de sus videos; y sumá la que terminó en Anteriores (más abajo). Entre una campaña y otra podés ocultarlo para que se vea solo Anteriores.', campos: [
+  { pantalla: 'eventos', nombre: 'Eventos', ayuda: 'Es el evento actual: la primera sub-pestaña de Eventos. Para pasar a la próxima campaña cámbiale el nombre, la foto, los textos y las palabras de sus videos; y suma la que terminó en Anteriores (más abajo). Entre una campaña y otra puedes ocultarlo para que se vea solo Anteriores.', campos: [
     ['eventos.pestana', 'Nombre de la sub-pestaña (al lado de Anteriores)', 'Salto 2026', { max: MAX_PESTANA_EVENTO }],
     ['eventos.titulo', 'Nombre del evento (tarjeta grande y Programa)', 'Carpa Salto 2026'],
     ['eventos.fechas_largas', 'Fechas (debajo del nombre)', 'Martes 22 a sábado 26 de setiembre'],
@@ -865,9 +865,9 @@ const TEXTOS_APP = [
     ['eventos.noches_titulo', 'Título de los videos de las noches', 'Las noches en video'],
   ] },
   { pantalla: 'programa', nombre: 'Eventos › Programa', ayuda: 'Es la pantalla que se abre al tocar la tarjeta grande del evento.', campos: [
-    ['eventos.lema', 'Frase del evento', '"Preparate para tu encuentro con Jesucristo"'],
-    ['eventos.anotarse_titulo', 'Título para anotarse', '¿Querés anotarte en este evento?'],
-    ['eventos.anotarse_texto', 'Texto para anotarse (debajo del título)', 'Escribinos al 091 800 800'],
+    ['eventos.lema', 'Frase del evento', '"Prepárate para tu encuentro con Jesucristo"'],
+    ['eventos.anotarse_titulo', 'Título para anotarse', '¿Quieres anotarte en este evento?'],
+    ['eventos.anotarse_texto', 'Texto para anotarse (debajo del título)', 'Escríbenos al 091 800 800'],
     ['eventos.anotarse_mensaje', 'Mensaje de WhatsApp al anotarse', 'Hola, quiero anotarme en Carpa Salto 2026. Les escribo desde la app.', { multilinea: true, max: 300, soloEs: true, ayuda: 'Es el mensaje que aparece ya escrito en WhatsApp cuando alguien toca para anotarse. Va siempre en español (lo lee el equipo), aunque la app esté en inglés.' }],
   ] },
   { pantalla: 'predicas', nombre: 'Mensajes', campos: [
@@ -876,9 +876,9 @@ const TEXTOS_APP = [
     ['predicas.recientes_titulo', 'Título de los más recientes', 'Más recientes'],
   ] },
   { pantalla: 'oracion', nombre: 'Oración', campos: [
-    ['oracion.form_titulo', 'Título del formulario de pedidos', 'Contanos tu pedido'],
+    ['oracion.form_titulo', 'Título del formulario de pedidos', 'Cuéntanos tu pedido'],
     ['oracion.campanas_titulo', 'Título de las listas de oración', 'Listas de Oración'],
-    ['oracion.campanas_texto', 'Texto de las listas de oración', 'Creá tu propia lista y compartila con un link, o poné el código que te pasaron para ver sus motivos y sumar los tuyos.', { multilinea: true }],
+    ['oracion.campanas_texto', 'Texto de las listas de oración', 'Crea tu propia lista y compártela con un link, o pon el código que te pasaron para ver sus motivos y sumar los tuyos.', { multilinea: true }],
   ] },
   // Biblia no tiene textos para cambiar: es la Biblia completa (RVR1960, King James o Lutero 1912). Solo se cambia el nombre de la pestaña.
 ];
@@ -898,15 +898,15 @@ const INGLES_APP = {
   'Llevando esperanza en Jesucristo': 'Bringing hope in Jesus Christ',
   'Carpa Salto 2026': 'Salto Tent 2026', 'Martes 22 a sábado 26 de setiembre': 'Tuesday 22 to Saturday 26 September',
   '22 al 26 set': 'Sep 22–26', 'Gratis': 'Free', 'Fechas': 'Dates', 'Hora': 'Time', 'Entrada': 'Entry',
-  '"Preparate para tu encuentro con Jesucristo"': '"Get ready for your encounter with Jesus Christ"',
-  'Las noches en video': 'The nights on video', '¿Querés anotarte en este evento?': 'Would you like to sign up for this event?',
-  'Escribinos al 091 800 800': 'Message us at +598 91 800 800',
+  '"Prepárate para tu encuentro con Jesucristo"': '"Get ready for your encounter with Jesus Christ"',
+  'Las noches en video': 'The nights on video', '¿Quieres anotarte en este evento?': 'Would you like to sign up for this event?',
+  'Escríbenos al 091 800 800': 'Message us at +598 91 800 800',
   'Destacados': 'Featured', 'Los videos más vistos del canal.': 'The most watched videos on the channel.', 'Más recientes': 'Most recent',
-  'Contanos tu pedido': 'Share your prayer request', 'Listas de Oración': 'Prayer Lists',
-  'Creá tu propia lista y compartila con un link, o poné el código que te pasaron para ver sus motivos y sumar los tuyos.': 'Create your own list and share it with a link, or enter the code you were given to see its requests and add yours.',
-  'Programa': 'Schedule', 'Salto 2026': 'Salto 2026', 'Anteriores': 'Past', 'Buscá un mensaje': 'Search for a sermon',
+  'Cuéntanos tu pedido': 'Share your prayer request', 'Listas de Oración': 'Prayer Lists',
+  'Crea tu propia lista y compártela con un link, o pon el código que te pasaron para ver sus motivos y sumar los tuyos.': 'Create your own list and share it with a link, or enter the code you were given to see its requests and add yours.',
+  'Programa': 'Schedule', 'Salto 2026': 'Salto 2026', 'Anteriores': 'Past', 'Busca un mensaje': 'Search for a sermon',
   'Por ejemplo: por la salud de mi mamá': 'For example: for my mom’s health', 'Enviar': 'Send', 'Código': 'Code', 'Entrar': 'Join',
-  'Tocá un año para ver sus videos.': 'Tap a year to see its videos.',
+  'Toca un año para ver sus videos.': 'Tap a year to see its videos.',
   'Rosario, Tacuarembó, El Carmen, Rocha y Salto': 'Rosario, Tacuarembó, El Carmen, Rocha and Salto',
   'Colonia, Tacuarembó, Villa del Carmen, Rocha y Maldonado': 'Colonia, Tacuarembó, Villa del Carmen, Rocha and Maldonado',
   'Colonia, Tacuarembó, Ciudad del Carmen, San Carlos y Maldonado': 'Colonia, Tacuarembó, Ciudad del Carmen, San Carlos and Maldonado',
@@ -936,7 +936,7 @@ function pintarTextos(v) {
   const deFabrica = (obj, k) => () => { if (!String(obj[k] ?? '').trim()) delete obj[k]; };
   const cajaPestanas = el('div', { class: 'card' },
     el('h3', { text: 'Pestañas de abajo' }),
-    el('p', { class: 'ayuda', text: `El nombre de cada botón de la barra de abajo de la app. En Eventos, Mensajes, Oración y Biblia también es el título de arriba de la pantalla. En Inicio, con el nombre de fábrica arriba dice "Carpa del Encuentro"; si le ponés otro, arriba va ese. Máximo ${MAX_PESTANA} letras; si lo dejás vacío, vuelve el de fábrica.` }),
+    el('p', { class: 'ayuda', text: `El nombre de cada botón de la barra de abajo de la app. En Eventos, Mensajes, Oración y Biblia también es el título de arriba de la pantalla. En Inicio, con el nombre de fábrica arriba dice "Carpa del Encuentro"; si le pones otro, arriba va ese. Máximo ${MAX_PESTANA} letras; si lo dejas vacío, vuelve el de fábrica.` }),
     el('div', { class: 'fila' }, ...PESTANAS_BASE.map(([k, def]) => conFoco(campoEn(def, pe, k, { max: MAX_PESTANA, placeholder: def, placeholderEn: INGLES_APP[def], alCambiar: deFabrica(pe, k) }), k, 'pestana.' + k))));
   const cajas = TEXTOS_APP.flatMap((g) => {
     const caja = el('div', { class: 'card' },
@@ -950,7 +950,7 @@ function pintarTextos(v) {
   });
   v.replaceChildren(
     el('h2', { text: 'Pestañas y textos' }),
-    el('p', { class: 'ayuda', text: 'Cambiá los nombres de las pestañas de abajo y los textos fijos de cada pantalla de la app. Si dejás un campo vacío, la app usa el texto de fábrica (el que se ve en gris). En la vista previa del celular ves cómo queda mientras escribís; al tocar "Guardar cambios" se ve al instante en todos los celulares.' }),
+    el('p', { class: 'ayuda', text: 'Cambia los nombres de las pestañas de abajo y los textos fijos de cada pantalla de la app. Si dejas un campo vacío, la app usa el texto de fábrica (el que se ve en gris). En la vista previa del celular ves cómo queda mientras escribes; al tocar "Guardar cambios" se ve al instante en todos los celulares.' }),
     el('div', { class: 'editor-grid' }, el('div', {}, cajaOcultos(), cajaCambiosApp(), cajaPestanas, ...cajas), el('div', { id: 'previaTextos', class: 'previa-col' })));
   pintarPreviaTextos();
 }
@@ -967,7 +967,7 @@ function cajaOcultos() {
   const boton = (texto, alTocar) => { const b = el('button', { class: 'btn sec chico', type: 'button', text: texto }); b.addEventListener('click', () => { alTocar(); cambio(); pintar(); }); return b; };
   return el('div', { class: 'card' },
     el('h3', { text: 'Borrado desde la app' }),
-    el('p', { class: 'ayuda', text: 'Lo borró el administrador desde el celular (modo edición). Para que vuelva a verse, tocá el botón y después "Guardar cambios".' }),
+    el('p', { class: 'ayuda', text: 'Lo borró el administrador desde el celular (modo edición). Para que vuelva a verse, toca el botón y después "Guardar cambios".' }),
     ...xs.map((id) => fila(String(nombres[id] || id), boton('Restaurar', () => { datos.ocultos = xs.filter((x) => x !== id); delete nombres[id]; }))),
     fotos.length ? fila(`Fotos sacadas de la galería: ${fotos.length}`, boton('Volver a mostrar todas', () => { datos.galeria_ocultas = []; })) : null,
     videos.length ? fila(`Videos sacados: ${videos.length}`, boton('Volver a mostrar todos', () => { datos.videos_ocultos = []; })) : null);
@@ -981,7 +981,7 @@ function cajaCambiosApp() {
   if (!claves.length) return null;
   return el('div', { class: 'card' },
     el('h3', { text: 'Textos cambiados desde la app' }),
-    el('p', { class: 'ayuda', text: 'Los cambió el administrador desde el celular (Mi perfil > Editar la app). Para volver al texto de fábrica, tocá Quitar y después "Guardar cambios".' }),
+    el('p', { class: 'ayuda', text: 'Los cambió el administrador desde el celular (Mi perfil > Editar la app). Para volver al texto de fábrica, toca Quitar y después "Guardar cambios".' }),
     ...claves.map((k) => {
       const b = el('button', { class: 'btn sec chico', type: 'button', text: 'Quitar' });
       b.addEventListener('click', () => { delete cs[k]; cambio(); pintar(); });
@@ -1015,7 +1015,7 @@ function extrasEvento(tx, conFoco, deFabrica) {
 
   const cajaVideos = campo('Videos del evento (palabras de sus títulos)', tx, 'eventos.videos', {
     max: MAX_VIDEOS_EVENTO, placeholder: 'Vacío = las noches de Salto 2026', alCambiar: deFabrica(tx, 'eventos.videos'),
-    ayuda: 'Palabras que aparecen en el título de los videos de YouTube de este evento, separadas por coma. Ej.: Paysandú. Vacío = las noches de Salto 2026. No importan mayúsculas ni tildes. Si la ciudad ya tuvo campaña otros años, sumá el año (ej.: Paysandú, 2027) y van solo los videos publicados ese año. Mientras no haya ninguno, la app dice que van a aparecer cuando se transmitan.' });
+    ayuda: 'Palabras que aparecen en el título de los videos de YouTube de este evento, separadas por coma. Ej.: Paysandú. Vacío = las noches de Salto 2026. No importan mayúsculas ni tildes. Si la ciudad ya tuvo campaña otros años, suma el año (ej.: Paysandú, 2027) y van solo los videos publicados ese año. Mientras no haya ninguno, la app dice que van a aparecer cuando se transmitan.' });
 
   const oculto = el('input', { type: 'checkbox', class: 'check' });
   oculto.checked = valorTexto('eventos.oculto') === 'si';
@@ -1059,9 +1059,9 @@ function cajaAnteriores(conFoco) {
   const xs = anteriores(), lleno = xs.length >= MAX_ANTERIORES;
   return el('div', { class: 'card' },
     el('h3', { text: 'Pantalla Eventos › Anteriores' }),
-    el('p', { class: 'ayuda', text: 'Los años de campañas pasadas, en este orden. Al tocar uno, la app muestra los videos del canal publicados ese año cuyo título tiene alguna de sus palabras. Cuando termine el evento actual, agregá su año acá.' }),
+    el('p', { class: 'ayuda', text: 'Los años de campañas pasadas, en este orden. Al tocar uno, la app muestra los videos del canal publicados ese año cuyo título tiene alguna de sus palabras. Cuando termine el evento actual, agrega su año acá.' }),
     el('div', { class: 'acciones', style: 'margin:0 0 12px' }, el('button', { class: 'btn', type: 'button', text: '+ Agregar año', ...(lleno ? { disabled: '' } : {}), on: { click: nuevoAnio } })),
-    lleno ? el('p', { class: 'ayuda', text: `Ya hay ${MAX_ANTERIORES} años, que es el máximo: borrá alguno para agregar otro.` }) : null,
+    lleno ? el('p', { class: 'ayuda', text: `Ya hay ${MAX_ANTERIORES} años, que es el máximo: borra alguno para agregar otro.` }) : null,
     xs.length ? null : el('p', { class: 'ayuda error', text: 'No queda ningún año: la app va a mostrar la lista de siempre (2021 a 2026).' }),
     ...xs.map((a, i) => conFoco(tarjetaAnio(a, i), 'anteriores', 'anterior.' + i)));
 }
@@ -1099,17 +1099,17 @@ function nuevoAnio() {
     { clave: 'palabras', etiqueta: 'Palabras de los títulos de YouTube, separadas por coma', max: MAX_PALABRAS, placeholder: 'Paysandú, Rocha, Salto', ayuda: 'La app muestra los videos del canal publicados ese año cuyo título tiene alguna de estas palabras (no importan mayúsculas ni tildes).' },
   ], (v) => {
     const anio = Number(v.anio);
-    if (!Number.isInteger(anio) || anio < 2000 || anio > 2100) return 'Poné un año entre 2000 y 2100.';
-    if (!v.titulo) return 'Escribí las ciudades.';
+    if (!Number.isInteger(anio) || anio < 2000 || anio > 2100) return 'Pon un año entre 2000 y 2100.';
+    if (!v.titulo) return 'Escribe las ciudades.';
     const palabras = separarPalabras(v.palabras);
-    if (!palabras.length) return 'Escribí al menos una palabra para encontrar sus videos.';
+    if (!palabras.length) return 'Escribe al menos una palabra para encontrar sus videos.';
     // Va en su lugar según el año (los más nuevos arriba); después se puede mover.
     const j = xs.findIndex((x) => !(Number(x.anio) >= anio));
     const k = j < 0 ? xs.length : j;
     xs.splice(k, 0, { titulo: v.titulo, anio, palabras });
     pantallaTextos = 'anteriores'; textoFoco = 'anterior.' + k;
     cambio(); pintar();
-    $('#estado').textContent = `Año ${anio} agregado a Anteriores: tocá "Guardar cambios" para que aparezca en la app`;
+    $('#estado').textContent = `Año ${anio} agregado a Anteriores: toca "Guardar cambios" para que aparezca en la app`;
     traducirNuevos([v.titulo]);
   });
 }
@@ -1118,7 +1118,7 @@ function nuevoAnio() {
 function revisarEventos() {
   const tx = textosApp();
   const foto = tx['eventos.foto'];
-  if (foto != null && foto !== 'carpa' && !(esHttps(foto) || FOTOS_APP.some(([k]) => k === foto))) return 'La foto del evento (pestaña Pestañas y textos) no es una que la app pueda usar: elegí una de la lista o subila de nuevo.';
+  if (foto != null && foto !== 'carpa' && !(esHttps(foto) || FOTOS_APP.some(([k]) => k === foto))) return 'La foto del evento (pestaña Pestañas y textos) no es una que la app pueda usar: elige una de la lista o súbela de nuevo.';
   if (foto === 'carpa') delete tx['eventos.foto'];
   if (tx['eventos.oculto'] != null && tx['eventos.oculto'] !== 'si') delete tx['eventos.oculto'];
   if (tx['eventos.videos'] != null) {
@@ -1126,7 +1126,7 @@ function revisarEventos() {
     if (ps.length) tx['eventos.videos'] = ps.join(', '); else delete tx['eventos.videos'];
   }
   const xs = anteriores();
-  if (xs.length > MAX_ANTERIORES) return `En Anteriores puede haber hasta ${MAX_ANTERIORES} años: borrá alguno.`;
+  if (xs.length > MAX_ANTERIORES) return `En Anteriores puede haber hasta ${MAX_ANTERIORES} años: borra alguno.`;
   for (const a of xs) {
     const n = Number(a.anio);
     if (!Number.isInteger(n) || n < 2000 || n > 2100) return a.titulo ? `En Anteriores, "${a.titulo}" tiene un año que no está entre 2000 y 2100.` : 'En Anteriores hay un año que no está entre 2000 y 2100.';
@@ -1181,7 +1181,7 @@ const MAQUETAS = {
     const xs = anteriores().length ? anteriores() : ANTERIORES_BASE;
     return { cuerpo: [
       subtabsEventos(t, false),
-      el('p', { class: 'tm-sub', text: enApp('Tocá un año para ver sus videos.') }),
+      el('p', { class: 'tm-sub', text: enApp('Toca un año para ver sus videos.') }),
       ...xs.map((a, i) => el('div', { class: 'tm-fila' + (textoFoco === 'anterior.' + i ? ' tel-foco' : '') }, icono('azul', TRAZO_CARPA),
         el('div', { class: 'tm-flex' }, el('b', { text: enApp(String(a.titulo || '')) }), el('span', { class: 'tm-sub', style: 'margin:0', text: Number.isFinite(a.anio) ? String(a.anio) : '' })),
         el('span', { class: 'tm-chev', text: '›' })))] };
@@ -1194,7 +1194,7 @@ const MAQUETAS = {
     el('div', { class: 'wa-previa' }, el('small', { text: 'Al tocarlo se abre WhatsApp con este mensaje (siempre en español):' }),
       el('div', { class: 'wa-burbuja' + (textoFoco === 'eventos.anotarse_mensaje' ? ' tel-foco' : ''), text: valorTexto('eventos.anotarse_mensaje') }))] }),
   predicas: (t) => ({ gris: true, cuerpo: [
-    el('div', { class: 'tm-buscar', text: enApp('Buscá un mensaje') }),
+    el('div', { class: 'tm-buscar', text: enApp('Busca un mensaje') }),
     t('predicas.destacadas_titulo', 'div', 'tm-sec'), t('predicas.destacadas_sub', 'p', 'tm-sub'),
     el('div', { class: 'tm-gris tm-video' }), filaVideo(), filaVideo(),
     t('predicas.recientes_titulo', 'div', 'tm-sec'), filaVideo(), filaVideo()] }),
@@ -1290,10 +1290,10 @@ function pintarPaginas(v) {
   const pg = paginaDe(paginaSel);
   v.replaceChildren(
     el('h2', { text: 'Pantallas' }),
-    el('p', { class: 'ayuda', text: 'Armá pantallas nuevas para la app con títulos, textos, fotos, botones, videos y versículos. La gente llega a una pantalla desde una sección de Inicio ("Al tocarla" → "Abrir una pantalla") o desde un botón de otra pantalla. En la vista previa ves cómo queda en el celular mientras escribís; al tocar "Guardar cambios" se ve al instante en todos los celulares.' }),
+    el('p', { class: 'ayuda', text: 'Arma pantallas nuevas para la app con títulos, textos, fotos, botones, videos y versículos. La gente llega a una pantalla desde una sección de Inicio ("Al tocarla" → "Abrir una pantalla") o desde un botón de otra pantalla. En la vista previa ves cómo queda en el celular mientras escribes; al tocar "Guardar cambios" se ve al instante en todos los celulares.' }),
     el('div', { class: 'acciones', style: 'margin:0 0 12px' }, el('button', { class: 'btn', type: 'button', text: '+ Nueva pantalla', on: { click: nuevaPagina } })),
     xs.length ? el('div', { class: 'pag-lista' }, ...xs.map(itemPagina))
-      : el('div', { class: 'card suave' }, el('b', { text: 'Todavía no hay pantallas.' }), el('p', { class: 'ayuda', style: 'margin:6px 0 0', text: 'Tocá "+ Nueva pantalla" para armar la primera: por ejemplo, un campamento, un retiro o "Quiénes somos".' })),
+      : el('div', { class: 'card suave' }, el('b', { text: 'Todavía no hay pantallas.' }), el('p', { class: 'ayuda', style: 'margin:6px 0 0', text: 'Toca "+ Nueva pantalla" para armar la primera: por ejemplo, un campamento, un retiro o "Quiénes somos".' })),
     ...(pg ? [el('div', { class: 'editor-grid', style: 'margin-top:16px' }, editorPagina(pg), el('div', { id: 'previaPagina', class: 'previa-col' }))] : []));
   pintarPreviaPagina();
 }
@@ -1333,13 +1333,13 @@ function editorPagina(pg) {
   const sumarAInicio = () => {
     seccionesInicio().push({ id: 'seccion-' + Date.now().toString(36), titulo: pg.titulo || 'Nueva sección', sub: '', pill: '', foto: 'carpa', accion: 'pagina', link: '', pagina: pg.id, visible: true });
     cambio(); pintar();
-    $('#estado').textContent = 'Sección sumada al final de Inicio: cambiale la foto o los textos en la pestaña Inicio y tocá Guardar cambios';
+    $('#estado').textContent = 'Sección sumada al final de Inicio: cámbiale la foto o los textos en la pestaña Inicio y toca Guardar cambios';
   };
   const acceso = quien.length
     ? el('p', { class: 'ayuda', style: 'margin:8px 0 0', text: 'La abre ' + quien.map((q) => q.texto).join(', ') + '.' })
     : el('div', { class: 'card alerta', style: 'margin:12px 0 0' },
       el('b', { text: 'Todavía nadie puede llegar a esta pantalla.' }),
-      el('p', { class: 'ayuda', style: 'margin:6px 0 0', text: 'Elegila en una sección de Inicio ("Al tocarla" → "Abrir una pantalla") o en un botón de otra pantalla. O sumá al final de Inicio una sección que la abra:' }),
+      el('p', { class: 'ayuda', style: 'margin:6px 0 0', text: 'Elígela en una sección de Inicio ("Al tocarla" → "Abrir una pantalla") o en un botón de otra pantalla. O suma al final de Inicio una sección que la abra:' }),
       el('div', { class: 'acciones', style: 'margin-top:8px' }, el('button', { class: 'btn sec chico', type: 'button', text: '+ Sección en Inicio que la abra', on: { click: sumarAInicio } })));
   return el('div', {},
     el('div', { class: 'card' },
@@ -1377,14 +1377,14 @@ function tarjetaBloque(pg, b, j) {
 
 function camposBloque(pg, b) {
   if (b.tipo === 'titulo') return [campoEn('Título', b, 'texto', { max: LARGO_BLOQUE.titulo })];
-  if (b.tipo === 'texto') return [campoEn('Texto', b, 'texto', { multilinea: true, max: LARGO_BLOQUE.texto, ayuda: 'Con Enter separás los párrafos.' })];
+  if (b.tipo === 'texto') return [campoEn('Texto', b, 'texto', { multilinea: true, max: LARGO_BLOQUE.texto, ayuda: 'Con Enter separas los párrafos.' })];
   if (b.tipo === 'versiculo') return [
     campoEn('Versículo', b, 'texto', { multilinea: true, max: LARGO_BLOQUE.versiculo, placeholder: 'Porque de tal manera amó Dios al mundo...' }),
     campoEn('Cita', b, 'cita', { max: MAX_CITA, placeholder: 'Juan 3:16' })];
   if (b.tipo === 'foto') return camposFoto(pg, b);
   if (b.tipo === 'video') return camposVideo(b);
   if (b.tipo === 'boton') return camposBoton(pg, b);
-  return [el('p', { class: 'ayuda error', text: 'La app no conoce este tipo de bloque: borralo.' })];
+  return [el('p', { class: 'ayuda error', text: 'La app no conoce este tipo de bloque: bórralo.' })];
 }
 
 // Foto: una de las que vienen en la app, una subida desde la PC o un link https.
@@ -1410,7 +1410,7 @@ function camposFoto(pg, b) {
 function camposVideo(b) {
   const vid = { v: b.video ? 'https://youtu.be/' + b.video : '' };
   const mini = el('img', { alt: '', class: 'mini-seccion oculto' });
-  const aviso = el('p', { class: 'ayuda error oculto', style: 'margin:6px 0 0', text: 'No reconozco ese link de YouTube. Copiá el link del video y pegalo entero.' });
+  const aviso = el('p', { class: 'ayuda error oculto', style: 'margin:6px 0 0', text: 'No reconozco ese link de YouTube. Copia el link del video y pégalo entero.' });
   const tomar = () => {
     const id = idVideo(vid.v);
     b.video = id;
@@ -1443,13 +1443,13 @@ function camposBoton(pg, b) {
   const avisoPag = el('p', { class: 'ayuda error oculto', style: 'margin:6px 0 0' });
   const elegir = selectorPagina(b, otras, () => mostrar());
   const cajaPag = el('div', {}, el('label', { text: 'Pantalla que abre' }), elegir.sel, avisoPag);
-  const avisoNada = el('p', { class: 'ayuda error', style: 'margin:6px 0 0', text: 'Este botón no hace nada: elegí a dónde lleva.' });
+  const avisoNada = el('p', { class: 'ayuda error', style: 'margin:6px 0 0', text: 'Este botón no hace nada: elige a dónde lleva.' });
   const mostrar = () => {
     const a = b.accion;
     cajaLink.classList.toggle('oculto', a !== 'link');
     cajaNum.classList.toggle('oculto', a !== 'whatsapp');
     cajaPag.classList.toggle('oculto', a !== 'pagina');
-    avisoPag.textContent = otras.length ? 'Elegí qué pantalla abre: si no, el botón no hace nada.' : 'No hay otra pantalla para abrir: creá una con "+ Nueva pantalla".';
+    avisoPag.textContent = otras.length ? 'Elige qué pantalla abre: si no, el botón no hace nada.' : 'No hay otra pantalla para abrir: crea una con "+ Nueva pantalla".';
     avisoPag.classList.toggle('oculto', !(a === 'pagina' && !otras.some((p) => p.id === b.pagina)));
     avisoNada.classList.toggle('oculto', a !== 'nada' && ACCIONES_BOTON.some(([k]) => k === a));
   };
@@ -1460,7 +1460,7 @@ function camposBoton(pg, b) {
   });
   mostrar();
   return [
-    campoEn('Texto del botón', b, 'texto', { max: LARGO_BLOQUE.boton, placeholder: 'Escribinos por WhatsApp' }),
+    campoEn('Texto del botón', b, 'texto', { max: LARGO_BLOQUE.boton, placeholder: 'Escríbenos por WhatsApp' }),
     el('label', { for: idAccion, text: 'Al tocarlo' }), selAccion, avisoNada,
     cajaLink, cajaNum, cajaPag];
 }
@@ -1470,13 +1470,13 @@ function nuevaPagina() {
     { clave: 'titulo', etiqueta: 'Título', max: MAX_TITULO_PAGINA, placeholder: 'Campamento de jóvenes' },
     { clave: 'inicio', etiqueta: '¿Cómo llega la gente a esta pantalla?', opciones: [['si', 'Con una sección nueva al final de Inicio'], ['no', 'La conecto después (desde Inicio o un botón)']] },
   ], (v) => {
-    if (!v.titulo) return 'Escribí el título.';
+    if (!v.titulo) return 'Escribe el título.';
     const pg = { id: 'pag-' + Date.now().toString(36), titulo: v.titulo, bloques: [{ tipo: 'titulo', texto: v.titulo }] };
     paginas().push(pg);
     if (v.inicio === 'si') seccionesInicio().push({ id: 'seccion-' + Date.now().toString(36), titulo: v.titulo, sub: '', pill: '', foto: 'carpa', accion: 'pagina', link: '', pagina: pg.id, visible: true });
     paginaSel = pg.id; bloqueFoco = -1;
     cambio(); pintar();
-    $('#estado').textContent = v.inicio === 'si' ? 'Pantalla creada y sumada al final de Inicio: agregale bloques y tocá Guardar cambios' : 'Pantalla creada: agregale bloques y tocá Guardar cambios';
+    $('#estado').textContent = v.inicio === 'si' ? 'Pantalla creada y sumada al final de Inicio: agrégale bloques y toca Guardar cambios' : 'Pantalla creada: agrégale bloques y toca Guardar cambios';
     traducirNuevos([v.titulo]);
   });
 }
@@ -1497,7 +1497,7 @@ function borrarPagina(pg) {
 
 // A dónde lleva un botón, para mostrarlo en la vista previa.
 function destinoBoton(b) {
-  if (b.accion === 'pagina') { const p = paginaDe(b.pagina); return p ? { ok: true, texto: `Abre la pantalla "${p.titulo}" (tocalo para ir)` } : { ok: false, texto: 'No abre nada: elegí la pantalla' }; }
+  if (b.accion === 'pagina') { const p = paginaDe(b.pagina); return p ? { ok: true, texto: `Abre la pantalla "${p.titulo}" (tócalo para ir)` } : { ok: false, texto: 'No abre nada: elige la pantalla' }; }
   if (b.accion === 'link') return esHttps(b.link) ? { ok: true, texto: 'Abre ' + b.link } : { ok: false, texto: 'Falta el link' };
   const a = ACCIONES_BOTON.find(([k]) => k === b.accion);
   return a && a[0] !== 'nada' ? { ok: true, texto: a[1] } : { ok: false, texto: 'No hace nada' };
@@ -1507,7 +1507,7 @@ function destinoBoton(b) {
 function bloquePrevia(b) {
   const hay = (x) => !!(x && String(x).trim());
   if (b.tipo === 'titulo') return el('div', { class: 'tp-titulo' + (hay(b.texto) ? '' : ' tp-vacio'), text: hay(b.texto) ? enApp(b.texto) : 'Título' });
-  if (b.tipo === 'texto') return el('p', { class: 'tp-texto' + (hay(b.texto) ? '' : ' tp-vacio'), text: hay(b.texto) ? enApp(b.texto) : 'Escribí el texto' });
+  if (b.tipo === 'texto') return el('p', { class: 'tp-texto' + (hay(b.texto) ? '' : ' tp-vacio'), text: hay(b.texto) ? enApp(b.texto) : 'Escribe el texto' });
   if (b.tipo === 'foto') {
     const i = el('img', { alt: '', class: 'tp-foto' });
     i.addEventListener('error', () => { if (!i.src.endsWith('/logo.jpg')) i.src = '../logo.jpg'; });
@@ -1515,7 +1515,7 @@ function bloquePrevia(b) {
     return i;
   }
   if (b.tipo === 'video') {
-    if (!/^[\w-]{11}$/.test(b.video || '')) return el('div', { class: 'tp-video' }, el('span', { text: 'Pegá el link del video' }));
+    if (!/^[\w-]{11}$/.test(b.video || '')) return el('div', { class: 'tp-video' }, el('span', { text: 'Pega el link del video' }));
     const i = el('img', { alt: '' });
     i.src = `https://i.ytimg.com/vi/${b.video}/hqdefault.jpg`;
     return el('div', { class: 'tp-video', title: 'Abre el video en YouTube' }, i, el('span', { class: 'tp-play', 'aria-hidden': 'true' }));
@@ -1523,7 +1523,7 @@ function bloquePrevia(b) {
   // Como en la app: entre comillas, salvo que ya empiece con comillas.
   const comillas = (es, x) => (/^["“«]/.test(es) ? x : `“${x}”`);
   if (b.tipo === 'versiculo') return el('div', { class: 'tp-versiculo' },
-    el('p', { class: hay(b.texto) ? null : 'tp-vacio', text: hay(b.texto) ? comillas(b.texto.trim(), enApp(b.texto)) : 'Escribí el versículo' }),
+    el('p', { class: hay(b.texto) ? null : 'tp-vacio', text: hay(b.texto) ? comillas(b.texto.trim(), enApp(b.texto)) : 'Escribe el versículo' }),
     hay(b.cita) ? el('b', { text: enApp(b.cita) }) : null);
   if (b.tipo === 'boton') {
     const destino = destinoBoton(b);
@@ -1562,10 +1562,10 @@ function pintarPreviaPagina() {
   });
   const navega = pg.bloques.some((b) => b.tipo === 'boton' && b.accion === 'pagina' && paginaDe(b.pagina));
   const tel = telefono({ titulo: pg.titulo && pg.titulo.trim() ? enApp(pg.titulo) : '(sin título)', atras: true, activa: 0,
-    cuerpo: bloques.length ? bloques : [el('p', { class: 'tp-texto tp-vacio', text: 'Agregale bloques a la pantalla.' })] });
+    cuerpo: bloques.length ? bloques : [el('p', { class: 'tp-texto tp-vacio', text: 'Agrégale bloques a la pantalla.' })] });
   caja.dataset.pag = pg.id;
   caja.replaceChildren(cabPrevia(pintarPreviaPagina), tel,
-    el('p', { class: 'ayuda nota-previa', text: navega ? 'Tocá un bloque para editarlo, o un botón que abre otra pantalla para ir a esa.' : 'Tocá un bloque para editarlo.' }));
+    el('p', { class: 'ayuda nota-previa', text: navega ? 'Toca un bloque para editarlo, o un botón que abre otra pantalla para ir a esa.' : 'Toca un bloque para editarlo.' }));
   encajarPestanas(caja);
   const cuerpo = tel.querySelector('.tel-cuerpo');
   cuerpo.scrollTop = scroll;
@@ -1626,7 +1626,7 @@ function revisarPantallas() {
   }
   const xs = paginas(), ids = new Set();
   for (const pg of xs) {
-    if (typeof pg.id !== 'string' || !pg.id || ids.has(pg.id)) return 'Hay dos pantallas con el mismo código. Recargá la página y probá de nuevo.';
+    if (typeof pg.id !== 'string' || !pg.id || ids.has(pg.id)) return 'Hay dos pantallas con el mismo código. Recarga la página y prueba de nuevo.';
     ids.add(pg.id);
   }
   for (const pg of xs) {
@@ -1634,11 +1634,11 @@ function revisarPantallas() {
     if (!pg.titulo) return 'Hay una pantalla sin título (pestaña Pantallas).';
     const nombre = `la pantalla "${pg.titulo}"`;
     if (pg.titulo.length > MAX_TITULO_PAGINA) return `El título de ${nombre} es demasiado largo (máximo ${MAX_TITULO_PAGINA} letras).`;
-    if (!Array.isArray(pg.bloques) || !pg.bloques.length) return `En ${nombre} no hay nada: agregale al menos un bloque.`;
+    if (!Array.isArray(pg.bloques) || !pg.bloques.length) return `En ${nombre} no hay nada: agrégale al menos un bloque.`;
     if (pg.bloques.length > MAX_BLOQUES) return `${nombre[0].toUpperCase() + nombre.slice(1)} tiene más de ${MAX_BLOQUES} bloques.`;
     for (const [j, b] of pg.bloques.entries()) {
       const donde = `En ${nombre}, el bloque ${j + 1} (${nombreBloque(b.tipo)})`;
-      if (!TIPOS_BLOQUE.some(([t]) => t === b.tipo)) return `En ${nombre} hay un bloque que la app no conoce: borralo.`;
+      if (!TIPOS_BLOQUE.some(([t]) => t === b.tipo)) return `En ${nombre} hay un bloque que la app no conoce: bórralo.`;
       if (b.tipo in LARGO_BLOQUE) {
         recortar(b, 'texto');
         if (!b.texto) return `${donde} está vacío.`;
@@ -1683,7 +1683,7 @@ function pintar() {
   if (tab === 'novedades') {
     v.replaceChildren(
       el('h2', { text: 'Novedades' }),
-      el('p', { class: 'ayuda', text: 'Aparecen en Avisos de la app (la campanita). La primera de la lista es la que se ve arriba. Si querés que además le llegue un aviso al celular, usá la pestaña Notificaciones push.' }),
+      el('p', { class: 'ayuda', text: 'Aparecen en Avisos de la app (la campanita). La primera de la lista es la que se ve arriba. Si quieres que además le llegue un aviso al celular, usa la pestaña Notificaciones push.' }),
       el('button', { class: 'btn', type: 'button', text: '+ Nueva novedad', on: { click: nuevaNovedad } }),
       el('div', { style: 'height:12px' }),
       ...datos.noticias.map((n, i) => {
@@ -1691,7 +1691,7 @@ function pintar() {
         const sel = el('select', {}, ...[['nada', 'Nada (solo texto)'], ['video', 'Abrir un video de YouTube'], ['predicas', 'Ir a Mensajes'], ['encuentros', 'Ir a Eventos']].map(([val, t]) => el('option', { value: val, text: t })));
         sel.value = tipo;
         const vid = { v: n.video ? 'https://youtu.be/' + n.video : '' };
-        const avisoVideo = el('p', { class: 'ayuda error oculto', style: 'margin:6px 0 0', text: 'No reconozco ese link de YouTube. Copiá el link del video y pegalo entero.' });
+        const avisoVideo = el('p', { class: 'ayuda error oculto', style: 'margin:6px 0 0', text: 'No reconozco ese link de YouTube. Copia el link del video y pégalo entero.' });
         const tomarVideo = () => { const idv = idVideo(vid.v); if (idv) n.video = idv; else delete n.video; avisoVideo.classList.toggle('oculto', !vid.v.trim() || !!idv); };
         const videoBox = el('div', { class: tipo === 'video' ? '' : 'oculto' }, campo('Link del video', vid, 'v', { placeholder: 'https://youtu.be/...', max: 300, alCambiar: tomarVideo }), avisoVideo);
         sel.addEventListener('change', () => { delete n.accion; delete n.video; if (sel.value === 'predicas' || sel.value === 'encuentros') n.accion = sel.value; if (sel.value === 'video') tomarVideo(); videoBox.classList.toggle('oculto', sel.value !== 'video'); cambio(); });
@@ -1706,17 +1706,17 @@ function pintar() {
   } else if (tab === 'vivo') {
     v.replaceChildren(
       el('h2', { text: 'En vivo' }),
-      el('p', { class: 'ayuda', text: 'La app detecta sola cuando el canal de YouTube está transmitiendo. Si querés mostrar el cartel EN VIVO con otro link, pegalo acá. Cuando termine, borralo.' }),
-      el('div', { class: 'card' }, campo('Link de la transmisión (opcional)', cfg, 'envivo_url', { placeholder: 'https://www.youtube.com/watch?v=...', https: true, max: 300, ayuda: 'Al guardar un link nuevo, el panel te pregunta si querés mandar un aviso a todos los celulares de que la Carpa está en vivo (a cada uno le llega en su idioma).' })),
+      el('p', { class: 'ayuda', text: 'La app detecta sola cuando el canal de YouTube está transmitiendo. Si quieres mostrar el cartel EN VIVO con otro link, pégalo acá. Cuando termine, bórralo.' }),
+      el('div', { class: 'card' }, campo('Link de la transmisión (opcional)', cfg, 'envivo_url', { placeholder: 'https://www.youtube.com/watch?v=...', https: true, max: 300, ayuda: 'Al guardar un link nuevo, el panel te pregunta si quieres mandar un aviso a todos los celulares de que la Carpa está en vivo (a cada uno le llega en su idioma).' })),
       el('h2', { text: 'Próximo encuentro' }),
-      el('p', { class: 'ayuda', text: 'Si dejás el título vacío, el cuadro no aparece en la app.' }),
+      el('p', { class: 'ayuda', text: 'Si dejas el título vacío, el cuadro no aparece en la app.' }),
       el('div', { class: 'card' },
         campoEn('Título', cfg, 'proximo_titulo', { placeholder: 'Carpa Paysandú 2026', max: 120 }),
         el('div', { class: 'fila' }, campoEn('Fechas', cfg, 'proximo_fecha', { placeholder: '1 al 5 de diciembre', max: 120 }), campoEn('Lugar', cfg, 'proximo_lugar', { placeholder: 'Paysandú', max: 120 }))));
   } else if (tab === 'brou') {
     v.replaceChildren(
       el('h2', { text: 'Cuenta BROU de la Carpa' }),
-      el('p', { class: 'ayuda', text: 'Se muestra en Ofrendar. Mientras no haya ningún número, la app dice que se publica pronto. Poné el número como lo da el BROU (por ejemplo 110859722-00001): la app muestra solo, abajo, el número para transferir desde otros bancos (sin el guion). La cuenta en dólares se ve desde la versión 1.0.8 de la app.' }),
+      el('p', { class: 'ayuda', text: 'Se muestra en Ofrendar. Mientras no haya ningún número, la app dice que se publica pronto. Pon el número como lo da el BROU (por ejemplo 110859722-00001): la app muestra solo, abajo, el número para transferir desde otros bancos (sin el guion). La cuenta en dólares se ve desde la versión 1.0.8 de la app.' }),
       el('div', { class: 'card' },
         el('div', { class: 'fila' }, campo('Titular', cfg, 'brou_titular', { max: 120 }), campo('Sucursal (opcional)', cfg, 'brou_sucursal', { max: 120 })),
         el('div', { class: 'fila' }, campo('Número de cuenta en pesos', cfg, 'brou_cuenta', { max: 60 }), campo('Moneda de esa cuenta', cfg, 'brou_moneda', { max: 60 })),
@@ -1724,7 +1724,7 @@ function pintar() {
   } else if (tab === 'app') {
     v.replaceChildren(
       el('h2', { text: 'Actualización de la app' }),
-      el('p', { class: 'ayuda', text: 'Cuando salga una versión nueva en el App Store, poné acá su número: al abrir la app, a quien tenga un iPhone con una versión anterior le aparece el cartel para actualizar. En Android no hace falta: la app se actualiza sola apenas la versión sale en Google Play.' }),
+      el('p', { class: 'ayuda', text: 'Cuando salga una versión nueva en el App Store, pon acá su número: al abrir la app, a quien tenga un iPhone con una versión anterior le aparece el cartel para actualizar. En Android no hace falta: la app se actualiza sola apenas la versión sale en Google Play.' }),
       el('div', { class: 'card' },
         campo('Versión nueva en iPhone (ej: 1.0.4)', cfg, 'version_app', { max: 20 }),
         campo('Link de iPhone', cfg, 'actualizar_url_ios', { placeholder: 'https://apps.apple.com/app/id...', https: true, max: 300 })));
@@ -1772,7 +1772,7 @@ function pintarIglesias(v) {
   pintarLista();
   v.replaceChildren(
     el('h2', { text: 'Iglesias' }),
-    el('p', { class: 'ayuda', text: 'Tocá una iglesia para editarla. Con "Ubicar en el mapa" arrastrás el punto a la ubicación exacta.' }),
+    el('p', { class: 'ayuda', text: 'Toca una iglesia para editarla. Con "Ubicar en el mapa" arrastras el punto a la ubicación exacta.' }),
     el('div', { class: 'acciones', style: 'margin:0 0 12px' }, el('button', { class: 'btn', type: 'button', text: '+ Nueva iglesia', on: { click: nuevaIglesia } })),
     buscar, el('div', { style: 'height:12px' }), lista);
 }
@@ -1867,12 +1867,12 @@ function pintarMisioneros(v) {
         previa.pintarPrevia();
       };
       return el('div', { class: 'card' }, cab, el('div', { class: 'detalle' },
-        campo('Nombres', m, 'nombres', { max: 150, ayuda: 'Si son dos, separalos con punto y coma: Juan Pérez; Ana Gómez', alCambiar: repintar }),
+        campo('Nombres', m, 'nombres', { max: 150, ayuda: 'Si son dos, sepáralos con punto y coma: Juan Pérez; Ana Gómez', alCambiar: repintar }),
         el('div', { class: 'fila' }, campoEn('Sirven en', m, 'obra', { max: 200, alCambiar: repintar }), campoEn('Enviados por', m, 'enviados', { max: 200 })),
         el('div', { class: 'fila' }, campoEn('Frase o versículo', m, 'frase', { multilinea: true, max: 600 }), campo('Cita (ej: Salmo 90:17)', m, 'versiculo', { max: 60, alCambiar: repintar })),
         campo('Motivos de oración (uno por renglón)', tx, 'motivos', { multilinea: true, max: 3000, alCambiar: () => { m.motivos = tx.motivos.split('\n').map((x) => x.trim()).filter(Boolean); } }),
         el('div', { class: 'fila' },
-          campo('Celulares (uno por renglón)', tx, 'contactos', { multilinea: true, max: 300, placeholder: '099 123 456\nAna: 098 765 432', ayuda: 'Los que empiezan con 09 tienen botón de WhatsApp; los fijos, botón para llamar. Si son de distintas personas, poné el nombre y dos puntos delante.', alCambiar: () => { m.contactos = textoAContactos(tx.contactos); } }),
+          campo('Celulares (uno por renglón)', tx, 'contactos', { multilinea: true, max: 300, placeholder: '099 123 456\nAna: 098 765 432', ayuda: 'Los que empiezan con 09 tienen botón de WhatsApp; los fijos, botón para llamar. Si son de distintas personas, pon el nombre y dos puntos delante.', alCambiar: () => { m.contactos = textoAContactos(tx.contactos); } }),
           campo('Mails (separados por coma)', tx, 'mails', { max: 300, placeholder: 'nombre@gmail.com', alCambiar: () => { m.mails = textoAMails(tx.mails); } })),
         el('label', { text: 'Foto' }),
         selectorFoto(() => nombreBase(m.id, m.nombres), (url) => { m.foto = url; m.caras = []; delete m.aspecto; cambio(); repintar(); }),
@@ -1886,25 +1886,25 @@ function pintarMisioneros(v) {
   pintarLista();
   v.replaceChildren(
     el('h2', { text: 'Misioneros' }),
-    el('p', { class: 'ayuda', text: 'Aparecen en la tarjeta Misioneros de Inicio (sus fotos van pasando) y en su pantalla, con sus motivos de oración, WhatsApp y mail. Tocá uno para editarlo; al guardar, se ve al instante en la app.' }),
+    el('p', { class: 'ayuda', text: 'Aparecen en la tarjeta Misioneros de Inicio (sus fotos van pasando) y en su pantalla, con sus motivos de oración, WhatsApp y mail. Toca uno para editarlo; al guardar, se ve al instante en la app.' }),
     el('div', { class: 'acciones', style: 'margin:0 0 12px' }, el('button', { class: 'btn', type: 'button', text: '+ Nuevo misionero', on: { click: nuevoMisionero } })),
     buscar, el('div', { style: 'height:12px' }), lista);
 }
 
 function nuevoMisionero() {
   abrirDialogo('Nuevo misionero', [
-    { clave: 'nombres', etiqueta: 'Nombres', placeholder: 'Juan Pérez; Ana Gómez', ayuda: 'Si son dos, separalos con punto y coma.', max: 150 },
+    { clave: 'nombres', etiqueta: 'Nombres', placeholder: 'Juan Pérez; Ana Gómez', ayuda: 'Si son dos, sepáralos con punto y coma.', max: 150 },
     { clave: 'obra', etiqueta: 'Sirven en', placeholder: 'Iglesia de ... (Ciudad)', max: 200 },
     { clave: 'enviados', etiqueta: 'Enviados por', max: 200 },
     { clave: 'contactos', etiqueta: 'Celular', placeholder: '099 123 456', max: 120 },
     { clave: 'mails', etiqueta: 'Mail', placeholder: 'nombre@gmail.com', max: 200 },
   ], (v) => {
-    if (!v.nombres) return 'Escribí los nombres.';
+    if (!v.nombres) return 'Escribe los nombres.';
     const m = { id: `${nombreBase('', v.nombres)}-${Date.now().toString(36)}`, nombres: v.nombres, foto: '', frase: '', obra: v.obra, enviados: v.enviados, versiculo: '', motivos: [], contactos: textoAContactos(v.contactos), mails: textoAMails(v.mails), foco: -0.4 };
     datos.misioneros.unshift(m);
     misAbiertos = new Set([0]); misFiltro = '';
     cambio(); pintar();
-    $('#estado').textContent = 'Misionero agregado: subí su foto, sus motivos de oración y tocá Guardar cambios';
+    $('#estado').textContent = 'Misionero agregado: sube su foto, sus motivos de oración y toca Guardar cambios';
     traducirNuevos([m.obra, m.enviados]);
   });
 }
@@ -1924,7 +1924,7 @@ function selectorFoto(base, alListo) {
     archivo.value = '';
     if (!f) return;
     boton.disabled = true;
-    try { alListo(await subirFoto(f, base(), decir)); decir('Lista. Tocá "Guardar cambios" para que aparezca en la app.', 'ok'); }
+    try { alListo(await subirFoto(f, base(), decir)); decir('Lista. Toca "Guardar cambios" para que aparezca en la app.', 'ok'); }
     catch (e) { decir(e.message || 'No se pudo subir la foto.', 'error'); }
     finally { boton.disabled = false; }
   });
@@ -1934,12 +1934,12 @@ function selectorFoto(base, alListo) {
     const u = link.value.trim();
     if (!esHttps(u)) return decir('El link tiene que empezar con https://', 'error');
     alListo(u); link.value = '';
-    decir('Listo. Tocá "Guardar cambios" para que aparezca en la app.', 'ok');
+    decir('Listo. Toca "Guardar cambios" para que aparezca en la app.', 'ok');
   } } });
   return el('div', {},
     el('div', { class: 'foto-fila', style: 'margin-top:10px' }, boton, archivo),
     estado,
-    el('label', { for: idLink, text: 'O pegá el link de una foto' }),
+    el('label', { for: idLink, text: 'O pega el link de una foto' }),
     el('div', { class: 'link-fila' }, link, usar));
 }
 
@@ -1950,12 +1950,12 @@ async function achicarFoto(archivo, lado = 1280, calidad = 0.85) {
     img = await new Promise((ok, mal) => {
       const i = new Image(), u = URL.createObjectURL(archivo);
       i.onload = () => { URL.revokeObjectURL(u); ok(i); };
-      i.onerror = () => { URL.revokeObjectURL(u); mal(new Error('No pude abrir esa imagen. Probá con otra.')); };
+      i.onerror = () => { URL.revokeObjectURL(u); mal(new Error('No pude abrir esa imagen. Prueba con otra.')); };
       i.src = u;
     });
   }
   const w0 = img.naturalWidth || img.width, h0 = img.naturalHeight || img.height;
-  if (!w0 || !h0) throw new Error('No pude abrir esa imagen. Probá con otra.');
+  if (!w0 || !h0) throw new Error('No pude abrir esa imagen. Prueba con otra.');
   const k = Math.min(1, lado / Math.max(w0, h0));
   const w = Math.max(1, Math.round(w0 * k)), h = Math.max(1, Math.round(h0 * k));
   const lienzo = document.createElement('canvas');
@@ -1980,8 +1980,8 @@ async function nombreLibre(base) {
 }
 
 async function subirFoto(archivo, base, decir) {
-  if (!TIPOS_FOTO.includes(archivo.type)) throw new Error('Elegí una foto JPG, PNG o WEBP.');
-  if (archivo.size > 15 * 1024 * 1024) throw new Error('La foto pesa más de 15 MB. Elegí una más liviana.');
+  if (!TIPOS_FOTO.includes(archivo.type)) throw new Error('Elige una foto JPG, PNG o WEBP.');
+  if (archivo.size > 15 * 1024 * 1024) throw new Error('La foto pesa más de 15 MB. Elige una más liviana.');
   decir('Preparando la foto...');
   const jpg = await achicarFoto(archivo);
   const previa = URL.createObjectURL(jpg);
@@ -1998,7 +1998,7 @@ async function subirFoto(archivo, base, decir) {
     if (r.status !== 422) throw new Error('No se pudo subir la foto (' + r.status + ').');
     nombre = nombre.replace(/-(\d+)\.jpg$/, (_, n) => `-${+n + 1}.jpg`);
   }
-  throw new Error('No se pudo subir la foto. Probá de nuevo.');
+  throw new Error('No se pudo subir la foto. Prueba de nuevo.');
 }
 
 // ---------- Notificaciones push (Firebase Cloud Messaging) ----------
@@ -2036,8 +2036,8 @@ function pintarPush(v) {
     const id = nuevoId();
     const es = multilinea ? el('textarea', { id, value: push[clave] }) : el('input', { id, value: push[clave] });
     es.maxLength = max;
-    const espera = 'Se traduce solo cuando escribís en español';
-    const otros = [['en', 'En inglés (vista previa, la podés corregir)'], ['de', 'En alemán (vista previa, la podés corregir)']].map(([idioma, rotulo]) => {
+    const espera = 'Se traduce solo cuando escribes en español';
+    const otros = [['en', 'En inglés (vista previa, la puedes corregir)'], ['de', 'En alemán (vista previa, la puedes corregir)']].map(([idioma, rotulo]) => {
       const idT = nuevoId(), claveT = clave + '_' + idioma;
       const caja = multilinea ? el('textarea', { id: idT, class: 'en', value: push[claveT] }) : el('input', { id: idT, class: 'en', value: push[claveT] });
       caja.maxLength = max;
@@ -2065,7 +2065,7 @@ function pintarPush(v) {
             const tr = await traducir(original, o.idioma);
             if (push[clave].trim() === original && !pushManual[o.claveT]) { push[o.claveT] = o.caja.value = tr; pushOrigen[o.claveT] = original; }
             o.caja.placeholder = espera;
-          } catch (e) { o.caja.placeholder = 'No se pudo traducir: escribilo a mano'; }
+          } catch (e) { o.caja.placeholder = 'No se pudo traducir: escríbelo a mano'; }
         }));
         contar(); refrescar();
       }, 700);
@@ -2109,7 +2109,7 @@ function pintarPush(v) {
       el('div', { class: 'celus' }, celEs.caja, celEn.caja, celDe.caja),
       envio),
     el('h2', { text: 'Avisos enviados' }),
-    el('p', { class: 'ayuda', text: supa ? 'Se ven en Avisos de la app (los últimos 30). Si quitás uno, se saca al instante de todos los celulares.' : 'Se ven en Avisos de la app. Quedan los últimos 30.' }),
+    el('p', { class: 'ayuda', text: supa ? 'Se ven en Avisos de la app (los últimos 30). Si quitas uno, se saca al instante de todos los celulares.' : 'Se ven en Avisos de la app. Quedan los últimos 30.' }),
     cajaAvisos);
   refrescar();
   pintarListaAvisos();
@@ -2166,7 +2166,7 @@ function pintarListaAvisos() {
   if (supa && avisosDb.lista) lista = avisosDb.lista;
   else if (supa && !avisosDb.error) { cajaAvisos.replaceChildren(...hijos, el('p', { class: 'ayuda', text: 'Cargando avisos...' })); return; }
   else if (supa) hijos.push(el('p', { class: 'ayuda error', text: 'No pude leer los avisos de la base en línea: ' + avisosDb.error + ' Abajo está la copia guardada en GitHub.' }));
-  else if (hayDb()) hijos.push(el('p', { class: 'ayuda', text: 'Esta es la copia guardada en GitHub. Para quitar avisos de la app al instante, primero tiene que estar conectada la base en línea (mirá el aviso de arriba).' }));
+  else if (hayDb()) hijos.push(el('p', { class: 'ayuda', text: 'Esta es la copia guardada en GitHub. Para quitar avisos de la app al instante, primero tiene que estar conectada la base en línea (mira el aviso de arriba).' }));
   hijos.push(...(lista.length ? lista.map((h) => tarjetaAviso(h)) : [el('p', { class: 'ayuda', text: 'Todavía no se mandó ningún aviso.' })]));
   cajaAvisos.replaceChildren(...hijos);
 }
@@ -2190,8 +2190,8 @@ async function quitarAviso(h, boton) {
   const i = datos.push_historial.findIndex((x) => x.id === h.id);
   let guardado = true;
   if (i >= 0) { datos.push_historial.splice(i, 1); cambio(); guardado = await guardar(); }
-  if (alInstante) avisosDb.msg = nota(guardado, guardado ? 'Quitado: ya no aparece en Avisos de la app.' : 'Quitado de la app, pero no se pudo actualizar la copia en GitHub: tocá "Guardar cambios".');
-  else if (!guardado) avisosDb.msg = nota(false, 'No se pudo guardar: tocá "Guardar cambios".');
+  if (alInstante) avisosDb.msg = nota(guardado, guardado ? 'Quitado: ya no aparece en Avisos de la app.' : 'Quitado de la app, pero no se pudo actualizar la copia en GitHub: toca "Guardar cambios".');
+  else if (!guardado) avisosDb.msg = nota(false, 'No se pudo guardar: toca "Guardar cambios".');
   else avisosDb.msg = nota(true, hayDb() ? 'Quitado de la copia en GitHub. Para que se saque de la app, primero tiene que estar conectada la base en línea.' : 'Quitado. En unos minutos deja de aparecer en Avisos de la app.');
   if (tab === 'push') pintar();
 }
@@ -2202,15 +2202,15 @@ async function enviarPush(boton, estado) {
     titulo_de: push.titulo_de.trim(), texto_de: push.texto_de.trim(), accion: push.accion, link: push.accion === 'link' ? push.link.trim() : '',
   };
   const error = (t) => { estado.textContent = t; estado.className = 'ayuda error'; };
-  if (!p.titulo || !p.texto) return error('Escribí el título y el mensaje.');
-  if (!p.titulo_en || !p.texto_en) return error('Falta el texto en inglés. Esperá a que se traduzca o escribilo a mano.');
-  if (!p.titulo_de || !p.texto_de) return error('Falta el texto en alemán. Esperá a que se traduzca o escribilo a mano.');
+  if (!p.titulo || !p.texto) return error('Escribe el título y el mensaje.');
+  if (!p.titulo_en || !p.texto_en) return error('Falta el texto en inglés. Espera a que se traduzca o escríbelo a mano.');
+  if (!p.titulo_de || !p.texto_de) return error('Falta el texto en alemán. Espera a que se traduzca o escríbelo a mano.');
   // Una traducción automática que todavía no se puso al día con el español (se tocó Enviar mientras traducía).
   const atrasada = ['titulo', 'texto'].some((c) => ['en', 'de'].some((i) => !pushManual[c + '_' + i] && pushOrigen[c + '_' + i] !== push[c].trim()));
-  if (atrasada) return error('Esperá a que termine de traducir (o corregí el inglés y el alemán a mano) y volvé a tocar Enviar.');
-  if ([p.titulo, p.titulo_en, p.titulo_de].some((t) => t.length > MAX_TITULO_PUSH)) return error(`El título puede tener hasta ${MAX_TITULO_PUSH} letras (fijate también el de inglés y el de alemán).`);
-  if ([p.texto, p.texto_en, p.texto_de].some((t) => t.length > MAX_TEXTO_PUSH)) return error(`El mensaje puede tener hasta ${MAX_TEXTO_PUSH} letras (fijate también el de inglés y el de alemán).`);
-  if (!ACCIONES_PUSH.some(([a]) => a === p.accion)) return error('Elegí qué abre la notificación.');
+  if (atrasada) return error('Espera a que termine de traducir (o corrige el inglés y el alemán a mano) y vuelve a tocar Enviar.');
+  if ([p.titulo, p.titulo_en, p.titulo_de].some((t) => t.length > MAX_TITULO_PUSH)) return error(`El título puede tener hasta ${MAX_TITULO_PUSH} letras (fíjate también el de inglés y el de alemán).`);
+  if ([p.texto, p.texto_en, p.texto_de].some((t) => t.length > MAX_TEXTO_PUSH)) return error(`El mensaje puede tener hasta ${MAX_TEXTO_PUSH} letras (fíjate también el de inglés y el de alemán).`);
+  if (!ACCIONES_PUSH.some(([a]) => a === p.accion)) return error('Elige qué abre la notificación.');
   if (p.accion === 'link' && !esHttps(p.link)) return error('El link tiene que empezar con https://');
   if (!secretos || !secretos.firebase) return error('Falta conectar Firebase en la pestaña Seguridad.');
   const extra = sucio ? '\n\nOjo: también se van a guardar los cambios pendientes de las otras pestañas.' : '';
@@ -2245,10 +2245,10 @@ async function enviarPush(boton, estado) {
   const guardado = await guardar();
   // "español", "español y alemán", "español, inglés y alemán".
   const idiomas = enviados.length > 1 ? enviados.slice(0, -1).join(', ') + ' y ' + enviados[enviados.length - 1] : enviados.join('');
-  let texto = fallas.length ? `Se envió solo a los celulares en ${idiomas}. Falló: ${fallas.join(' · ')}. Si lo mandás de nuevo, a los celulares en ${idiomas} les llega dos veces.` : 'Enviado a todos los celulares (en español, inglés y alemán).';
-  if (enLinea) texto += ' Ya aparece en Avisos de la app.' + (guardado ? '' : ' (No se pudo guardar la copia en GitHub: tocá "Guardar cambios".)');
-  else if (hayDb()) texto += ' Pero no quedó en Avisos de la app: ' + (motivoDb || 'falta conectar la base en línea (mirá el aviso de arriba).') + (guardado ? ' Quedó guardado en la copia de GitHub.' : '');
-  else texto += guardado ? ' En unos minutos aparece también en Avisos de la app.' : ' Pero no se pudo guardar en Avisos: tocá "Guardar cambios".';
+  let texto = fallas.length ? `Se envió solo a los celulares en ${idiomas}. Falló: ${fallas.join(' · ')}. Si lo mandas de nuevo, a los celulares en ${idiomas} les llega dos veces.` : 'Enviado a todos los celulares (en español, inglés y alemán).';
+  if (enLinea) texto += ' Ya aparece en Avisos de la app.' + (guardado ? '' : ' (No se pudo guardar la copia en GitHub: toca "Guardar cambios".)');
+  else if (hayDb()) texto += ' Pero no quedó en Avisos de la app: ' + (motivoDb || 'falta conectar la base en línea (mira el aviso de arriba).') + (guardado ? ' Quedó guardado en la copia de GitHub.' : '');
+  else texto += guardado ? ' En unos minutos aparece también en Avisos de la app.' : ' Pero no se pudo guardar en Avisos: toca "Guardar cambios".';
   if (!fallas.length) { push = pushVacio(); pushManual = pushManualVacio(); pushOrigen = {}; }
   pushResultado = { ok: !fallas.length && guardado && (enLinea || !hayDb()), texto };
   avisosDb.cuando = 0;
@@ -2257,7 +2257,7 @@ async function enviarPush(boton, estado) {
 
 // Aviso de "estamos en vivo": los textos son fijos (no los escribe nadie) y a cada celular le llega el de su idioma.
 const PUSH_EN_VIVO = [
-  ['todos_es', 'español', '🔴 Estamos en vivo', 'La Carpa del Encuentro está transmitiendo en vivo. Tocá para verla.'],
+  ['todos_es', 'español', '🔴 Estamos en vivo', 'La Carpa del Encuentro está transmitiendo en vivo. Toca para verla.'],
   ['todos_en', 'inglés', "🔴 We're live", 'Carpa del Encuentro is streaming live. Tap to watch.'],
   ['todos_de', 'alemán', '🔴 Wir sind live', 'Carpa del Encuentro überträgt gerade live. Tippe zum Ansehen.'],
 ];
@@ -2291,7 +2291,7 @@ async function avisarEnVivo(link) {
   } catch (e) { fallas.push(e.message); }
   if (!enviados.length) return decir('No se mandó el aviso de en vivo. ' + fallas.join(' · '), true);
   const idiomas = enviados.length > 1 ? enviados.slice(0, -1).join(', ') + ' y ' + enviados[enviados.length - 1] : enviados.join('');
-  if (fallas.length) decir(`El aviso de en vivo salió solo a los celulares en ${idiomas}. Falló: ${fallas.join(' · ')}. Si lo mandás de nuevo desde Notificaciones push, a los celulares en ${idiomas} les llega dos veces.`, true);
+  if (fallas.length) decir(`El aviso de en vivo salió solo a los celulares en ${idiomas}. Falló: ${fallas.join(' · ')}. Si lo mandas de nuevo desde Notificaciones push, a los celulares en ${idiomas} les llega dos veces.`, true);
   else decir('Aviso de en vivo mandado a todos los celulares (en español, inglés y alemán).');
 }
 
@@ -2305,7 +2305,7 @@ async function mandarPush(acceso, proyecto, topic, titulo, texto, data) {
   if (r.ok) return;
   const j = await r.json().catch(() => ({}));
   const motivo = (j.error && j.error.message) || 'error ' + r.status;
-  if (r.status === 403) throw new Error('Google no dejó enviar (' + motivo + '). Revisá que la API "Firebase Cloud Messaging API" esté activada en el proyecto.');
+  if (r.status === 403) throw new Error('Google no dejó enviar (' + motivo + '). Revisa que la API "Firebase Cloud Messaging API" esté activada en el proyecto.');
   throw new Error(motivo);
 }
 
@@ -2317,7 +2317,7 @@ async function pedirAcceso(cuenta) {
   const sinFirmar = parte({ alg: 'RS256', typ: 'JWT' }) + '.' + parte({ iss: cuenta.client_email, scope: 'https://www.googleapis.com/auth/firebase.messaging', aud: 'https://oauth2.googleapis.com/token', iat: ahora, exp: ahora + 3600 });
   let privada;
   try { privada = await crypto.subtle.importKey('pkcs8', pemABytes(cuenta.private_key), { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' }, false, ['sign']); }
-  catch (e) { throw new Error('No se pudo leer la clave privada de Firebase. Generá una nueva en Firebase y conectala otra vez.'); }
+  catch (e) { throw new Error('No se pudo leer la clave privada de Firebase. Genera una nueva en Firebase y conéctala otra vez.'); }
   const firma = new Uint8Array(await crypto.subtle.sign('RSASSA-PKCS1-v1_5', privada, new TextEncoder().encode(sinFirmar)));
   const r = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST',
@@ -2328,14 +2328,14 @@ async function pedirAcceso(cuenta) {
   const j = await r.json().catch(() => ({}));
   if (!r.ok || !j.access_token) {
     const motivo = j.error_description || j.error || r.status;
-    throw new Error('Google no aceptó la cuenta de Firebase (' + motivo + ').' + (j.error === 'invalid_grant' ? ' Revisá que la fecha y hora de la compu estén bien, o que la clave no se haya borrado en Firebase.' : ''));
+    throw new Error('Google no aceptó la cuenta de Firebase (' + motivo + ').' + (j.error === 'invalid_grant' ? ' Revisa que la fecha y hora de la compu estén bien, o que la clave no se haya borrado en Firebase.' : ''));
   }
   accesoFcm = { valor: j.access_token, vence: Date.now() + (j.expires_in || 3600) * 1000, email: cuenta.client_email };
   return j.access_token;
 }
 
 async function leerCuentaServicio(archivo) {
-  if (!archivo) throw new Error('Elegí el archivo .json que bajaste de Firebase.');
+  if (!archivo) throw new Error('Elige el archivo .json que bajaste de Firebase.');
   if (archivo.size > 20000) throw new Error('Ese archivo es muy grande para ser la clave de Firebase.');
   let j;
   try { j = JSON.parse(await archivo.text()); } catch (e) { throw new Error('Ese archivo no es un .json válido.'); }
@@ -2351,26 +2351,26 @@ let mensajeSeguridad = null;
 
 function pasosToken() {
   return el('ol', { class: 'ayuda' },
-    el('li', {}, 'Entrá a ', el('a', { href: 'https://github.com/settings/personal-access-tokens/new', target: '_blank', rel: 'noopener noreferrer', text: 'crear una clave nueva en GitHub' }), ' (con tu cuenta). En Expiration elegí la fecha más lejana que te deje.'),
-    el('li', {}, 'En ', el('b', { text: 'Repository access' }), ' elegí ', el('b', { text: 'Only select repositories' }), ' y marcá ', el('b', { text: REPO }), '.'),
-    el('li', {}, 'En ', el('b', { text: 'Permissions → Contents' }), ' elegí ', el('b', { text: 'Read and write' }), '. Tocá Generate token, copiala y pegala acá.'));
+    el('li', {}, 'Entra a ', el('a', { href: 'https://github.com/settings/personal-access-tokens/new', target: '_blank', rel: 'noopener noreferrer', text: 'crear una clave nueva en GitHub' }), ' (con tu cuenta). En Expiration elige la fecha más lejana que te deje.'),
+    el('li', {}, 'En ', el('b', { text: 'Repository access' }), ' elige ', el('b', { text: 'Only select repositories' }), ' y marca ', el('b', { text: REPO }), '.'),
+    el('li', {}, 'En ', el('b', { text: 'Permissions → Contents' }), ' elige ', el('b', { text: 'Read and write' }), '. Toca Generate token, cópiala y pégala acá.'));
 }
 
 function validarToken(t) {
-  if (!t) throw new Error('Pegá la clave de GitHub.');
+  if (!t) throw new Error('Pega la clave de GitHub.');
   if (!/^(github_pat_|ghp_)[A-Za-z0-9_]{20,250}$/.test(t)) throw new Error('Eso no parece una clave de GitHub. Tiene que empezar con github_pat_.');
 }
 
 async function probarToken(token) {
   const r = await api(`contents/${ARCHIVO}`, {}, token);
-  if (r.status === 401) throw new Error('GitHub no reconoce esa clave. Copiala de nuevo.');
-  if (!r.ok) throw new Error(`La clave no puede leer ${ARCHIVO} (${r.status}). Revisá que hayas marcado el repositorio ${REPO}.`);
+  if (r.status === 401) throw new Error('GitHub no reconoce esa clave. Cópiala de nuevo.');
+  if (!r.ok) throw new Error(`La clave no puede leer ${ARCHIVO} (${r.status}). Revisa que hayas marcado el repositorio ${REPO}.`);
 }
 
 // Vuelve a leer clave.json, confirma la contraseña actual y guarda las claves nuevas cifradas (formato v2).
 async function guardarSecretos(nuevos, passActual, passNueva) {
-  if (espera()) throw new Error('Por seguridad, esperá ' + mmss(espera()) + ' para volver a probar.');
-  if (!passActual) throw new Error('Escribí la contraseña actual.');
+  if (espera()) throw new Error('Por seguridad, espera ' + mmss(espera()) + ' para volver a probar.');
+  if (!passActual) throw new Error('Escribe la contraseña actual.');
   const actual = await leerClaveCifrada();
   if (!actual) throw new Error('No encontré la configuración guardada.');
   try { await abrirSecretos(actual, passActual); } catch (e) { anotarFallo(); throw new Error('La contraseña actual no es correcta.'); }
@@ -2396,7 +2396,7 @@ function pintarSeguridad(v) {
   };
   const partes = [
     el('h2', { text: 'Seguridad' }),
-    el('p', { class: 'ayuda', text: 'Las claves de GitHub y de Firebase se guardan cifradas con la contraseña de administrador: sin la contraseña no sirven. Usá una contraseña larga que no uses en otro lado. El panel se cierra solo después de 20 minutos sin actividad.' }),
+    el('p', { class: 'ayuda', text: 'Las claves de GitHub y de Firebase se guardan cifradas con la contraseña de administrador: sin la contraseña no sirven. Usa una contraseña larga que no uses en otro lado. El panel se cierra solo después de 20 minutos sin actividad.' }),
   ];
   if (mensajeSeguridad) {
     const m = typeof mensajeSeguridad === 'string' ? { ok: true, texto: mensajeSeguridad } : mensajeSeguridad;
@@ -2406,13 +2406,13 @@ function pintarSeguridad(v) {
 
   if (passCorta) partes.push(el('div', { class: 'card alerta' },
     el('h3', { text: 'Tu contraseña es corta' }),
-    el('p', { class: 'ayuda', style: 'margin:0', text: 'La configuración cifrada está a la vista en GitHub: con una contraseña corta se puede adivinar probando. Cambiala acá abajo por una de 10 caracteres o más, y después reemplazá también la clave de GitHub.' })));
+    el('p', { class: 'ayuda', style: 'margin:0', text: 'La configuración cifrada está a la vista en GitHub: con una contraseña corta se puede adivinar probando. Cámbiala acá abajo por una de 10 caracteres o más, y después reemplaza también la clave de GitHub.' })));
 
   if (formatoViejo) {
     const pV = clave('current-password'), estV = el('p', { class: 'ayuda', style: 'margin:10px 0 0' });
     partes.push(el('div', { class: 'card alerta' },
-      el('h3', { text: 'Actualizá el cifrado' }),
-      el('p', { class: 'ayuda', text: 'Tu configuración está guardada con el cifrado anterior, que es más débil. Escribí tu contraseña y tocá el botón para pasarla al cifrado nuevo. La contraseña sigue siendo la misma. Ojo: GitHub guarda la versión vieja, así que para quedar protegido de verdad, después reemplazá también la clave de GitHub acá abajo y borrá la vieja en GitHub.' }),
+      el('h3', { text: 'Actualiza el cifrado' }),
+      el('p', { class: 'ayuda', text: 'Tu configuración está guardada con el cifrado anterior, que es más débil. Escribe tu contraseña y toca el botón para pasarla al cifrado nuevo. La contraseña sigue siendo la misma. Ojo: GitHub guarda la versión vieja, así que para quedar protegido de verdad, después reemplaza también la clave de GitHub acá abajo y borra la vieja en GitHub.' }),
       caja('Contraseña actual', pV),
       el('div', { class: 'acciones' }, accion('Actualizar cifrado', 'btn', estV, async () => { await guardarSecretos({ ...secretos }, pV.value); return 'Listo: la configuración ya usa el cifrado nuevo.'; })),
       estV));
@@ -2421,9 +2421,9 @@ function pintarSeguridad(v) {
   const pA = clave('current-password'), pN = clave('new-password'), pR = clave('new-password'), estP = el('p', { class: 'ayuda', style: 'margin:10px 0 0' });
   partes.push(el('div', { class: 'card' },
     el('h3', { text: 'Cambiar la contraseña de administrador' }),
-    el('p', { class: 'ayuda', text: 'GitHub guarda las versiones anteriores de la configuración, cifradas con la contraseña vieja. Por eso, después de cambiarla, reemplazá también la clave de GitHub (y borrá la vieja en GitHub).' + (secretos && secretos.firebase ? ' Con Firebase hacé lo mismo: conectá una clave nueva y borrá la vieja en Firebase.' : '') + (supa ? ` En la base en línea, la contraseña del usuario ${SUPA_EMAIL} se cambia sola.` : '') }),
+    el('p', { class: 'ayuda', text: 'GitHub guarda las versiones anteriores de la configuración, cifradas con la contraseña vieja. Por eso, después de cambiarla, reemplaza también la clave de GitHub (y borra la vieja en GitHub).' + (secretos && secretos.firebase ? ' Con Firebase haz lo mismo: conecta una clave nueva y borra la vieja en Firebase.' : '') + (supa ? ` En la base en línea, la contraseña del usuario ${SUPA_EMAIL} se cambia sola.` : '') }),
     caja('Contraseña actual', pA),
-    el('div', { class: 'fila' }, caja('Contraseña nueva (10 letras o más)', pN), caja('Repetí la nueva', pR)),
+    el('div', { class: 'fila' }, caja('Contraseña nueva (10 letras o más)', pN), caja('Repite la nueva', pR)),
     el('div', { class: 'acciones' }, accion('Guardar contraseña', 'btn', estP, async () => {
       if (pN.value.length < 10) throw new Error('La contraseña nueva tiene que tener al menos 10 caracteres.');
       if (pN.value !== pR.value) throw new Error('Las contraseñas nuevas no coinciden.');
@@ -2436,7 +2436,7 @@ function pintarSeguridad(v) {
   const tA = clave('current-password'), tN = el('input', { type: 'password', autocomplete: 'off', maxlength: '255', placeholder: 'github_pat_...' }), estT = el('p', { class: 'ayuda', style: 'margin:10px 0 0' });
   partes.push(el('div', { class: 'card' },
     el('h3', { text: 'Reemplazar la clave de GitHub' }),
-    el('p', { class: 'ayuda', text: 'Hacelo si la clave está por vencer o si creés que alguien la vio. Después borrá la vieja en GitHub.' }),
+    el('p', { class: 'ayuda', text: 'Hazlo si la clave está por vencer o si crees que alguien la vio. Después borra la vieja en GitHub.' }),
     pasosToken(),
     el('div', { class: 'fila' }, caja('Clave nueva de GitHub', tN), caja('Contraseña actual', tA)),
     el('div', { class: 'acciones' }, accion('Guardar clave nueva', 'btn', estT, async () => {
@@ -2445,7 +2445,7 @@ function pintarSeguridad(v) {
       estT.textContent = 'Probando la clave...';
       await probarToken(token);
       await guardarSecretos({ ...secretos, github: token }, tA.value);
-      return 'Listo: el panel ya usa la clave nueva. Ahora podés borrar la vieja en GitHub.';
+      return 'Listo: el panel ya usa la clave nueva. Ahora puedes borrar la vieja en GitHub.';
     })),
     estT));
 
@@ -2453,14 +2453,14 @@ function pintarSeguridad(v) {
   const archivo = el('input', { type: 'file', accept: '.json,application/json' }), fA = clave('current-password'), estF = el('p', { class: 'ayuda', style: 'margin:10px 0 0' });
   const conectar = accion(f ? 'Reemplazar Firebase' : 'Conectar Firebase', 'btn', estF, async () => {
     const cuenta = await leerCuentaServicio(archivo.files[0]);
-    if (!fA.value) throw new Error('Escribí la contraseña actual.');
+    if (!fA.value) throw new Error('Escribe la contraseña actual.');
     // La clave de Firebase deja mandar push a todos: no se guarda protegida con una contraseña corta.
-    if (fA.value.length < 10) throw new Error('Para conectar Firebase, primero cambiá la contraseña por una de 10 caracteres o más (más arriba, en "Cambiar la contraseña de administrador").');
+    if (fA.value.length < 10) throw new Error('Para conectar Firebase, primero cambia la contraseña por una de 10 caracteres o más (más arriba, en "Cambiar la contraseña de administrador").');
     estF.textContent = 'Probando la cuenta con Google...';
     await pedirAcceso(cuenta);
     estF.textContent = 'Guardando cifrado...';
     await guardarSecretos({ ...secretos, firebase: cuenta }, fA.value);
-    return `Firebase conectado (proyecto ${cuenta.project_id}). Ya podés mandar notificaciones push. Borrá de la compu el archivo .json que bajaste.`;
+    return `Firebase conectado (proyecto ${cuenta.project_id}). Ya puedes mandar notificaciones push. Borra de la compu el archivo .json que bajaste.`;
   });
   const botones = [conectar];
   if (f) botones.push(accion('Desconectar Firebase', 'btn peligro', estF, async () => {
@@ -2471,20 +2471,20 @@ function pintarSeguridad(v) {
   partes.push(el('div', { class: 'card' },
     el('h3', { text: 'Notificaciones push (Firebase)' }),
     f ? el('p', { class: 'ayuda ok', text: `Conectado al proyecto ${f.project_id}.` }) : el('p', { class: 'ayuda', text: 'Todavía no está conectado. Se hace una sola vez:' }),
-    passCorta ? el('p', { class: 'ayuda error', text: 'Antes de conectar Firebase cambiá la contraseña por una de 10 caracteres o más.' }) : null,
+    passCorta ? el('p', { class: 'ayuda error', text: 'Antes de conectar Firebase cambia la contraseña por una de 10 caracteres o más.' }) : null,
     el('ol', { class: 'ayuda' },
-      el('li', {}, 'Entrá a la ', el('a', { href: 'https://console.firebase.google.com/', target: '_blank', rel: 'noopener noreferrer', text: 'Firebase Console' }), ' y abrí el proyecto de la app.'),
-      el('li', {}, 'Tocá el engranaje → ', el('b', { text: 'Configuración del proyecto → Cuentas de servicio → Generar nueva clave privada' }), '. Se baja un archivo .json.'),
-      el('li', {}, 'Elegí ese archivo acá abajo, escribí la contraseña y tocá ', el('b', { text: f ? 'Reemplazar Firebase' : 'Conectar Firebase' }), '. Después borrá el archivo de la compu.')),
+      el('li', {}, 'Entra a la ', el('a', { href: 'https://console.firebase.google.com/', target: '_blank', rel: 'noopener noreferrer', text: 'Firebase Console' }), ' y abre el proyecto de la app.'),
+      el('li', {}, 'Toca el engranaje → ', el('b', { text: 'Configuración del proyecto → Cuentas de servicio → Generar nueva clave privada' }), '. Se baja un archivo .json.'),
+      el('li', {}, 'Elige ese archivo acá abajo, escribe la contraseña y toca ', el('b', { text: f ? 'Reemplazar Firebase' : 'Conectar Firebase' }), '. Después borra el archivo de la compu.')),
     el('div', { class: 'fila' }, caja('Archivo .json de Firebase', archivo), caja('Contraseña actual', fA)),
     el('div', { class: 'acciones' }, ...botones),
     estF));
 
   partes.push(el('div', { class: 'card' },
     el('h3', { text: 'Base en línea (Supabase)' }),
-    !hayDb() ? el('p', { class: 'ayuda', style: 'margin:0' }, 'Todavía no está activada. Con ella, lo que guardás se ve al instante en la app, los avisos se pueden quitar al instante y funcionan los pedidos y las listas de oración. Los pasos están en la pestaña ', el('a', { href: '#', text: 'Pedidos de oración', on: { click: (e) => { e.preventDefault(); irA('muro'); } } }), '.')
+    !hayDb() ? el('p', { class: 'ayuda', style: 'margin:0' }, 'Todavía no está activada. Con ella, lo que guardas se ve al instante en la app, los avisos se pueden quitar al instante y funcionan los pedidos y las listas de oración. Los pasos están en la pestaña ', el('a', { href: '#', text: 'Pedidos de oración', on: { click: (e) => { e.preventDefault(); irA('muro'); } } }), '.')
       : supa ? el('p', { class: 'ayuda ok', style: 'margin:0', text: `Conectada con el usuario ${SUPA_EMAIL}. Las claves de la base viven solo mientras el panel está abierto.` })
-      : el('p', { class: 'ayuda error', style: 'margin:0', text: supaProblema || 'No está conectada. Salí del panel y volvé a entrar.' })));
+      : el('p', { class: 'ayuda error', style: 'margin:0', text: supaProblema || 'No está conectada. Sal del panel y vuelve a entrar.' })));
   v.replaceChildren(...partes);
 }
 
@@ -2528,7 +2528,7 @@ const conTiempo = (ms) => (typeof AbortSignal !== 'undefined' && AbortSignal.tim
 // Revisa la dirección y la clave. La clave secreta (service_role o sb_secret_) se salta todas las reglas
 // de la base: si alguien la pone acá por error, el panel no la usa y avisa.
 function problemaConfig() {
-  if (!/^https:\/\/[a-z0-9-]+\.supabase\.co$/.test(SUPA)) return 'La dirección de Supabase del panel tiene que ser https://<proyecto>.supabase.co. Pasásela de nuevo al desarrollador.';
+  if (!/^https:\/\/[a-z0-9-]+\.supabase\.co$/.test(SUPA)) return 'La dirección de Supabase del panel tiene que ser https://<proyecto>.supabase.co. Pásasela de nuevo al desarrollador.';
   let rol = '';
   if (ANON.startsWith('eyJ')) { try { rol = String(JSON.parse(atob(ANON.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))).role || ''); } catch (e) {} }
   if (ANON.startsWith('sb_secret_') || (rol && rol !== 'anon')) return 'La clave de Supabase que tiene el panel es la SECRETA (service_role o secret key) y no puede estar en una página pública. Hay que sacarla ya del panel, cambiarla en Supabase (Project Settings → API) y poner en su lugar la anon public key.';
@@ -2547,7 +2547,7 @@ async function entrarDb(pass, refresh = null) {
   if (!hayDb()) return;
   const mal = problemaConfig();
   if (mal) { supaProblema = mal; return; }
-  if (!pass && !refresh) { supaProblema = 'Para conectar la base en línea, tocá Salir y volvé a entrar con tu contraseña.'; return; }
+  if (!pass && !refresh) { supaProblema = 'Para conectar la base en línea, toca Salir y vuelve a entrar con tu contraseña.'; return; }
   try {
     const r = await fetch(`${SUPA}/auth/v1/token?grant_type=${refresh ? 'refresh_token' : 'password'}`, {
       method: 'POST', cache: 'no-store', signal: conTiempo(15000),
@@ -2558,16 +2558,16 @@ async function entrarDb(pass, refresh = null) {
     // Si mientras tanto falló GitHub o se salió del panel, esta sesión no se usa: se cierra.
     if (id !== sesionDb) { if (r.ok && j.access_token) logoutDb(j.access_token); return; }
     if (r.ok && j.access_token && j.refresh_token) { supa = sesionDe(j); guardarRecordado(); return; }
-    if (refresh) { supaProblema = 'Se venció la sesión guardada con la base en línea. Tocá Salir y volvé a entrar con tu contraseña.'; return; }
+    if (refresh) { supaProblema = 'Se venció la sesión guardada con la base en línea. Toca Salir y vuelve a entrar con tu contraseña.'; return; }
     const cod = String(j.error_code || j.error || ''), detalle = String(j.msg || j.error_description || '');
-    if (cod === 'email_not_confirmed' || /not confirmed/i.test(detalle)) supaProblema = `El usuario ${SUPA_EMAIL} existe en Supabase pero no está confirmado. En Authentication → Users borralo y crealo de nuevo marcando Auto Confirm User.`;
-    else if (r.status === 429) supaProblema = 'Supabase está frenando los intentos de entrada. Esperá unos minutos, salí del panel y volvé a entrar.';
-    else if (r.status === 401 || /api key/i.test(detalle)) supaProblema = 'Supabase no reconoce la anon key del panel. Pasale de nuevo al desarrollador la Project URL y la anon public key.';
-    else if (r.status === 400 || cod === 'invalid_credentials' || cod === 'invalid_grant') supaProblema = `Falta crear el usuario del panel en Supabase, o tiene otra contraseña. En Authentication → Users → Add user creá ${SUPA_EMAIL} con la misma contraseña de administrador de este panel y marcá Auto Confirm User. Después salí y volvé a entrar.`;
-    else supaProblema = `Supabase no dejó entrar (error ${r.status}). Salí del panel y volvé a entrar en un rato.`;
+    if (cod === 'email_not_confirmed' || /not confirmed/i.test(detalle)) supaProblema = `El usuario ${SUPA_EMAIL} existe en Supabase pero no está confirmado. En Authentication → Users bórralo y créalo de nuevo marcando Auto Confirm User.`;
+    else if (r.status === 429) supaProblema = 'Supabase está frenando los intentos de entrada. Espera unos minutos, sal del panel y vuelve a entrar.';
+    else if (r.status === 401 || /api key/i.test(detalle)) supaProblema = 'Supabase no reconoce la anon key del panel. Pásale de nuevo al desarrollador la Project URL y la anon public key.';
+    else if (r.status === 400 || cod === 'invalid_credentials' || cod === 'invalid_grant') supaProblema = `Falta crear el usuario del panel en Supabase, o tiene otra contraseña. En Authentication → Users → Add user crea ${SUPA_EMAIL} con la misma contraseña de administrador de este panel y marca Auto Confirm User. Después sal y vuelve a entrar.`;
+    else supaProblema = `Supabase no dejó entrar (error ${r.status}). Sal del panel y vuelve a entrar en un rato.`;
   } catch (e) {
     if (id !== sesionDb) return;
-    supaProblema = 'No se pudo conectar con Supabase. Revisá internet, salí del panel y volvé a entrar.';
+    supaProblema = 'No se pudo conectar con Supabase. Revisa internet, sal del panel y vuelve a entrar.';
   }
   // ¿La app ya está leyendo contenido de la base? (para avisar bien qué pasa mientras no se conecte)
   try {
@@ -2592,11 +2592,11 @@ async function tokenDb() {
           body: JSON.stringify({ refresh_token: refresh }),
         });
         j = await r.json().catch(() => ({}));
-      } catch (e) { throw new Error('No se pudo conectar con la base en línea. Revisá internet y probá de nuevo.'); }
+      } catch (e) { throw new Error('No se pudo conectar con la base en línea. Revisa internet y prueba de nuevo.'); }
       if (id !== sesionDb) { if (r.ok && j.access_token) logoutDb(j.access_token); return; }
       if (r.ok && j.access_token && j.refresh_token) { supa = sesionDe(j); guardarRecordado(); return; }
       supa = null;
-      supaProblema = 'Se cortó la sesión con la base en línea. Salí del panel y volvé a entrar.';
+      supaProblema = 'Se cortó la sesión con la base en línea. Sal del panel y vuelve a entrar.';
       pintarAvisoDb();
     })().finally(() => { renovando = null; });
   }
@@ -2616,16 +2616,16 @@ async function db(ruta, opciones = {}) {
       ...opciones, cache: 'no-store', signal: conTiempo(20000),
       headers: { ...cabDb(token), 'Content-Type': 'application/json', ...(opciones.headers || {}) },
     });
-  } catch (e) { throw new Error('No se pudo conectar con la base en línea. Revisá internet y probá de nuevo.'); }
+  } catch (e) { throw new Error('No se pudo conectar con la base en línea. Revisa internet y prueba de nuevo.'); }
 }
 
 async function errorDb(r) {
   const j = await r.json().catch(() => ({}));
   const cod = String(j.code || '');
   // 42703 / PGRST204: falta una columna nueva (campana, visible): la base tiene una versión vieja de setup.sql.
-  if (['PGRST205', '42P01', 'PGRST202', '42883', 'PGRST204', '42703'].includes(cod)) return new Error('Faltan tablas o columnas en la base en línea: corré de nuevo el archivo supabase/setup.sql en el SQL Editor de Supabase.');
+  if (['PGRST205', '42P01', 'PGRST202', '42883', 'PGRST204', '42703'].includes(cod)) return new Error('Faltan tablas o columnas en la base en línea: corre de nuevo el archivo supabase/setup.sql en el SQL Editor de Supabase.');
   if (cod === '42501' || r.status === 403) return new Error(`La base no lo permitió: el panel tiene que entrar con el usuario ${SUPA_EMAIL} y hay que haber corrido supabase/setup.sql.`);
-  if (r.status === 401) return new Error('Se venció la sesión con la base en línea. Salí del panel y volvé a entrar.');
+  if (r.status === 401) return new Error('Se venció la sesión con la base en línea. Sal del panel y vuelve a entrar.');
   if (cod === '23514' || cod === '22P02') return new Error('La base rechazó los datos porque no tienen el formato acordado.');
   return new Error('La base en línea respondió con un error (' + String(j.message || r.status).slice(0, 160) + ').');
 }
@@ -2697,7 +2697,7 @@ async function sincronizarContenido() {
     if (id !== sesionDb) return;
     dbPendiente = true;
     $('#guardar').disabled = false;
-    decir('La app puede no tener la última versión del contenido: ' + e.message + ' Tocá "Guardar cambios" para reintentar.', 'error');
+    decir('La app puede no tener la última versión del contenido: ' + e.message + ' Toca "Guardar cambios" para reintentar.', 'error');
   }
 }
 
@@ -2736,14 +2736,14 @@ async function migrarAvisos() {
     if (!Array.isArray(hay) || hay.length || !datos) return;
     const viejos = datos.push_historial.filter((h) => avisoBien(h) && h.id && !isNaN(new Date(h.fecha)));
     if (viejos.length) await insertarAvisos(viejos);
-  } catch (e) { return 'No se pudieron pasar a la base en línea los avisos que ya estaban (' + e.message + ') Salí del panel y volvé a entrar para reintentar.'; }
+  } catch (e) { return 'No se pudieron pasar a la base en línea los avisos que ya estaban (' + e.message + ') Sal del panel y vuelve a entrar para reintentar.'; }
   return '';
 }
 
 // Cambia la contraseña del usuario del panel en Supabase para que siga siendo la misma que la del panel.
 async function cambiarPassDb(nueva) {
   if (!hayDb()) return null;
-  if (!supa) return { ok: false, texto: `Acordate: en Supabase el usuario ${SUPA_EMAIL} tiene que tener esta contraseña nueva.` };
+  if (!supa) return { ok: false, texto: `Acuérdate: en Supabase el usuario ${SUPA_EMAIL} tiene que tener esta contraseña nueva.` };
   try {
     const token = await tokenDb();
     if (!token) throw new Error('se cortó la sesión');
@@ -2752,7 +2752,7 @@ async function cambiarPassDb(nueva) {
     if (r.ok || j.error_code === 'same_password') return { ok: true, texto: 'También se cambió en la base en línea.' };
     throw new Error(String(j.msg || j.error_description || j.message || 'error ' + r.status).slice(0, 120));
   } catch (e) {
-    return { ok: false, texto: `Pero no se pudo cambiar en Supabase (${e.message}). Para arreglarlo, en Supabase → Authentication → Users borrá ${SUPA_EMAIL} y crealo de nuevo con la contraseña nueva, marcando Auto Confirm User.` };
+    return { ok: false, texto: `Pero no se pudo cambiar en Supabase (${e.message}). Para arreglarlo, en Supabase → Authentication → Users borra ${SUPA_EMAIL} y créalo de nuevo con la contraseña nueva, marcando Auto Confirm User.` };
   }
 }
 
@@ -2789,13 +2789,13 @@ function pararMuro() { clearInterval(relojMuro); relojMuro = null; }
 
 function pasosSupabase() {
   return el('ol', { class: 'ayuda', style: 'margin:8px 0 0' },
-    el('li', {}, 'Creá un proyecto gratis en ', el('a', { href: 'https://supabase.com/dashboard', target: '_blank', rel: 'noopener noreferrer', text: 'Supabase' }), '.'),
-    el('li', {}, 'En ', el('b', { text: 'Project Settings → API' }), ' copiá la ', el('b', { text: 'Project URL' }), ' y la ', el('b', { text: 'anon public key' }), ' y pasáselas al desarrollador: las pone en la app y en este panel (son públicas, no son contraseñas).'),
-    el('li', {}, 'En ', el('b', { text: 'SQL Editor' }), ' pegá todo el archivo ', el('b', { text: 'supabase/setup.sql' }), ' del proyecto de la app y tocá ', el('b', { text: 'Run' }), '.'),
-    el('li', {}, 'En ', el('b', { text: 'Authentication → Sign In / Providers' }), ' activá ', el('b', { text: 'Allow anonymous sign-ins' }), ' (así cada celular puede mandar pedidos y unirse a listas sin crear una cuenta).'),
-    el('li', {}, 'En ', el('b', { text: 'Authentication → Users → Add user' }), ' creá el usuario ', el('b', { text: SUPA_EMAIL }), ' con la misma contraseña de administrador de este panel y marcá ', el('b', { text: 'Auto Confirm User' }), '. (Supabase pide 6 caracteres o más: si tu contraseña es más corta, primero cambiala en la pestaña Seguridad.)'),
-    el('li', {}, 'En ', el('b', { text: 'Authentication → Sign In / Providers → Email' }), ' dejá prendido ', el('b', { text: 'Confirm email' }), ': así nadie más puede registrarse con el usuario del panel.'),
-    el('li', {}, 'Cuando el desarrollador publique el panel con los datos, entrá: el panel pasa solo el contenido a la base y desde ahí la app recibe al instante lo que guardes.'));
+    el('li', {}, 'Crea un proyecto gratis en ', el('a', { href: 'https://supabase.com/dashboard', target: '_blank', rel: 'noopener noreferrer', text: 'Supabase' }), '.'),
+    el('li', {}, 'En ', el('b', { text: 'Project Settings → API' }), ' copia la ', el('b', { text: 'Project URL' }), ' y la ', el('b', { text: 'anon public key' }), ' y pásaselas al desarrollador: las pone en la app y en este panel (son públicas, no son contraseñas).'),
+    el('li', {}, 'En ', el('b', { text: 'SQL Editor' }), ' pega todo el archivo ', el('b', { text: 'supabase/setup.sql' }), ' del proyecto de la app y toca ', el('b', { text: 'Run' }), '.'),
+    el('li', {}, 'En ', el('b', { text: 'Authentication → Sign In / Providers' }), ' activa ', el('b', { text: 'Allow anonymous sign-ins' }), ' (así cada celular puede mandar pedidos y unirse a listas sin crear una cuenta).'),
+    el('li', {}, 'En ', el('b', { text: 'Authentication → Users → Add user' }), ' crea el usuario ', el('b', { text: SUPA_EMAIL }), ' con la misma contraseña de administrador de este panel y marca ', el('b', { text: 'Auto Confirm User' }), '. (Supabase pide 6 caracteres o más: si tu contraseña es más corta, primero cámbiala en la pestaña Seguridad.)'),
+    el('li', {}, 'En ', el('b', { text: 'Authentication → Sign In / Providers → Email' }), ' deja prendido ', el('b', { text: 'Confirm email' }), ': así nadie más puede registrarse con el usuario del panel.'),
+    el('li', {}, 'Cuando el desarrollador publique el panel con los datos, entra: el panel pasa solo el contenido a la base y desde ahí la app recibe al instante lo que guardes.'));
 }
 
 // Supabase devuelve hasta 1000 filas por consulta: se piden de a 1000 hasta traer todas.
@@ -2817,7 +2817,7 @@ const campanaDe = (id) => (muro.campanas || []).find((c) => c.id === id) || (cam
 
 function pintarMuro(v) {
   const titulo = el('h2', { text: 'Pedidos de oración' });
-  const explica = el('p', { class: 'ayuda', text: 'Los pedidos de oración son privados: la gente los manda desde la app y acá los ves todos, con el nombre y el celular de quien lo mandó (aunque haya elegido "anónimo"). Nadie más los ve. Los que se mandan a una lista se publican al instante en esa lista (los ven solo quienes pusieron su código): si alguno no corresponde, tocá "Ocultar" o "Borrar". Los "solo para el equipo" no los ve nadie más, pero podés pasar cualquiera a una lista con "Pasar a la lista".' });
+  const explica = el('p', { class: 'ayuda', text: 'Los pedidos de oración son privados: la gente los manda desde la app y acá los ves todos, con el nombre y el celular de quien lo mandó (aunque haya elegido "anónimo"). Nadie más los ve. Los que se mandan a una lista se publican al instante en esa lista (los ven solo quienes pusieron su código): si alguno no corresponde, toca "Ocultar" o "Borrar". Los "solo para el equipo" no los ve nadie más, pero puedes pasar cualquiera a una lista con "Pasar a la lista".' });
   cajaMuro = botonMuro = filtrosMuro = cuentaMuro = null;
   if (!hayDb()) {
     pararMuro();
@@ -2834,7 +2834,7 @@ function pintarMuro(v) {
   // Los pedidos solo los puede leer el usuario del panel: sin esa sesión la base no devuelve nada.
   if (!supa) {
     pararMuro();
-    v.replaceChildren(titulo, explica, el('div', { class: 'card alerta' }, el('b', { text: 'Para ver los pedidos falta conectar el usuario del panel' }), el('p', { class: 'ayuda', style: 'margin:6px 0 0', text: supaProblema || 'Salí del panel y volvé a entrar.' })));
+    v.replaceChildren(titulo, explica, el('div', { class: 'card alerta' }, el('b', { text: 'Para ver los pedidos falta conectar el usuario del panel' }), el('p', { class: 'ayuda', style: 'margin:6px 0 0', text: supaProblema || 'Sal del panel y vuelve a entrar.' })));
     return;
   }
   cuentaMuro = el('span', { class: 'chip aprox oculto' });
@@ -3139,19 +3139,19 @@ const LETRAS_CODIGO = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // sin I, O, 0 ni 1, q
 const codigoAlAzar = () => Array.from(crypto.getRandomValues(new Uint8Array(6)), (b) => LETRAS_CODIGO[b % LETRAS_CODIGO.length]).join('');
 const linkLista = (c) => 'https://carpadelencuentro.github.io/lista/?c=' + encodeURIComponent(c.codigo);
 // El link abre la app directo en la lista (o lleva a la tienda si no la tiene).
-const mensajeCampana = (c) => `Sumate a la lista de oración "${c.nombre}" en la app Carpa del Encuentro. Código: ${c.codigo}\n${linkLista(c)}`;
+const mensajeCampana = (c) => `Súmate a la lista de oración "${c.nombre}" en la app Carpa del Encuentro. Código: ${c.codigo}\n${linkLista(c)}`;
 const plural = (n, uno, varios) => (n === 1 ? '1 ' + uno : n + ' ' + varios);
 const cuentasVacias = () => ({ personas: 0, pendientes: 0, publicados: 0 });
 
 function pintarCampanas(v) {
   const titulo = el('h2', { text: 'Listas de Oración' });
-  const explica = el('p', { class: 'ayuda', text: 'Cada lista es un grupo privado de oración con su propio código y su link. Desde la app (1.0.6 en adelante) cualquiera puede crear la suya en Oración → Listas de Oración; acá ves todas y podés crear las del equipo. Quien toca el link o pone el código entra a la lista: ve sus pedidos y puede mandar los suyos, que se publican al instante. Sin el link o el código no se ve nada. Quien creó una lista puede borrar los pedidos que pongan en ella; vos podés ocultar o borrar cualquiera en Pedidos de oración.' });
+  const explica = el('p', { class: 'ayuda', text: 'Cada lista es un grupo privado de oración con su propio código y su link. Desde la app (1.0.6 en adelante) cualquiera puede crear la suya en Oración → Listas de Oración; acá ves todas y puedes crear las del equipo. Quien toca el link o pone el código entra a la lista: ve sus pedidos y puede mandar los suyos, que se publican al instante. Sin el link o el código no se ve nada. Quien creó una lista puede borrar los pedidos que pongan en ella; tú puedes ocultar o borrar cualquiera en Pedidos de oración.' });
   cajaCamp = null; botonesCamp = [];
   if (!hayDb()) { v.replaceChildren(titulo, explica, el('div', { class: 'card alerta' }, el('b', { text: 'Falta activar la base en línea (se hace una sola vez)' }), pasosSupabase())); return; }
   const mal = problemaConfig();
   if (mal) { v.replaceChildren(titulo, el('div', { class: 'card alerta' }, el('b', { text: 'La base en línea está mal configurada en el panel' }), el('p', { class: 'ayuda', style: 'margin:6px 0 0', text: mal }))); return; }
   // Las listas las crea y las ve solo el usuario del panel: sin esa sesión la base no devuelve nada.
-  if (!supa) { v.replaceChildren(titulo, explica, el('div', { class: 'card alerta' }, el('b', { text: 'Para manejar las listas falta conectar el usuario del panel' }), el('p', { class: 'ayuda', style: 'margin:6px 0 0', text: supaProblema || 'Salí del panel y volvé a entrar.' }))); return; }
+  if (!supa) { v.replaceChildren(titulo, explica, el('div', { class: 'card alerta' }, el('b', { text: 'Para manejar las listas falta conectar el usuario del panel' }), el('p', { class: 'ayuda', style: 'margin:6px 0 0', text: supaProblema || 'Sal del panel y vuelve a entrar.' }))); return; }
   const nueva = el('button', { class: 'btn', type: 'button', text: '+ Nueva lista', on: { click: nuevaCampana } });
   const actualizar = el('button', { class: 'btn sec', type: 'button', text: 'Actualizar', on: { click: () => cargarCampanas() } });
   botonesCamp = [actualizar];
@@ -3190,7 +3190,7 @@ function pintarListaCamp() {
   hijos.push(el('p', { class: 'ayuda', 'aria-live': 'polite', text: camp.cargando ? 'Actualizando...' : camp.lista ? `${plural(camp.lista.length, 'lista', 'listas')} · actualizado a las ${hora}.` : '' }));
   if (notaVigente(camp.msg)) hijos.push(el('p', { class: 'ayuda ' + (camp.msg.ok ? 'ok' : 'error'), text: camp.msg.texto }));
   if (camp.error) hijos.push(el('p', { class: 'ayuda error', text: camp.error }));
-  if (camp.lista) hijos.push(...(camp.lista.length ? camp.lista.map(tarjetaCampana) : [el('p', { class: 'ayuda', text: 'Todavía no hay listas. Creá la primera con "+ Nueva lista".' })]));
+  if (camp.lista) hijos.push(...(camp.lista.length ? camp.lista.map(tarjetaCampana) : [el('p', { class: 'ayuda', text: 'Todavía no hay listas. Crea la primera con "+ Nueva lista".' })]));
   cajaCamp.replaceChildren(...hijos);
 }
 
@@ -3232,7 +3232,7 @@ function botonCopiar(texto, valor) {
   const b = el('button', { class: 'btn sec chico', type: 'button', text: texto });
   b.addEventListener('click', async () => {
     if (await copiar(valor())) { b.textContent = '¡Copiado!'; setTimeout(() => { b.textContent = texto; }, 2000); }
-    else window.prompt('No pude copiarlo solo. Seleccionalo y copialo de acá:', valor());
+    else window.prompt('No pude copiarlo solo. Selecciónalo y cópialo de acá:', valor());
   });
   return b;
 }
@@ -3240,27 +3240,27 @@ function botonCopiar(texto, valor) {
 function nuevaCampana() {
   abrirDialogo('Nueva lista', [
     { clave: 'nombre', etiqueta: 'Nombre', max: 80, placeholder: 'Ej: Ayuno de noviembre' },
-    { clave: 'codigo', etiqueta: 'Código', valor: codigoAlAzar(), max: 12, mayusculas: true, ayuda: 'Es lo que la gente pone en la app para unirse. De 4 a 12 letras o números, sin espacios. Podés dejar este o escribir uno fácil de decir (por ejemplo AYUNO2026).' },
+    { clave: 'codigo', etiqueta: 'Código', valor: codigoAlAzar(), max: 12, mayusculas: true, ayuda: 'Es lo que la gente pone en la app para unirse. De 4 a 12 letras o números, sin espacios. Puedes dejar este o escribir uno fácil de decir (por ejemplo AYUNO2026).' },
   ], async (v) => {
     const nombre = v.nombre, codigo = v.codigo.toUpperCase();
-    if (!nombre) return 'Escribí el nombre de la lista.';
+    if (!nombre) return 'Escribe el nombre de la lista.';
     if (nombre.length > 80) return 'El nombre puede tener hasta 80 letras.';
     // 6 o más: con códigos cortos se podría adivinar probando al azar.
     if (!/^[A-Z0-9]{6,12}$/.test(codigo)) return 'El código tiene que tener de 6 a 12 letras (sin Ñ ni tildes) o números, sin espacios.';
-    if (!supa) return supaProblema || 'Falta conectar el usuario del panel. Salí del panel y volvé a entrar.';
+    if (!supa) return supaProblema || 'Falta conectar el usuario del panel. Sal del panel y vuelve a entrar.';
     const r = await db('campanas', { method: 'POST', headers: { Prefer: 'return=representation' }, body: JSON.stringify({ nombre, codigo }) });
     if (!r.ok) {
       const j = await r.clone().json().catch(() => ({}));
-      if (r.status === 409 || String(j.code || '') === '23505') return 'Ese código ya lo usa otra lista. Elegí otro.';
+      if (r.status === 409 || String(j.code || '') === '23505') return 'Ese código ya lo usa otra lista. Elige otro.';
       throw await errorDb(r);
     }
     const xs = await r.json().catch(() => null);
     const fila = Array.isArray(xs) && xs[0];
-    if (!fila || fila.id == null) return 'La base no confirmó la lista. Cerrá esta ventana y tocá Actualizar para ver si se creó.';
+    if (!fila || fila.id == null) return 'La base no confirmó la lista. Cierra esta ventana y toca Actualizar para ver si se creó.';
     const c = campanaNormal(fila);
     if (camp.lista) camp.lista = [c, ...camp.lista.filter((x) => x.id !== c.id)];
     camp.cuentas.set(c.id, cuentasVacias());
-    camp.msg = nota(true, `Listo: se creó "${c.nombre}" con el código ${c.codigo}. Pasáselo a la gente con "Copiar mensaje".`);
+    camp.msg = nota(true, `Listo: se creó "${c.nombre}" con el código ${c.codigo}. Pásaselo a la gente con "Copiar mensaje".`);
     muro.cuando = 0;
     if (!camp.lista) cargarCampanas(); else pintarListaCamp();
     return '';
@@ -3286,7 +3286,7 @@ async function cambiarActiva(c, boton) {
 async function borrarCampana(c, k, boton) {
   const pedidos = k.pendientes + k.publicados;
   const gente = k.personas ? (k.personas === 1 ? ' La persona que se unió queda afuera.' : ` Las ${k.personas} personas que se unieron quedan afuera.`) : '';
-  if (!confirm(`¿Borrar la lista "${c.nombre}" (código ${c.codigo})?\n\nSe borran también TODOS sus pedidos de oración (${plural(pedidos, 'pedido', 'pedidos')}), incluso de "Mis pedidos" de quienes los mandaron.${gente} No se puede deshacer.\n\nSi solo querés cerrarla por un tiempo, usá "Pausar".`)) return;
+  if (!confirm(`¿Borrar la lista "${c.nombre}" (código ${c.codigo})?\n\nSe borran también TODOS sus pedidos de oración (${plural(pedidos, 'pedido', 'pedidos')}), incluso de "Mis pedidos" de quienes los mandaron.${gente} No se puede deshacer.\n\nSi solo quieres cerrarla por un tiempo, usa "Pausar".`)) return;
   boton.disabled = true;
   try {
     await dbBorrar('campanas', c.id);
@@ -3348,7 +3348,7 @@ async function abrirSecretos(j, pass) {
 async function leerClaveCifrada() {
   const r = await api('contents/clave.json', {}, null);
   if (r.status === 404) return null;
-  if (r.status === 403 || r.status === 429) throw new Error('GitHub está frenando las consultas. Esperá unos minutos y probá de nuevo.');
+  if (r.status === 403 || r.status === 429) throw new Error('GitHub está frenando las consultas. Espera unos minutos y prueba de nuevo.');
   if (!r.ok) throw new Error('No pude leer la configuración (' + r.status + ').');
   const j = await r.json();
   let c = null;
@@ -3362,8 +3362,8 @@ async function escribirClave(nuevos, pass, shaClave) {
   const cuerpo = { message: 'Panel: configuración de acceso', content: a64(JSON.stringify(await cifrar(JSON.stringify(nuevos), pass))) };
   if (shaClave) cuerpo.sha = shaClave;
   const r = await api('contents/clave.json', { method: 'PUT', body: JSON.stringify(cuerpo) }, nuevos.github);
-  if (r.status === 401 || r.status === 403 || r.status === 404) throw new Error('La clave de GitHub no tiene permiso para guardar. Revisá que tenga Contents: Read and write.');
-  if (r.status === 409 || r.status === 422) throw new Error('La configuración cambió mientras tanto. Recargá la página y probá de nuevo.');
+  if (r.status === 401 || r.status === 403 || r.status === 404) throw new Error('La clave de GitHub no tiene permiso para guardar. Revisa que tenga Contents: Read and write.');
+  if (r.status === 409 || r.status === 422) throw new Error('La configuración cambió mientras tanto. Recarga la página y prueba de nuevo.');
   if (!r.ok) throw new Error('No pude guardar la configuración (' + r.status + ').');
 }
 
@@ -3371,7 +3371,7 @@ async function escribirClave(nuevos, pass, shaClave) {
 async function cargar() {
   const r = await api(`contents/${ARCHIVO}`);
   if (r.status === 401) { const e = new Error('La clave de GitHub dejó de funcionar.'); e.vencida = true; throw e; }
-  if (r.status === 403) throw new Error('La clave no tiene permiso. Revisá que tenga Contents: Read and write.');
+  if (r.status === 403) throw new Error('La clave no tiene permiso. Revisa que tenga Contents: Read and write.');
   if (!r.ok) throw new Error('No encontré el archivo de datos (' + r.status + ').');
   const j = await r.json();
   sha = j.sha;
@@ -3452,7 +3452,7 @@ function revisar() {
   }
   // Avisos enviados: la app los lee tal cual, así que tienen que respetar el formato acordado.
   for (const h of datos.push_historial) {
-    if (!avisoBien(h)) return `El aviso enviado "${String(h.titulo || '').slice(0, 40)}" tiene datos que la app no puede usar (por ejemplo, un link sin https://). Quitalo en la pestaña Notificaciones push.`;
+    if (!avisoBien(h)) return `El aviso enviado "${String(h.titulo || '').slice(0, 40)}" tiene datos que la app no puede usar (por ejemplo, un link sin https://). Quítalo en la pestaña Notificaciones push.`;
   }
   // Primero pestañas, textos y pantallas (recorta y saca lo vacío); después el evento actual y Anteriores.
   return revisarPantallas() || revisarEventos();
@@ -3500,9 +3500,9 @@ async function guardar() {
       method: 'PUT',
       body: JSON.stringify({ message: 'Panel: cambios del ' + new Date().toLocaleString('es-UY'), content: a64(texto), sha }),
     });
-    if (r.status === 409) throw new Error('Alguien guardó cambios antes. Recargá la página.');
-    if (r.status === 401) throw new Error('La clave de GitHub dejó de funcionar. Reemplazala en la pestaña Seguridad y volvé a guardar.');
-    if (r.status === 403 || r.status === 404) throw new Error('La clave de GitHub no tiene permiso para guardar. Revisá que tenga Contents: Read and write.');
+    if (r.status === 409) throw new Error('Alguien guardó cambios antes. Recarga la página.');
+    if (r.status === 401) throw new Error('La clave de GitHub dejó de funcionar. Reemplázala en la pestaña Seguridad y vuelve a guardar.');
+    if (r.status === 403 || r.status === 404) throw new Error('La clave de GitHub no tiene permiso para guardar. Revisa que tenga Contents: Read and write.');
     if (!r.ok) throw new Error('No se pudo guardar (' + r.status + ').');
     sha = (await r.json()).content.sha;
     anotarCargado();
@@ -3528,8 +3528,8 @@ function mostrarGuardado(enLinea) {
   const decir = (t, clase) => { $('#estado').textContent = t; $('#estado').className = 'estado ' + clase; };
   if (enLinea.estado === 'ok') decir('Guardado. La app ya lo muestra.', 'ok');
   else if (enLinea.estado === 'apagada') decir('Guardado. La app lo muestra en unos minutos.', 'ok');
-  else if (enLinea.estado === 'sin-sesion') decir('Guardado en GitHub, pero no en la base en línea (mirá el aviso de arriba).', 'error');
-  else { $('#guardar').disabled = false; decir('Guardado en GitHub, pero no en la base en línea: ' + enLinea.motivo + ' La app sigue mostrando lo anterior: tocá "Guardar cambios" para reintentar.', 'error'); }
+  else if (enLinea.estado === 'sin-sesion') decir('Guardado en GitHub, pero no en la base en línea (mira el aviso de arriba).', 'error');
+  else { $('#guardar').disabled = false; decir('Guardado en GitHub, pero no en la base en línea: ' + enLinea.motivo + ' La app sigue mostrando lo anterior: toca "Guardar cambios" para reintentar.', 'error'); }
 }
 
 async function guardarSoloDb() {
@@ -3572,9 +3572,9 @@ function mostrarBloqueo(antes = '') {
   clearInterval(relojBloqueo);
   const paso = () => {
     const ms = espera();
-    if (!ms) { clearInterval(relojBloqueo); boton.disabled = false; est.textContent = 'Ya podés volver a probar.'; est.className = 'ayuda'; return; }
+    if (!ms) { clearInterval(relojBloqueo); boton.disabled = false; est.textContent = 'Ya puedes volver a probar.'; est.className = 'ayuda'; return; }
     boton.disabled = true;
-    est.textContent = antes + 'Por seguridad, esperá ' + mmss(ms) + ' para volver a probar.'; est.className = 'ayuda error';
+    est.textContent = antes + 'Por seguridad, espera ' + mmss(ms) + ' para volver a probar.'; est.className = 'ayuda error';
   };
   paso();
   relojBloqueo = setInterval(paso, 1000);
@@ -3653,7 +3653,7 @@ async function entrarRecordado() {
   catch (e) {
     secretos = null;
     await olvidarRecordado();
-    est.textContent = e.vencida ? 'La clave de GitHub dejó de funcionar: entrá con tu contraseña.' : e.message + ' Entrá con tu contraseña.';
+    est.textContent = e.vencida ? 'La clave de GitHub dejó de funcionar: entra con tu contraseña.' : e.message + ' Entra con tu contraseña.';
     est.className = 'ayuda error';
   } finally { entrando = false; boton.disabled = false; }
 }
@@ -3675,7 +3675,7 @@ function vigilarSesion() {
     const resto = INACTIVIDAD - (Date.now() - ultimaActividad), aviso = $('#avisoSesion');
     if (resto <= 0) { cerrarSesion(); return; }
     if (resto > AVISO_ANTES) return;
-    aviso.textContent = `Por seguridad, el panel se cierra en ${mmss(resto)} por falta de actividad.` + (sucio ? ' Tenés cambios sin guardar: guardalos o tocá cualquier lado para seguir.' : ' Tocá cualquier lado para seguir.');
+    aviso.textContent = `Por seguridad, el panel se cierra en ${mmss(resto)} por falta de actividad.` + (sucio ? ' Tienes cambios sin guardar: guárdalos o toca cualquier lado para seguir.' : ' Toca cualquier lado para seguir.');
     aviso.classList.remove('oculto');
   }, 1000);
 }
@@ -3691,7 +3691,7 @@ function cerrarSesion() {
   cancelarPrimera();
   $('#pass').value = '';
   $('#login').classList.remove('oculto');
-  $('#loginEstado').textContent = 'Se cerró la sesión después de 20 minutos sin actividad.' + (pendiente ? ' Tus cambios sin guardar siguen en esta pestaña: entrá de nuevo y guardalos.' : '');
+  $('#loginEstado').textContent = 'Se cerró la sesión después de 20 minutos sin actividad.' + (pendiente ? ' Tus cambios sin guardar siguen en esta pestaña: entra de nuevo y guárdalos.' : '');
   $('#loginEstado').className = 'ayuda';
 }
 
@@ -3717,7 +3717,7 @@ async function abrirPanel(pass, refresh = null) {
   else { await olvidarRecordado(); vigilarSesion(); }
   pintarTabs(); pintar();
   repararTraducciones();
-  if (recuperado) { cambio(); $('#estado').textContent = 'Recuperamos tus cambios sin guardar. Tocá "Guardar cambios".'; }
+  if (recuperado) { cambio(); $('#estado').textContent = 'Recuperamos tus cambios sin guardar. Toca "Guardar cambios".'; }
 }
 
 // ---------- Entrar ----------
@@ -3729,7 +3729,7 @@ async function entrar() {
   if (entrando) return;
   if (espera()) { mostrarBloqueo(); return; }
   const pass = $('#pass').value;
-  if (!pass) { est.textContent = 'Escribí la contraseña.'; est.className = 'ayuda error'; return; }
+  if (!pass) { est.textContent = 'Escribe la contraseña.'; est.className = 'ayuda error'; return; }
   entrando = true;
   boton.disabled = true; est.textContent = 'Entrando...'; est.className = 'ayuda';
   try {
@@ -3761,8 +3761,8 @@ function mostrarPrimeraVez(modo) {
   modoPrimera = modo;
   $('#primeraTitulo').textContent = modo === 'nueva' ? 'Configurar el panel (una sola vez)' : 'La clave de GitHub dejó de funcionar';
   $('#primeraAyuda').textContent = modo === 'nueva'
-    ? 'Todavía no hay nada configurado. El panel guarda los cambios en GitHub con una clave que solo puede tocar este repositorio. La pegás acá una vez y queda guardada cifrada con la contraseña que escribiste arriba. Después se entra solo con la contraseña.'
-    : 'La contraseña está bien, pero la clave de GitHub venció o la borraron. Creá una nueva y pegala acá: se guarda cifrada con la misma contraseña.';
+    ? 'Todavía no hay nada configurado. El panel guarda los cambios en GitHub con una clave que solo puede tocar este repositorio. La pegas acá una vez y queda guardada cifrada con la contraseña que escribiste arriba. Después se entra solo con la contraseña.'
+    : 'La contraseña está bien, pero la clave de GitHub venció o la borraron. Crea una nueva y pégala acá: se guarda cifrada con la misma contraseña.';
   $('#pasosToken').replaceChildren(pasosToken());
   $('#cajaPass2').classList.toggle('oculto', modo !== 'nueva');
   $('#pass').readOnly = modo === 'vencida';
@@ -3786,14 +3786,14 @@ async function guardarPrimera() {
   boton.disabled = true;
   try {
     if (modoPrimera === 'nueva') {
-      if (pass.length < 10) throw new Error('La contraseña tiene que tener al menos 10 caracteres. Cambiala arriba.');
+      if (pass.length < 10) throw new Error('La contraseña tiene que tener al menos 10 caracteres. Cámbiala arriba.');
       if ($('#pass2').value !== pass) throw new Error('Las dos contraseñas no coinciden.');
-    } else if (!guardadosVencida) throw new Error('Volvé a escribir la contraseña y tocá Entrar.');
+    } else if (!guardadosVencida) throw new Error('Vuelve a escribir la contraseña y toca Entrar.');
     validarToken(token);
     est.textContent = 'Probando la clave...';
     await probarToken(token);
     const vieja = await leerClaveCifrada();
-    if (modoPrimera === 'nueva' && vieja) throw new Error('Ya hay una configuración guardada. Recargá la página y entrá con tu contraseña.');
+    if (modoPrimera === 'nueva' && vieja) throw new Error('Ya hay una configuración guardada. Recarga la página y entra con tu contraseña.');
     const nuevos = { github: token, firebase: modoPrimera === 'vencida' ? guardadosVencida.firebase : null };
     est.textContent = 'Guardando cifrado...';
     await escribirClave(nuevos, pass, vieja && vieja.sha);
@@ -3832,7 +3832,7 @@ async function salir() {
   let enMarco = true;
   try { enMarco = window.top !== window.self; } catch (e) {}
   if (enMarco) {
-    $('#login').replaceChildren(el('h2', { text: 'Abrí el panel directamente' }), el('p', { class: 'ayuda', text: 'Por seguridad, el panel no funciona dentro de otra página. Entrá escribiendo la dirección en el navegador.' }));
+    $('#login').replaceChildren(el('h2', { text: 'Abre el panel directamente' }), el('p', { class: 'ayuda', text: 'Por seguridad, el panel no funciona dentro de otra página. Entra escribiendo la dirección en el navegador.' }));
     return;
   }
   const enter = (fn) => (e) => { if (e.key === 'Enter') fn(); };

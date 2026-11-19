@@ -18,13 +18,13 @@
  "noticias": [
   {
    "fecha": "2026-09-28",
-   "texto": "Ya podés ver las 5 noches de la Carpa en Salto.",
+   "texto": "Ya puedes ver las 5 noches de la Carpa en Salto.",
    "accion": "predicas",
    "titulo": "Mensajes de Salto 2026"
   },
   {
    "fecha": "2026-04-06",
-   "texto": "Mirá el resumen de las campañas de este año por todo el país.",
+   "texto": "Mira el resumen de las campañas de este año por todo el país.",
    "video": "jlx7T1iMWU0",
    "titulo": "Campañas evangelísticas 2026"
   }
@@ -1316,20 +1316,20 @@
  ],
  "en": {
   "Mensajes de Salto 2026": "Sermons from Salto 2026",
-  "Ya podés ver las 5 noches de la Carpa en Salto.": "You can now watch the 5 nights of the tent in Salto.",
+  "Ya puedes ver las 5 noches de la Carpa en Salto.": "You can now watch the 5 nights of the tent in Salto.",
   "Campañas evangelísticas 2026": "Evangelistic campaigns 2026",
-  "Mirá el resumen de las campañas de este año por todo el país.": "Look at the summary of this year's campaigns throughout the country.",
+  "Mira el resumen de las campañas de este año por todo el país.": "Look at the summary of this year's campaigns throughout the country.",
   "Carpa Salto 2026": "Salto Tent 2026",
   "22 al 26 de setiembre": "September 22 to 26",
   "Eventos": "Events",
   "Mensajes": "Sermons",
-  "Escuchá las charlas más destacadas": "Listen to the most watched talks",
+  "Escucha las charlas más destacadas": "Listen to the most watched talks",
   "Oración": "Prayer",
   "Podemos orar por ti": "We can pray for you",
   "Iglesias cerca": "Churches nearby",
   "Encuentra dónde congregarte": "Find a place to worship",
   "Ofrendar": "Give",
-  "Ayudá a llevar la Carpa": "Help take the tent further",
+  "Ayuda a llevar la Carpa": "Help take the tent further",
   "Iglesia Cristiana Evangélica": "Evangelical Christian Church",
   "Miércoles:\n19:30 hs. Reunión de oración y estudio bíblico\nSábados (2dos de cada mes):\nReunión de adolescentes\nSábados (1er y 3er de cada mes):\nReunión de jóvenes\nDomingos\n11:30 hs. Escuela Dominical\n18:00 hs. Reunión de Santa Cena\n19:00 hs. Reunión de predicación": "Wednesday:\n7:30 p.m. Prayer and Bible Study Meeting\nSaturdays (2nd of each month):\nTeen meeting\nSaturdays (1st and 3rd of each month):\nyouth meeting\nSundays\n11:30 a.m. Sunday School\n6:00 p.m. Holy Communion Meeting\n7:00 p.m. preaching meeting",
   "Iglesia Cristiana Evangélica Barros Blancos (ICEBB)": "Barros Blancos Evangelical Christian Church (ICEBB)",
@@ -1403,7 +1403,7 @@
   },
   {
    "id": "predicas",
-   "sub": "Escuchá las charlas más destacadas",
+   "sub": "Escucha las charlas más destacadas",
    "foto": "predicas",
    "link": "",
    "pill": "",
@@ -1433,7 +1433,7 @@
   },
   {
    "id": "ofrendar",
-   "sub": "Ayudá a llevar la Carpa",
+   "sub": "Ayuda a llevar la Carpa",
    "foto": "ofrendar",
    "link": "",
    "pill": "",
