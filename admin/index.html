@@ -362,11 +362,13 @@ async function traducir(t, destino = 'en') {
 
 // Palabras de la app que el traductor automático traduce mal o en minúscula ("preachings"): van fijas, como en la app.
 const TRADUCCIONES_FIJAS = {
-  'Inicio': 'Home', 'Eventos': 'Events', 'Encuentros': 'Events', 'Prédicas': 'Sermons', 'Oración': 'Prayer', 'Biblia': 'Bible',
+  'Inicio': 'Home', 'Eventos': 'Events', 'Encuentros': 'Events', 'Mensajes': 'Sermons', 'Oración': 'Prayer', 'Biblia': 'Bible',
   'Iglesias cerca': 'Churches nearby', 'Ofrendar': 'Give', 'Novedades': 'News',
-  'Podemos orar por vos': 'We can pray for you', 'Encontrá dónde congregarte': 'Find a place to worship',
-  'Ayudá a llevar la carpa': 'Help take the tent further', 'Escuchá o mirá cada noche': 'Listen to or watch every night',
+  'Podemos orar por ti': 'We can pray for you', 'Encuentra dónde congregarte': 'Find a place to worship',
+  'Ayudá a llevar la Carpa': 'Help take the tent further', 'Escuchá o mirá cada noche': 'Listen to or watch every night',
   'Escuchá las charlas más destacadas': 'Listen to the most watched talks',
+  'Canales oficiales': 'Official channels', 'De iglesias y ministerios, en YouTube': 'From churches and ministries, on YouTube',
+  'Mirá las fotos de cada encuentro': 'See the photos from every event', 'Hermanos en el Mundo': 'Believers around the world',
 };
 // Nombres que no se traducen (el traductor pasaba "Carpa Salto" a "Jump Tent"). Los largos primero.
 const NOMBRES_PROPIOS = ['Carpa del Encuentro', 'Villa del Carmen', 'Ciudad del Carmen', 'El Carmen', 'Juan Lacaze', 'San Carlos', 'Tacuarembó', 'Maldonado', 'Paysandú', 'Montevideo', 'Colonia', 'Durazno', 'Carmelo', 'Rosario', 'Rocha', 'Salto', 'Chuy', 'Carpa'];
@@ -530,7 +532,7 @@ function nuevaNovedad() {
     { clave: 'titulo', etiqueta: 'Título', max: 80 },
     { clave: 'texto', etiqueta: 'Texto', multilinea: true, max: 400 },
     { clave: 'fecha', etiqueta: 'Fecha', tipo: 'date', valor: new Date().toISOString().slice(0, 10) },
-    { clave: 'tipo', etiqueta: 'Al tocarla', opciones: [['nada', 'Nada (solo texto)'], ['video', 'Abrir un video de YouTube'], ['predicas', 'Ir a Prédicas'], ['encuentros', 'Ir a Eventos']] },
+    { clave: 'tipo', etiqueta: 'Al tocarla', opciones: [['nada', 'Nada (solo texto)'], ['video', 'Abrir un video de YouTube'], ['predicas', 'Ir a Mensajes'], ['encuentros', 'Ir a Eventos']] },
     { clave: 'video', etiqueta: 'Link del video', placeholder: 'https://youtu.be/...', visibleSi: (i) => i.tipo.value === 'video' },
   ], (v) => {
     if (!v.titulo) return 'Escribí el título.';
@@ -599,26 +601,26 @@ function imgFoto(f, carpeta, clase) {
 // Las mismas que trae la app de fábrica (lib/contenido.dart, seccionesBase): mientras no se guarden acá, la app usa esas.
 const SECCIONES_BASE = [
   { id: 'eventos', titulo: 'Carpa Salto 2026', sub: '22 al 26 de setiembre', pill: 'Eventos', foto: 'carpa', accion: 'eventos', link: '', visible: true },
-  { id: 'predicas', titulo: 'Prédicas', sub: 'Escuchá las charlas más destacadas', pill: '', foto: 'predicas', accion: 'predicas', link: '', visible: true },
-  { id: 'oracion', titulo: 'Oración', sub: 'Podemos orar por vos', pill: '', foto: 'oracion', accion: 'oracion', link: '', visible: true },
-  { id: 'iglesias', titulo: 'Iglesias cerca', sub: 'Encontrá dónde congregarte', pill: '', foto: 'iglesias', accion: 'iglesias', link: '', visible: true },
-  { id: 'contenidos', titulo: 'Contenidos', sub: 'Los canales de YouTube de las iglesias', pill: '', foto: 'contenidos', accion: 'contenidos', link: '', visible: true },
-  { id: 'galeria', titulo: 'Galería de fotos', sub: 'Mirá las fotos de cada carpa', pill: '', foto: 'carpa_afuera', accion: 'galeria', link: '', visible: true },
+  { id: 'predicas', titulo: 'Mensajes', sub: 'Escuchá las charlas más destacadas', pill: '', foto: 'predicas', accion: 'predicas', link: '', visible: true },
+  { id: 'oracion', titulo: 'Oración', sub: 'Podemos orar por ti', pill: '', foto: 'oracion', accion: 'oracion', link: '', visible: true },
+  { id: 'iglesias', titulo: 'Iglesias cerca', sub: 'Encuentra dónde congregarte', pill: '', foto: 'iglesias', accion: 'iglesias', link: '', visible: true },
+  { id: 'contenidos', titulo: 'Canales oficiales', sub: 'De iglesias y ministerios, en YouTube', pill: '', foto: 'contenidos', accion: 'contenidos', link: '', visible: true },
+  { id: 'galeria', titulo: 'Galería de fotos', sub: 'Mirá las fotos de cada encuentro', pill: '', foto: 'carpa_afuera', accion: 'galeria', link: '', visible: true },
   { id: 'misioneros', titulo: 'Misioneros', sub: 'Familias que llevan el evangelio', pill: '', foto: 'misioneros', accion: 'misioneros', link: '', visible: true },
-  { id: 'mundo', titulo: 'Hermanos en el mundo', sub: 'Orá por las asambleas de cada país', pill: '', foto: 'mundo', accion: 'mundo', link: '', visible: true },
-  { id: 'ofrendar', titulo: 'Ofrendar', sub: 'Ayudá a llevar la carpa', pill: '', foto: 'ofrendar', accion: 'ofrendar', link: '', visible: true },
+  { id: 'mundo', titulo: 'Hermanos en el Mundo', sub: 'Orá por las asambleas de cada país', pill: '', foto: 'mundo', accion: 'mundo', link: '', visible: true },
+  { id: 'ofrendar', titulo: 'Ofrendar', sub: 'Ayudá a llevar la Carpa', pill: '', foto: 'ofrendar', accion: 'ofrendar', link: '', visible: true },
 ];
 // Fotos que ya vienen dentro de la app (lib/contenido.dart, fotosInicio). Sus copias para ver acá están en fotos/inicio/.
 const FOTOS_APP = [
-  ['carpa', 'La carpa de día'], ['carpa_afuera', 'La carpa al atardecer'], ['carpa_adentro', 'Adentro de la carpa'],
+  ['carpa', 'La Carpa de día'], ['carpa_afuera', 'La Carpa al atardecer'], ['carpa_adentro', 'Adentro de la Carpa'],
   ['predicas', 'Predicador (1)'], ['predica_1', 'Predicador (2)'], ['predica_2', 'Predicador (3)'], ['predica_3', 'Predicador (4)'],
   ['oracion', 'Mesa de oración'], ['iglesias', 'Gente de la iglesia'], ['ofrendar', 'Trigo'], ['misioneros', 'Los misioneros (van pasando)'], ['mundo', 'Mapa y Biblia'],
   ['contenidos', 'Logos de los canales'],
   ['ninos_juegos', 'Niños jugando'], ['ninos_pintando', 'Niños pintando'], ['conocer_ninos', 'Niños y el bus'], ['conocer_bus', 'El bus'],
 ];
 const ACCIONES_INICIO = [
-  ['eventos', 'Ir a Eventos'], ['predicas', 'Ir a Prédicas'], ['oracion', 'Ir a Oración'], ['biblia', 'Ir a Biblia'],
-  ['iglesias', 'Abrir Iglesias cerca'], ['contenidos', 'Abrir Contenidos'], ['misioneros', 'Abrir Misioneros'], ['mundo', 'Abrir Hermanos en el mundo'],
+  ['eventos', 'Ir a Eventos'], ['predicas', 'Ir a Mensajes'], ['oracion', 'Ir a Oración'], ['biblia', 'Ir a Biblia'],
+  ['iglesias', 'Abrir Iglesias cerca'], ['contenidos', 'Abrir Canales oficiales'], ['misioneros', 'Abrir Misioneros'], ['mundo', 'Abrir Hermanos en el Mundo'],
   ['ofrendar', 'Abrir Ofrendar'], ['galeria', 'Abrir Galería de fotos'], ['conocer', 'Abrir Conocer más'],
   ['pagina', 'Abrir una pantalla'], ['link', 'Abrir un link (https)'], ['nada', 'Nada (solo se muestra)'],
 ];
@@ -844,7 +846,7 @@ function nuevaSeccion() {
 // ---------- Pestañas y textos: los nombres de las pestañas de abajo y los textos fijos de las pantallas de la app ----------
 // Van en contenido.json como "pestanas" y "textos". Si un texto falta o está vacío, la app usa el de fábrica.
 const esObjeto = (x) => !!x && typeof x === 'object' && !Array.isArray(x);
-const PESTANAS_BASE = [['inicio', 'Inicio'], ['eventos', 'Eventos'], ['predicas', 'Prédicas'], ['oracion', 'Oración'], ['biblia', 'Biblia']];
+const PESTANAS_BASE = [['inicio', 'Inicio'], ['eventos', 'Eventos'], ['predicas', 'Mensajes'], ['oracion', 'Oración'], ['biblia', 'Biblia']];
 const MAX_PESTANA = 16;
 // Evento actual y Anteriores (pestaña Eventos de la app). Los mismos topes que usa la app (lib/contenido.dart).
 const MAX_PESTANA_EVENTO = 20, MAX_VIDEOS_EVENTO = 300, MAX_FOTO_EVENTO = 500, MAX_ANTERIORES = 30, MAX_CIUDADES = 120, MAX_PALABRAS = 300;
@@ -868,10 +870,10 @@ const TEXTOS_APP = [
     ['eventos.anotarse_texto', 'Texto para anotarse (debajo del título)', 'Escribinos al 091 800 800'],
     ['eventos.anotarse_mensaje', 'Mensaje de WhatsApp al anotarse', 'Hola, quiero anotarme en Carpa Salto 2026. Les escribo desde la app.', { multilinea: true, max: 300, soloEs: true, ayuda: 'Es el mensaje que aparece ya escrito en WhatsApp cuando alguien toca para anotarse. Va siempre en español (lo lee el equipo), aunque la app esté en inglés.' }],
   ] },
-  { pantalla: 'predicas', nombre: 'Prédicas', campos: [
-    ['predicas.destacadas_titulo', 'Título de las destacadas', 'Destacadas'],
-    ['predicas.destacadas_sub', 'Texto debajo de las destacadas', 'Los videos más vistos del canal.'],
-    ['predicas.recientes_titulo', 'Título de las más recientes', 'Más recientes'],
+  { pantalla: 'predicas', nombre: 'Mensajes', campos: [
+    ['predicas.destacadas_titulo', 'Título de los destacados', 'Destacados'],
+    ['predicas.destacadas_sub', 'Texto debajo de los destacados', 'Los videos más vistos del canal.'],
+    ['predicas.recientes_titulo', 'Título de los más recientes', 'Más recientes'],
   ] },
   { pantalla: 'oracion', nombre: 'Oración', campos: [
     ['oracion.form_titulo', 'Título del formulario de pedidos', 'Contanos tu pedido'],
@@ -892,17 +894,17 @@ const TEXTOS_SIN_INGLES = new Set(['eventos.anotarse_mensaje', 'eventos.foto', '
 // El inglés que ya trae la app para sus textos de fábrica (lib/idioma.dart). Se usa en las vistas previas y, al traducir,
 // para que un texto de fábrica quede en inglés igual que en la app (y no con lo que diga el traductor).
 const INGLES_APP = {
-  'Inicio': 'Home', 'Eventos': 'Events', 'Prédicas': 'Sermons', 'Oración': 'Prayer', 'Biblia': 'Bible',
+  'Inicio': 'Home', 'Eventos': 'Events', 'Mensajes': 'Sermons', 'Oración': 'Prayer', 'Biblia': 'Bible',
   'Llevando esperanza en Jesucristo': 'Bringing hope in Jesus Christ',
   'Carpa Salto 2026': 'Salto Tent 2026', 'Martes 22 a sábado 26 de setiembre': 'Tuesday 22 to Saturday 26 September',
   '22 al 26 set': 'Sep 22–26', 'Gratis': 'Free', 'Fechas': 'Dates', 'Hora': 'Time', 'Entrada': 'Entry',
   '"Preparate para tu encuentro con Jesucristo"': '"Get ready for your encounter with Jesus Christ"',
   'Las noches en video': 'The nights on video', '¿Querés anotarte en este evento?': 'Would you like to sign up for this event?',
   'Escribinos al 091 800 800': 'Message us at +598 91 800 800',
-  'Destacadas': 'Featured', 'Los videos más vistos del canal.': 'The most watched videos on the channel.', 'Más recientes': 'Most recent',
+  'Destacados': 'Featured', 'Los videos más vistos del canal.': 'The most watched videos on the channel.', 'Más recientes': 'Most recent',
   'Contanos tu pedido': 'Share your prayer request', 'Listas de Oración': 'Prayer Lists',
   'Creá tu propia lista y compartila con un link, o poné el código que te pasaron para ver sus motivos y sumar los tuyos.': 'Create your own list and share it with a link, or enter the code you were given to see its requests and add yours.',
-  'Programa': 'Schedule', 'Salto 2026': 'Salto 2026', 'Anteriores': 'Past', 'Buscá una prédica': 'Search for a sermon',
+  'Programa': 'Schedule', 'Salto 2026': 'Salto 2026', 'Anteriores': 'Past', 'Buscá un mensaje': 'Search for a sermon',
   'Por ejemplo: por la salud de mi mamá': 'For example: for my mom’s health', 'Enviar': 'Send', 'Código': 'Code', 'Entrar': 'Join',
   'Tocá un año para ver sus videos.': 'Tap a year to see its videos.',
   'Rosario, Tacuarembó, El Carmen, Rocha y Salto': 'Rosario, Tacuarembó, El Carmen, Rocha and Salto',
@@ -921,7 +923,7 @@ const valorTexto = (k) => { const v = textosApp()[k]; return typeof v === 'strin
 const tituloInicio = () => (nombrePestana('inicio').trim() === 'Inicio' ? 'Carpa del Encuentro' : enApp(nombrePestana('inicio').trim()));
 
 let pantallaTextos = 'inicio', textoFoco = '';
-const PANTALLAS_PREVIA = [['inicio', 'Inicio'], ['eventos', 'Eventos'], ['anteriores', 'Anteriores'], ['programa', 'Programa'], ['predicas', 'Prédicas'], ['oracion', 'Oración'], ['biblia', 'Biblia']];
+const PANTALLAS_PREVIA = [['inicio', 'Inicio'], ['eventos', 'Eventos'], ['anteriores', 'Anteriores'], ['programa', 'Programa'], ['predicas', 'Mensajes'], ['oracion', 'Oración'], ['biblia', 'Biblia']];
 
 function pintarTextos(v) {
   const pe = pestanas(), tx = textosApp();
@@ -934,7 +936,7 @@ function pintarTextos(v) {
   const deFabrica = (obj, k) => () => { if (!String(obj[k] ?? '').trim()) delete obj[k]; };
   const cajaPestanas = el('div', { class: 'card' },
     el('h3', { text: 'Pestañas de abajo' }),
-    el('p', { class: 'ayuda', text: `El nombre de cada botón de la barra de abajo de la app. En Eventos, Prédicas, Oración y Biblia también es el título de arriba de la pantalla. En Inicio, con el nombre de fábrica arriba dice "Carpa del Encuentro"; si le ponés otro, arriba va ese. Máximo ${MAX_PESTANA} letras; si lo dejás vacío, vuelve el de fábrica.` }),
+    el('p', { class: 'ayuda', text: `El nombre de cada botón de la barra de abajo de la app. En Eventos, Mensajes, Oración y Biblia también es el título de arriba de la pantalla. En Inicio, con el nombre de fábrica arriba dice "Carpa del Encuentro"; si le ponés otro, arriba va ese. Máximo ${MAX_PESTANA} letras; si lo dejás vacío, vuelve el de fábrica.` }),
     el('div', { class: 'fila' }, ...PESTANAS_BASE.map(([k, def]) => conFoco(campoEn(def, pe, k, { max: MAX_PESTANA, placeholder: def, placeholderEn: INGLES_APP[def], alCambiar: deFabrica(pe, k) }), k, 'pestana.' + k))));
   const cajas = TEXTOS_APP.flatMap((g) => {
     const caja = el('div', { class: 'card' },
@@ -1192,7 +1194,7 @@ const MAQUETAS = {
     el('div', { class: 'wa-previa' }, el('small', { text: 'Al tocarlo se abre WhatsApp con este mensaje (siempre en español):' }),
       el('div', { class: 'wa-burbuja' + (textoFoco === 'eventos.anotarse_mensaje' ? ' tel-foco' : ''), text: valorTexto('eventos.anotarse_mensaje') }))] }),
   predicas: (t) => ({ gris: true, cuerpo: [
-    el('div', { class: 'tm-buscar', text: enApp('Buscá una prédica') }),
+    el('div', { class: 'tm-buscar', text: enApp('Buscá un mensaje') }),
     t('predicas.destacadas_titulo', 'div', 'tm-sec'), t('predicas.destacadas_sub', 'p', 'tm-sub'),
     el('div', { class: 'tm-gris tm-video' }), filaVideo(), filaVideo(),
     t('predicas.recientes_titulo', 'div', 'tm-sec'), filaVideo(), filaVideo()] }),
@@ -1686,7 +1688,7 @@ function pintar() {
       el('div', { style: 'height:12px' }),
       ...datos.noticias.map((n, i) => {
         const tipo = n.video ? 'video' : (n.accion || 'nada');
-        const sel = el('select', {}, ...[['nada', 'Nada (solo texto)'], ['video', 'Abrir un video de YouTube'], ['predicas', 'Ir a Prédicas'], ['encuentros', 'Ir a Eventos']].map(([val, t]) => el('option', { value: val, text: t })));
+        const sel = el('select', {}, ...[['nada', 'Nada (solo texto)'], ['video', 'Abrir un video de YouTube'], ['predicas', 'Ir a Mensajes'], ['encuentros', 'Ir a Eventos']].map(([val, t]) => el('option', { value: val, text: t })));
         sel.value = tipo;
         const vid = { v: n.video ? 'https://youtu.be/' + n.video : '' };
         const avisoVideo = el('p', { class: 'ayuda error oculto', style: 'margin:6px 0 0', text: 'No reconozco ese link de YouTube. Copiá el link del video y pegalo entero.' });
@@ -2000,7 +2002,7 @@ async function subirFoto(archivo, base, decir) {
 }
 
 // ---------- Notificaciones push (Firebase Cloud Messaging) ----------
-const ACCIONES_PUSH = [['inicio', 'Inicio'], ['predicas', 'Prédicas'], ['encuentros', 'Eventos'], ['link', 'Un link (https)']];
+const ACCIONES_PUSH = [['inicio', 'Inicio'], ['predicas', 'Mensajes'], ['encuentros', 'Eventos'], ['link', 'Un link (https)']];
 const MAX_TITULO_PUSH = 65, MAX_TEXTO_PUSH = 240;
 const pushVacio = () => ({ titulo: '', texto: '', titulo_en: '', texto_en: '', titulo_de: '', texto_de: '', accion: 'inicio', link: '' });
 // Qué traducciones se corrigieron a mano (esas ya no se pisan al seguir escribiendo en español).
