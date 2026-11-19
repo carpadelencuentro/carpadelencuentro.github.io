@@ -1387,7 +1387,13 @@
   "Colonia, Tacuarembó, Ciudad del Carmen, San Carlos y Maldonado": "Colonia, Tacuarembó, Ciudad del Carmen, San Carlos and Maldonado",
   "Colonia, Villa del Carmen, San Carlos, Chuy y Maldonado": "Colonia, Villa del Carmen, San Carlos, Chuy and Maldonado",
   "Juan Lacaze, San Carlos, Chuy y Villa del Carmen": "Juan Lacaze, San Carlos, Chuy and Villa del Carmen",
-  "Juan Lacaze, Carmelo, Chuy y Villa del Carmen": "Juan Lacaze, Carmelo, Chuy and Villa del Carmen"
+  "Juan Lacaze, Carmelo, Chuy y Villa del Carmen": "Juan Lacaze, Carmelo, Chuy and Villa del Carmen",
+  "Galería de fotos": "Photo gallery",
+  "Mira las fotos de la Carpa": "See the photos from the tent",
+  "Misioneros": "Missionaries",
+  "Familias que llevan el evangelio": "Families taking the gospel",
+  "Hermanos en el Mundo": "Believers around the world",
+  "Ora por las asambleas de cada país": "Pray for the assemblies in each country"
  },
  "push_historial": [],
  "inicio": [
@@ -1429,6 +1435,36 @@
    "pill": "",
    "accion": "iglesias",
    "titulo": "Iglesias cerca",
+   "visible": true
+  },
+  {
+   "id": "galeria",
+   "sub": "Mira las fotos de la Carpa",
+   "foto": "carpa_afuera",
+   "link": "",
+   "pill": "",
+   "accion": "galeria",
+   "titulo": "Galería de fotos",
+   "visible": true
+  },
+  {
+   "id": "misioneros",
+   "sub": "Familias que llevan el evangelio",
+   "foto": "misioneros",
+   "link": "",
+   "pill": "",
+   "accion": "misioneros",
+   "titulo": "Misioneros",
+   "visible": true
+  },
+  {
+   "id": "mundo",
+   "sub": "Ora por las asambleas de cada país",
+   "foto": "mundo",
+   "link": "",
+   "pill": "",
+   "accion": "mundo",
+   "titulo": "Hermanos en el Mundo",
    "visible": true
   },
   {
